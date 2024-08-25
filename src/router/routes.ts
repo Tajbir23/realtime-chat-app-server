@@ -15,8 +15,6 @@ router.get('/user_validation', verifyJwt, validationUser)
 
 router.post('/login', loginUser)
 
-// const allUsers = getAllUsers();
-// io.emit('allUsers', allUsers)
 
 router.get('/users',verifyJwt, async(req:Request, res: Response) => {
     try {

@@ -36,23 +36,20 @@ app.get('/', async(req: Request, res: Response) => {
 app.use('/api', router)
 
 const users = new Map<string, string>()
-console.log(users)
 io.on('connection', (socket) => {
     
     socket.on('connected', async(email) => {
-        
         users.set(socket.id, email)
-        
-        await userModel.updateOne({email: email}, {$set: {isActive: true}})
-        
+        const update = await userModel.updateOne({email: email}, {$set: {isActive: true}})
+        console.log(update)
         const allUsers = await getAllUsers()
         io.emit('users', allUsers)
-        
+        console.log(users)
     })
     socket.on('disconnect', async() => {
         const email = users.get(socket.id)
         users.delete(socket.id)
-        const user = await userModel.updateOne({email: email}, {$set: {isActive: false}})
+        await userModel.updateOne({email: email}, {$set: {isActive: false}})
         const allUsers = await getAllUsers()
         io.emit('users', allUsers)
         
