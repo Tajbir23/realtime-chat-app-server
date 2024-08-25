@@ -42,18 +42,21 @@ io.on('connection', (socket) => {
         users.set(socket.id, email)
         const update = await userModel.updateOne({email: email}, {$set: {isActive: true}})
         console.log(update)
-        const allUsers = await getAllUsers()
+        const allUsers = await getAllUsers(email)
         io.emit('users', allUsers)
         console.log(users)
     })
     socket.on('disconnect', async() => {
-        const email = users.get(socket.id)
-        users.delete(socket.id)
-        await userModel.updateOne({email: email}, {$set: {isActive: false}})
-        const allUsers = await getAllUsers()
-        io.emit('users', allUsers)
-        
-    })
+        const email: any = users.get(socket.id)
+        if(email){
+
+            const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
+            const allUsers = await getAllUsers(email);
+            io.emit('users', allUsers);
+            users.delete(socket.id)
+        }
+    });
+
 })
 
 server.listen(port, async() => {

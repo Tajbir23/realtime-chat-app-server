@@ -1,6 +1,8 @@
+import { Request, Response } from "express";
 import userModel from "../models/userSchema"
 
-const getAllUsers = async() => {
+const getAllUsers = async(email: string) => {
+    console.log(email)
     try {
         const users = await userModel.find()
         return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive }));
