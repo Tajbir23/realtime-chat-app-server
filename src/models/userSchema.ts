@@ -28,7 +28,11 @@ const userSchema = new Schema<user>({
         // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         minlength: 8,
         maxlength: 200
-    }
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
 })
 
 userSchema.plugin(uniqueValidator, { message: '{PATH} to be unique.' })

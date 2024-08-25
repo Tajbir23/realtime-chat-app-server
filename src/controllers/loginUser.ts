@@ -10,8 +10,10 @@ const loginUser = async(req: Request, res: Response) => {
         return res.status(401).json({message: 'Invalid credentials'});
     }
     const token = await generateJwt(user.username, user.email)
-    res.json({token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name});
+    res.send({token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name});
     } catch (error) {
         res.send(error)
     }
 }
+
+export default loginUser;

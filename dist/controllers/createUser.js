@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const generateJwt_1 = __importDefault(require("./generateJwt"));
+const getAllUsers_1 = __importDefault(require("./getAllUsers"));
+const __1 = require("..");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     try {
@@ -22,6 +24,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const result = yield user.save();
         console.log(result);
         const token = yield (0, generateJwt_1.default)(username, email);
+        const allUsers = yield (0, getAllUsers_1.default)();
+        __1.io.emit('users', allUsers);
         res.status(201).send({ token, name, username, email, photoUrl });
     }
     catch (error) {

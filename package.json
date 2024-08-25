@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
     "watch": "tsc --watch"
   },
@@ -17,6 +17,7 @@
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mongoose-unique-validator": "^1.0.9",
+    "@types/socket.io": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

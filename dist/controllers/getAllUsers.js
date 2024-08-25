@@ -13,19 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
-const generateJwt_1 = __importDefault(require("./generateJwt"));
-const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield userSchema_1.default.findOne({ email, password });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-        const token = yield (0, generateJwt_1.default)(user.username, user.email);
-        res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name });
+        const users = yield userSchema_1.default.find();
+        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl }));
     }
     catch (error) {
-        res.send(error);
+        throw new Error(error.message);
     }
 });
-exports.default = loginUser;
+exports.default = getAllUsers;
