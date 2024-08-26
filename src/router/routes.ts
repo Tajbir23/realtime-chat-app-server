@@ -5,6 +5,8 @@ import validationUser from "../controllers/validationUser";
 import loginUser from "../controllers/loginUser";
 
 import getAllUsers from "../controllers/getAllUsers";
+import findOne from "../controllers/findUser";
+import postMessage from "../controllers/message/postMessage";
 
 
 
@@ -26,5 +28,9 @@ router.get('/users',verifyJwt, async(req:Request, res: Response) => {
         res.status(500).send({ error: error.message })
     }
 })
+
+router.get('/user/:id', verifyJwt, findOne)
+
+router.post('/message', verifyJwt, postMessage)
 
 export default router;
