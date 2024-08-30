@@ -15,7 +15,7 @@ const getMessage = async(senderUsername: string, receiverUsername: string, skip?
             ]
         }).sort({createdAt: -1}).skip(skip ?? 0).limit(10);
 
-        console.log("message: ", message)
+        
         return message
     } catch (error) {
         console.log(error)

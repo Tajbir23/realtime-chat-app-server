@@ -4,10 +4,10 @@ import generateJwt from "./generateJwt";
 
 const loginUser = async(req: Request, res: Response) => {
     const { email, password } = req.body;
-    console.log(req.body);
+    
     try {
         const user = await userModel.findOne({email, password});
-        console.log(user);
+        
     if(!user) {
         return res.status(401).json({message: 'Invalid credentials'});
     }

@@ -40,7 +40,6 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
     const {id} = req.params
     const {username} = (req as any).user
     const {currentPage = 1} = (req as any).query
-    console.log('id', id)
     try {
         const skip = (Number(currentPage - 1) * 10)
         
@@ -54,8 +53,7 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
             const message = await getMessage(username, receiverUsername, skip)
             res.send(message)
         })
-        // const message = await getMessage(username, receiverUsername, skip)
-        // res.send(message)
+        
     } catch (error: any) {
         res.status(500).send({ error: error.message })
     }

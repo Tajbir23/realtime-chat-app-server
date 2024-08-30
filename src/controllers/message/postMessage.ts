@@ -11,7 +11,6 @@ const postMessage = async (req: Request, res: Response) => {
     const message = req.body.message;
 
     try {
-        console.log('receiver', receiver);
 
         // Ensure receiver has the necessary properties
         if (!receiver || !receiver.username || !receiver.name || !receiver.email || !receiver.photoUrl) {
@@ -42,7 +41,6 @@ const postMessage = async (req: Request, res: Response) => {
             chatId = connection[0]._id.toString();
         }
 
-        console.log('sender', sender.username, receiver.username);
         if (!connection || connection.length === 0) {
             const createConnection = new connectionModel({
                 senderName: sender.name,
@@ -74,7 +72,6 @@ const postMessage = async (req: Request, res: Response) => {
             });
             const result = await messageSave.save();
 
-            console.log('message result', result)
             io.emit("message", result);
             
             return res.status(201).send(result);

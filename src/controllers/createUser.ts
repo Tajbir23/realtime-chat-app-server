@@ -4,12 +4,11 @@ import generateJwt from './generateJwt'
 import getAllUsers from './getAllUsers'
 import { io } from '..'
 const createUser = async(req: Request, res: Response) => {
-    console.log(req.body)
     try {
         const { name, username, email, photoUrl, password } = req.body
         const user = new userModel({ name, username, email, photoUrl, password })
         const result = await user.save()
-        console.log(result)
+        
         const token = await generateJwt(username, email);
 
         const allUsers = await getAllUsers(email);

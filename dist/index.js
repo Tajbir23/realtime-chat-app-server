@@ -42,10 +42,10 @@ app.use('/api', routes_1.default);
 exports.io.on('connection', (socket) => {
     socket.on('connected', (email) => __awaiter(void 0, void 0, void 0, function* () {
         let user = yield userSchema_1.default.updateOne({ email: email }, { isActive: true, socketId: socket.id });
-        console.log(user);
+        
     }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('User disconnected', socket.id);
+        
         yield userSchema_1.default.updateOne({ socketId: socket.id }, { isActive: false, socketId: socket.id });
     }));
 });

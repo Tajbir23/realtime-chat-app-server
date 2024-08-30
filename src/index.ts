@@ -41,10 +41,10 @@ io.on('connection', (socket) => {
     socket.on('connected', async(email) => {
         users.set(socket.id, email)
         const update = await userModel.updateOne({email: email}, {$set: {isActive: true}})
-        // console.log(update)
+        
         const allUsers = await getAllUsers(email)
         io.emit('users', allUsers)
-        // console.log(users)
+        
     })
 
     socket.on('logout', async() => {
