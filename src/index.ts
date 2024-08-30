@@ -46,12 +46,24 @@ io.on('connection', (socket) => {
         io.emit('users', allUsers)
         // console.log(users)
     })
+
+    socket.on('logout', async() => {
+        const email: any = users.get(socket.id)
+        if(email){
+            const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
+            const allUsers = await getAllUsers(email);
+            io.emit('users', allUsers);
+            users.delete(socket.id)
+            socket.disconnect()
+        }
+    })
     socket.on('disconnect', async() => {
         const email: any = users.get(socket.id)
         if(email){
 
             const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
             const allUsers = await getAllUsers(email);
+            console.log('disconnect', email)
             io.emit('users', allUsers);
             users.delete(socket.id)
         }

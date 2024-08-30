@@ -8,7 +8,7 @@ interface userConnections {
     receiverEmail: string;
     receiverPhotoUrl: string;
     receiverUserName: string;
-    timestamp: Date;
+    timestamp?: Date;
 }
 
 export default userConnections

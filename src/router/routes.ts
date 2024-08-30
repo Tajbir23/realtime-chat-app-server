@@ -7,6 +7,9 @@ import loginUser from "../controllers/loginUser";
 import getAllUsers from "../controllers/getAllUsers";
 import findOne from "../controllers/findUser";
 import postMessage from "../controllers/message/postMessage";
+import getMessage from "../controllers/message/getMessage";
+import userModel from "../models/userSchema";
+import mongoose from "mongoose";
 
 
 
@@ -32,5 +35,30 @@ router.get('/users',verifyJwt, async(req:Request, res: Response) => {
 router.get('/user/:id', verifyJwt, findOne)
 
 router.post('/message', verifyJwt, postMessage)
+
+router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
+    const {id} = req.params
+    const {username} = (req as any).user
+    const {currentPage = 1} = (req as any).query
+    console.log('id', id)
+    try {
+        const skip = (Number(currentPage - 1) * 10)
+        
+        const isValidId = await mongoose.Types.ObjectId.isValid(id)
+
+        if(!isValidId){
+            return res.status(404).json({message: 'User not found'})
+        }
+        userModel.findOne({_id: id}).then(async(user) => {
+            const receiverUsername = user?.username ?? ''
+            const message = await getMessage(username, receiverUsername, skip)
+            res.send(message)
+        })
+        // const message = await getMessage(username, receiverUsername, skip)
+        // res.send(message)
+    } catch (error: any) {
+        res.status(500).send({ error: error.message })
+    }
+})
 
 export default router;

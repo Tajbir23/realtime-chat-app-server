@@ -16,7 +16,8 @@ const createUser = async(req: Request, res: Response) => {
         io.emit('users', allUsers)
         res.status(201).send({token, name, username, email, photoUrl})
     } catch (error:any) {
-        res.status(500).send({ error: error.message })
+        console.log(error)
+        return res.status(500).send({ message: error.message })
     }
     
 }

@@ -44,7 +44,7 @@ const messageSchema= new Schema<messageInterface>({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: () => Date.now()
     }
 })
 
