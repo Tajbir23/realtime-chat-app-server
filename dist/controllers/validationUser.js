@@ -17,8 +17,9 @@ const validationUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { username, email } = req.user;
         const user = yield userSchema_1.default.findOne({ username, email });
-        console.log(user);
-        res.send({ name: user === null || user === void 0 ? void 0 : user.name, email: user === null || user === void 0 ? void 0 : user.email, photoUrl: user === null || user === void 0 ? void 0 : user.photoUrl, username: username });
+        if (!user)
+            return res.status(401).send({ message: 'User not found' });
+        res.send({ name: user === null || user === void 0 ? void 0 : user.name, email: user === null || user === void 0 ? void 0 : user.email, photoUrl: user === null || user === void 0 ? void 0 : user.photoUrl, username: username, isActive: user === null || user === void 0 ? void 0 : user.isActive });
     }
     catch (error) {
         res.status(500).send({ error: error.message });

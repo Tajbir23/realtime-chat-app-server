@@ -13,14 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
-const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("not equal to user", email);
+const mongoose_1 = __importDefault(require("mongoose"));
+const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield userSchema_1.default.find({ email: { $ne: email } });
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
+        const { id } = req.params;
+        const isValidId = yield mongoose_1.default.Types.ObjectId.isValid(id);
+        if (!isValidId) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const user = yield userSchema_1.default.findById(id);
+        res.send({ email: user === null || user === void 0 ? void 0 : user.email, isActive: user === null || user === void 0 ? void 0 : user.isActive, name: user === null || user === void 0 ? void 0 : user.name, username: user === null || user === void 0 ? void 0 : user.username, photoUrl: user === null || user === void 0 ? void 0 : user.photoUrl, _id: user === null || user === void 0 ? void 0 : user._id });
     }
     catch (error) {
-        throw new Error(error.message);
+        console.log(error);
     }
 });
-exports.default = getAllUsers;
+exports.default = findOne;

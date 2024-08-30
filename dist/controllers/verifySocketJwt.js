@@ -12,15 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userSchema_1 = __importDefault(require("../models/userSchema"));
-const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("not equal to user", email);
-    try {
-        const users = yield userSchema_1.default.find({ email: { $ne: email } });
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const verifySocketJwt = (socket, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+        return socket.disconnect(true);
     }
-    catch (error) {
-        throw new Error(error.message);
+    try {
+        jsonwebtoken_1.default.verify(token, process.env.jwt_secret, (err, decoded) => {
+            if (err)
+                throw err;
+            socket.user = decoded;
+            next();
+        });
+    }
+    catch (err) {
+        socket.disconnect(true);
     }
 });
-exports.default = getAllUsers;
+exports.default = verifySocketJwt;

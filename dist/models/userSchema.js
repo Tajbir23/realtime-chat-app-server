@@ -30,7 +30,11 @@ const userSchema = new mongoose_1.Schema({
         // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         minlength: 8,
         maxlength: 200
-    }
+    },
+    isActive: {
+        type: Boolean,
+        default: false
+    },
 });
 userSchema.plugin(mongoose_unique_validator_1.default, { message: '{PATH} to be unique.' });
 const userModel = (0, mongoose_1.model)('Users', userSchema);

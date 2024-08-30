@@ -12,15 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userSchema_1 = __importDefault(require("../models/userSchema"));
-const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("not equal to user", email);
+const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
+const getMessage = (senderUsername, receiverUsername, skip) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield userSchema_1.default.find({ email: { $ne: email } });
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
+        const message = yield messageSchema_1.default.find({
+            $or: [
+                {
+                    senderUsername,
+                    receiverUsername
+                },
+                {
+                    senderUsername: receiverUsername,
+                    receiverUsername: senderUsername
+                }
+            ]
+        }).sort({ createdAt: -1 }).skip(skip !== null && skip !== void 0 ? skip : 0).limit(10);
+        return message;
     }
     catch (error) {
-        throw new Error(error.message);
+        console.log(error);
     }
 });
-exports.default = getAllUsers;
+exports.default = getMessage;

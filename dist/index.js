@@ -22,6 +22,7 @@ const cors_1 = __importDefault(require("cors"));
 const node_http_1 = require("node:http");
 const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
+const getAllUsers_1 = __importDefault(require("./controllers/getAllUsers"));
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
@@ -39,14 +40,33 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('Hello, World!');
 }));
 app.use('/api', routes_1.default);
+const users = new Map();
 exports.io.on('connection', (socket) => {
     socket.on('connected', (email) => __awaiter(void 0, void 0, void 0, function* () {
-        let user = yield userSchema_1.default.updateOne({ email: email }, { isActive: true, socketId: socket.id });
-        
+        users.set(socket.id, email);
+        const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: true } });
+        const allUsers = yield (0, getAllUsers_1.default)(email);
+        exports.io.emit('users', allUsers);
+    }));
+    socket.on('logout', () => __awaiter(void 0, void 0, void 0, function* () {
+        const email = users.get(socket.id);
+        if (email) {
+            const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: false } });
+            const allUsers = yield (0, getAllUsers_1.default)(email);
+            exports.io.emit('users', allUsers);
+            users.delete(socket.id);
+            socket.disconnect();
+        }
     }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
-        
-        yield userSchema_1.default.updateOne({ socketId: socket.id }, { isActive: false, socketId: socket.id });
+        const email = users.get(socket.id);
+        if (email) {
+            const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: false } });
+            const allUsers = yield (0, getAllUsers_1.default)(email);
+            console.log('disconnect', email);
+            exports.io.emit('users', allUsers);
+            users.delete(socket.id);
+        }
     }));
 });
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {

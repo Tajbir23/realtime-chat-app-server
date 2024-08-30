@@ -17,19 +17,18 @@ const generateJwt_1 = __importDefault(require("./generateJwt"));
 const getAllUsers_1 = __importDefault(require("./getAllUsers"));
 const __1 = require("..");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     try {
         const { name, username, email, photoUrl, password } = req.body;
         const user = new userSchema_1.default({ name, username, email, photoUrl, password });
         const result = yield user.save();
-        console.log(result);
         const token = yield (0, generateJwt_1.default)(username, email);
-        const allUsers = yield (0, getAllUsers_1.default)();
+        const allUsers = yield (0, getAllUsers_1.default)(email);
         __1.io.emit('users', allUsers);
         res.status(201).send({ token, name, username, email, photoUrl });
     }
     catch (error) {
-        res.status(500).send({ error: error.message });
+        console.log(error);
+        return res.status(500).send({ message: error.message });
     }
 });
 exports.default = createUser;
