@@ -23,6 +23,7 @@ const postMessage_1 = __importDefault(require("../controllers/message/postMessag
 const getMessage_1 = __importDefault(require("../controllers/message/getMessage"));
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const getFriends_1 = __importDefault(require("../controllers/friends/getFriends"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -61,4 +62,5 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
         res.status(500).send({ error: error.message });
     }
 }));
+router.get('/friends', verifyJwt_1.default, getFriends_1.default);
 exports.default = router;

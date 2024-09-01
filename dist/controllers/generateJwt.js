@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const generateJwt = (username, email) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = yield jsonwebtoken_1.default.sign({ username, email }, process.env.jwt_secret, { expiresIn: '7d' });
+const generateJwt = (username, email, _id) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = yield jsonwebtoken_1.default.sign({ username, email, _id }, process.env.jwt_secret, { expiresIn: '7d' });
     return token;
 });
 exports.default = generateJwt;

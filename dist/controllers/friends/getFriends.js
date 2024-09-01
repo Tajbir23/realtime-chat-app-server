@@ -12,20 +12,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const userSchema_1 = __importDefault(require("../models/userSchema"));
-const generateJwt_1 = __importDefault(require("./generateJwt"));
-const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
+const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id, email } = req.user;
+    const { currentPage = 1 } = req.query;
     try {
-        const user = yield userSchema_1.default.findOne({ email, password });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-        const token = yield (0, generateJwt_1.default)(user.username, user.email, user._id);
-        res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name });
+        const skip = (Number(currentPage - 1) * 10);
+        const friends = yield connectionSchema_1.default
+            .find({
+            $or: [{ receiverId: _id }, { senderId: _id }],
+        })
+            .populate("senderId", "-password")
+            .populate("receiverId", "-password")
+            .skip(skip)
+            .limit(10)
+            .lean();
+        const data = friends.map((friend) => {
+            if (friend.senderId.email === email) {
+                return friend.receiverId;
+            }
+            else {
+                return friend.senderId;
+            }
+        });
+        res.send(data);
     }
     catch (error) {
         res.send(error);
     }
 });
-exports.default = loginUser;
+exports.default = getFriends;
