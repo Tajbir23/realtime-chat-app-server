@@ -18,6 +18,7 @@ const getFriends = async (req: Request, res: Response) => {
     .limit(10)
     .lean();
 
+    console.log("friends",friends)
   const data = friends.map((friend) => {
     if (friend.senderId.email === email) {
       return friend.receiverId;
@@ -25,6 +26,8 @@ const getFriends = async (req: Request, res: Response) => {
       return friend.senderId;
     }
   });
+
+  console.log("filter friends", friends)
   res.send(data);
   } catch (error) {
     res.send(error)
