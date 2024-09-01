@@ -10,70 +10,54 @@ const postMessage = async (req: Request, res: Response) => {
     const receiver = req.body.user;
     const message = req.body.message;
 
-    
     try {
-
         // Ensure receiver has the necessary properties
         if (!receiver || !receiver.username || !receiver.name || !receiver.email || !receiver.photoUrl) {
             throw new Error('Receiver data is incomplete');
         }
 
+        // Find the sender in the database
         const sender: user | null = await userModel.findOne({ username: senderData.username });
 
         if (!sender) {
             throw new Error('Sender not found');
         }
 
-        let chatId = "";
-        const connection = await connectionModel.find({
-            $or: [
-                {
-                    senderId: sender._id,
-                    receiverId: receiver._id
-                },
-                {
-                    senderId: receiver._id,
-                    receiverId: sender._id
-                }
-            ]
+        // Find an existing connection or create a new one
+        const connection = await connectionModel.findOneAndUpdate(
+            {
+                $or: [
+                    { senderId: sender._id, receiverId: receiver._id },
+                    { senderId: receiver._id, receiverId: sender._id }
+                ]
+            },
+            {},
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+
+        // Save the message
+        const messageSave = new messageModel({
+            chatId: connection._id.toString(),
+            senderName: sender.name,
+            senderUsername: sender.username,
+            senderEmail: sender.email,
+            senderPhotoUrl: sender.photoUrl,
+            receiverName: receiver.name,
+            receiverUsername: receiver.username,
+            receiverEmail: receiver.email,
+            receiverPhotoUrl: receiver.photoUrl,
+            message
         });
 
-        if (connection && connection.length > 0) {
-            chatId = connection[0]._id.toString();
-        }
+        const result = await messageSave.save();
 
-        if (!connection || connection.length === 0) {
-            const createConnection = new connectionModel({
-                senderId: sender._id,
-                receiverId: receiver._id,
-            });
-            const { _id } = await createConnection.save();
-            
-            chatId = _id.toString();
-        }
+        // Emit the message event to all connected clients
+        io.emit("message", result);
 
-        if (chatId) {
-            const messageSave = new messageModel({
-                chatId,
-                senderName: sender.name,
-                senderUsername: sender.username,
-                senderEmail: sender.email,
-                senderPhotoUrl: sender.photoUrl,
-                receiverName: receiver.name,
-                receiverUsername: receiver.username,
-                receiverEmail: receiver.email,
-                receiverPhotoUrl: receiver.photoUrl,
-                message,
-            });
-            const result = await messageSave.save();
-
-            io.emit("message", result);
-            
-            return res.status(201).send(result);
-        }
+        return res.status(201).send(result);
 
     } catch (error) {
-        console.log('error', (error as any).message);
+        console.log('Error:', (error as any).message);
         return res.status(500).send({ error: (error as any).message });
     }
 };

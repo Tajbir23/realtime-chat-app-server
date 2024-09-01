@@ -30,7 +30,7 @@ router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
 router.post('/login', loginUser_1.default);
 router.get('/users', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, username } = req.user;
-    console.log("route called", username);
+    // console.log("route called",username)
     try {
         const users = yield (0, getAllUsers_1.default)();
         res.send(users);
@@ -54,7 +54,7 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
         userSchema_1.default.findOne({ _id: id }).then((user) => __awaiter(void 0, void 0, void 0, function* () {
             var _a;
             const receiverUsername = (_a = user === null || user === void 0 ? void 0 : user.username) !== null && _a !== void 0 ? _a : '';
-            console.log(receiverUsername, username);
+            // console.log(receiverUsername, username)
             const message = yield (0, getMessage_1.default)(username, receiverUsername, skip);
             res.send(message);
         }));

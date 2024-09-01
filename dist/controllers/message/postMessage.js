@@ -25,54 +25,38 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (!receiver || !receiver.username || !receiver.name || !receiver.email || !receiver.photoUrl) {
             throw new Error('Receiver data is incomplete');
         }
+        // Find the sender in the database
         const sender = yield userSchema_1.default.findOne({ username: senderData.username });
         if (!sender) {
             throw new Error('Sender not found');
         }
-        let chatId = "";
-        const connection = yield connectionSchema_1.default.find({
+        // Find an existing connection or create a new one
+        const connection = yield connectionSchema_1.default.findOneAndUpdate({
             $or: [
-                {
-                    senderId: sender._id,
-                    receiverId: receiver._id
-                },
-                {
-                    senderId: receiver._id,
-                    receiverId: sender._id
-                }
+                { senderId: sender._id, receiverId: receiver._id },
+                { senderId: receiver._id, receiverId: sender._id }
             ]
+        }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
+        // Save the message
+        const messageSave = new messageSchema_1.default({
+            chatId: connection._id.toString(),
+            senderName: sender.name,
+            senderUsername: sender.username,
+            senderEmail: sender.email,
+            senderPhotoUrl: sender.photoUrl,
+            receiverName: receiver.name,
+            receiverUsername: receiver.username,
+            receiverEmail: receiver.email,
+            receiverPhotoUrl: receiver.photoUrl,
+            message
         });
-        if (connection && connection.length > 0) {
-            chatId = connection[0]._id.toString();
-        }
-        if (!connection || connection.length === 0) {
-            const createConnection = new connectionSchema_1.default({
-                senderId: sender._id,
-                receiverId: receiver._id,
-            });
-            const { _id } = yield createConnection.save();
-            chatId = _id.toString();
-        }
-        if (chatId) {
-            const messageSave = new messageSchema_1.default({
-                chatId,
-                senderName: sender.name,
-                senderUsername: sender.username,
-                senderEmail: sender.email,
-                senderPhotoUrl: sender.photoUrl,
-                receiverName: receiver.name,
-                receiverUsername: receiver.username,
-                receiverEmail: receiver.email,
-                receiverPhotoUrl: receiver.photoUrl,
-                message,
-            });
-            const result = yield messageSave.save();
-            __1.io.emit("message", result);
-            return res.status(201).send(result);
-        }
+        const result = yield messageSave.save();
+        // Emit the message event to all connected clients
+        __1.io.emit("message", result);
+        return res.status(201).send(result);
     }
     catch (error) {
-        console.log('error', error.message);
+        console.log('Error:', error.message);
         return res.status(500).send({ error: error.message });
     }
 });

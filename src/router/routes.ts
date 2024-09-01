@@ -25,7 +25,7 @@ router.post('/login', loginUser)
 
 router.get('/users',verifyJwt, async(req:Request, res: Response) => {
     const {email, username} = (req as any).user
-    console.log("route called",username)
+    // console.log("route called",username)
     try {
         const users = await getAllUsers()
         res.send(users)
@@ -52,7 +52,7 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
         }
         userModel.findOne({_id: id}).then(async(user) => {
             const receiverUsername = user?.username ?? ''
-            console.log(receiverUsername, username)
+            // console.log(receiverUsername, username)
             const message = await getMessage(username, receiverUsername, skip)
             res.send(message)
         })

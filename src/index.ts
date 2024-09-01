@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
             const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
             const allUsers = await getAllUsers(email);
-            console.log('disconnect', email)
+            // console.log('disconnect', email)
             io.emit('users', allUsers);
             users.delete(socket.id)
         }

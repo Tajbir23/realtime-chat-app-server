@@ -27,6 +27,7 @@ const getMessage = (senderUsername, receiverUsername, skip) => __awaiter(void 0,
                 }
             ]
         }).sort({ createdAt: -1 }).skip(skip !== null && skip !== void 0 ? skip : 0).limit(10);
+        console.log("get message", senderUsername, receiverUsername);
         return message;
     }
     catch (error) {

@@ -63,7 +63,7 @@ exports.io.on('connection', (socket) => {
         if (email) {
             const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: false } });
             const allUsers = yield (0, getAllUsers_1.default)(email);
-            console.log('disconnect', email);
+            // console.log('disconnect', email)
             exports.io.emit('users', allUsers);
             users.delete(socket.id);
         }

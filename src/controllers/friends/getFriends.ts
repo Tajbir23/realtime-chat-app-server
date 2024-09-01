@@ -28,7 +28,6 @@ const getFriends = async (req: Request, res: Response) => {
     }
   });
 
-  console.log("filter friends", friends)
   res.send(data);
   } catch (error) {
     res.send(error)

@@ -35,7 +35,6 @@ const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 return friend.senderId;
             }
         });
-        console.log("filter friends", friends);
         res.send(data);
     }
     catch (error) {
