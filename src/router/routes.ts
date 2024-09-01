@@ -10,6 +10,7 @@ import postMessage from "../controllers/message/postMessage";
 import getMessage from "../controllers/message/getMessage";
 import userModel from "../models/userSchema";
 import mongoose from "mongoose";
+import getFriends from "../controllers/friends/getFriends";
 
 
 
@@ -59,5 +60,7 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
         res.status(500).send({ error: error.message })
     }
 })
+
+router.get('/friends', verifyJwt, getFriends)
 
 export default router;

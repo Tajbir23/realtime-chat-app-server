@@ -2,42 +2,19 @@ import { model, Schema } from "mongoose";
 import userConnections from "../interface/connectionInterface";
 
 const connectionSchema = new Schema<userConnections>({
-    senderName: {
+    
+    senderId: {
         type: String,
-        required: true
+        required: true,
+        ref: "Users"
     },
-    senderEmail: {
+    receiverId: {
         type: String,
-        required: true
+        required: true,
+        ref: "Users"
     },
-    senderUserName: {
-        type: String,
-        required: true
-    },
-    senderPhotoUrl: {
-        type: String,
-        required: true
-    },
-    receiverName: {
-        type: String,
-        required: true
-    },
-    receiverEmail: {
-        type: String,
-        required: true
-    },
-    receiverUserName: {
-        type: String,
-        required: true
-    },
-    receiverPhotoUrl: {
-        type: String,
-        required: true
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now
-    }
+},{
+    timestamps: true
 })
 
 const connectionModel = model<userConnections>('connections', connectionSchema)

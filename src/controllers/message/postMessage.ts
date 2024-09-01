@@ -10,6 +10,7 @@ const postMessage = async (req: Request, res: Response) => {
     const receiver = req.body.user;
     const message = req.body.message;
 
+    
     try {
 
         // Ensure receiver has the necessary properties
@@ -27,12 +28,12 @@ const postMessage = async (req: Request, res: Response) => {
         const connection = await connectionModel.find({
             $or: [
                 {
-                    senderUserName: sender.username,
-                    receiverUserName: receiver.username
+                    senderId: sender._id,
+                    receiverId: receiver._id
                 },
                 {
-                    senderUserName: receiver.username,
-                    receiverUserName: sender.username
+                    senderId: receiver._id,
+                    receiverId: sender._id
                 }
             ]
         });
@@ -43,14 +44,8 @@ const postMessage = async (req: Request, res: Response) => {
 
         if (!connection || connection.length === 0) {
             const createConnection = new connectionModel({
-                senderName: sender.name,
-                senderUserName: sender.username,
-                senderEmail: sender.email,
-                senderPhotoUrl: sender.photoUrl,
-                receiverName: receiver.name,
-                receiverUserName: receiver.username, // Ensure this field is populated correctly
-                receiverEmail: receiver.email,
-                receiverPhotoUrl: receiver.photoUrl
+                senderId: sender._id,
+                receiverId: receiver._id,
             });
             const { _id } = await createConnection.save();
             

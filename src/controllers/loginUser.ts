@@ -11,7 +11,7 @@ const loginUser = async(req: Request, res: Response) => {
     if(!user) {
         return res.status(401).json({message: 'Invalid credentials'});
     }
-    const token = await generateJwt(user.username, user.email)
+    const token = await generateJwt(user.username, user.email, user._id)
     res.send({token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name});
     } catch (error) {
         res.send(error)

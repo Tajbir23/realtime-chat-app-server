@@ -1,6 +1,6 @@
 import messageModel from "../../models/messageSchema";
 
-const getMessage = async(senderUsername: string, receiverUsername: string, skip?: number) => {
+const getMessage = async(senderUsername?: string, receiverUsername?: string, skip?: number) => {
     try {
         const message = await messageModel.find({
             $or: [

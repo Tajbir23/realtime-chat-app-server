@@ -1,14 +1,7 @@
 
 interface userConnections {
-    senderName: string;
-    senderEmail: string;
-    senderPhotoUrl: string;
-    senderUserName: string;
-    receiverName: string;
-    receiverEmail: string;
-    receiverPhotoUrl: string;
-    receiverUserName: string;
-    timestamp?: Date;
+    senderId: string;
+    receiverId: string;
 }
 
 export default userConnections
