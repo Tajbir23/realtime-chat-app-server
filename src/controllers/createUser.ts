@@ -11,7 +11,7 @@ const createUser = async(req: Request, res: Response) => {
         
         const token = await generateJwt(username, email);
 
-        const allUsers = await getAllUsers(email);
+        const allUsers = await getAllUsers(result.email);
         io.emit('users', allUsers)
         res.status(201).send({token, name, username, email, photoUrl})
     } catch (error:any) {
