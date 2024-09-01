@@ -63,7 +63,7 @@ const postMessage = async (req: Request, res: Response) => {
                 receiverUsername: receiver.username,
                 receiverEmail: receiver.email,
                 receiverPhotoUrl: receiver.photoUrl,
-                message
+                message,
             });
             const result = await messageSave.save();
 

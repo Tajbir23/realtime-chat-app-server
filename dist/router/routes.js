@@ -54,6 +54,7 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
         userSchema_1.default.findOne({ _id: id }).then((user) => __awaiter(void 0, void 0, void 0, function* () {
             var _a;
             const receiverUsername = (_a = user === null || user === void 0 ? void 0 : user.username) !== null && _a !== void 0 ? _a : '';
+            console.log(receiverUsername, username);
             const message = yield (0, getMessage_1.default)(username, receiverUsername, skip);
             res.send(message);
         }));

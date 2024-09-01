@@ -6,7 +6,7 @@ const getFriends = async (req: Request, res: Response) => {
   const { _id, email } = (req as any).user;
   const { currentPage = 1} = (req as any).query;
 
-  console.log("id", _id, "email", email);
+  
   try {
     const skip = (Number(currentPage - 1) * 10)
     const friends: friendsInterface[] = await connectionModel

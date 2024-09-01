@@ -64,7 +64,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 receiverUsername: receiver.username,
                 receiverEmail: receiver.email,
                 receiverPhotoUrl: receiver.photoUrl,
-                message
+                message,
             });
             const result = yield messageSave.save();
             __1.io.emit("message", result);

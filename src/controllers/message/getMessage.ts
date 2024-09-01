@@ -1,6 +1,6 @@
 import messageModel from "../../models/messageSchema";
 
-const getMessage = async(senderUsername?: string, receiverUsername?: string, skip?: number) => {
+const getMessage = async(senderUsername: string, receiverUsername: string, skip?: number) => {
     try {
         const message = await messageModel.find({
             $or: [
@@ -15,7 +15,6 @@ const getMessage = async(senderUsername?: string, receiverUsername?: string, ski
             ]
         }).sort({createdAt: -1}).skip(skip ?? 0).limit(10);
 
-        
         return message
     } catch (error) {
         console.log(error)

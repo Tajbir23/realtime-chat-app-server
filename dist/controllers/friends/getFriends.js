@@ -16,7 +16,6 @@ const connectionSchema_1 = __importDefault(require("../../models/connectionSchem
 const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id, email } = req.user;
     const { currentPage = 1 } = req.query;
-    console.log("id", _id, "email", email);
     try {
         const skip = (Number(currentPage - 1) * 10);
         const friends = yield connectionSchema_1.default
