@@ -45,15 +45,16 @@ exports.io.on('connection', (socket) => {
     socket.on('connected', (email) => __awaiter(void 0, void 0, void 0, function* () {
         users.set(socket.id, email);
         const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: true } });
-        const allUsers = yield (0, getAllUsers_1.default)(email);
-        exports.io.emit('users', allUsers);
+        console.log("connected", email);
+        const updatedUser = yield (0, getAllUsers_1.default)(email);
+        exports.io.emit('users', updatedUser);
     }));
     socket.on('logout', () => __awaiter(void 0, void 0, void 0, function* () {
         const email = users.get(socket.id);
         if (email) {
             const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: false } });
-            const allUsers = yield (0, getAllUsers_1.default)(email);
-            exports.io.emit('users', allUsers);
+            const updatedUser = yield (0, getAllUsers_1.default)(email);
+            exports.io.emit('users', updatedUser);
             users.delete(socket.id);
             socket.disconnect();
         }
@@ -63,7 +64,7 @@ exports.io.on('connection', (socket) => {
         if (email) {
             const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: false } });
             const allUsers = yield (0, getAllUsers_1.default)(email);
-            // console.log('disconnect', email)
+            console.log('disconnect', email);
             exports.io.emit('users', allUsers);
             users.delete(socket.id);
         }

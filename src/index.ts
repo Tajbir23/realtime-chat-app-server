@@ -41,9 +41,9 @@ io.on('connection', (socket) => {
     socket.on('connected', async(email) => {
         users.set(socket.id, email)
         const update = await userModel.updateOne({email: email}, {$set: {isActive: true}})
-        
-        const allUsers = await getAllUsers(email)
-        io.emit('users', allUsers)
+        console.log("connected", email)
+        const updatedUser = await getAllUsers(email)
+        io.emit('users', updatedUser)
         
     })
 
@@ -51,8 +51,8 @@ io.on('connection', (socket) => {
         const email: any = users.get(socket.id)
         if(email){
             const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
-            const allUsers = await getAllUsers(email);
-            io.emit('users', allUsers);
+            const updatedUser = await getAllUsers(email);
+            io.emit('users', updatedUser);
             users.delete(socket.id)
             socket.disconnect()
         }
@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
             const update = await userModel.updateOne({email: email}, {$set: {isActive: false}});
             const allUsers = await getAllUsers(email);
-            // console.log('disconnect', email)
+            console.log('disconnect', email)
             io.emit('users', allUsers);
             users.delete(socket.id)
         }

@@ -67,7 +67,8 @@ const postMessage = async (req: Request, res: Response) => {
             });
             const result = await messageSave.save();
 
-            io.emit("message", result);
+            io.to(receiver.username).emit("message", result);
+            io.to(sender.username).emit("message", result);
             
             return res.status(201).send(result);
         }
