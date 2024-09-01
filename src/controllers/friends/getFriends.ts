@@ -18,7 +18,7 @@ const getFriends = async (req: Request, res: Response) => {
     .limit(10)
     .lean();
 
-    console.log("friends",friends)
+    
   const data = friends.map((friend) => {
     if (friend.senderId.email === email) {
       return friend.receiverId;

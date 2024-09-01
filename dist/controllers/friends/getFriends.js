@@ -27,7 +27,6 @@ const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             .skip(skip)
             .limit(10)
             .lean();
-        console.log("friends", friends);
         const data = friends.map((friend) => {
             if (friend.senderId.email === email) {
                 return friend.receiverId;
