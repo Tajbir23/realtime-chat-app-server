@@ -9,7 +9,7 @@ const createUser = async(req: Request, res: Response) => {
         const user = new userModel({ name, username, email, photoUrl, password })
         const result = await user.save()
         
-        const token = await generateJwt(username, email);
+        const token = await generateJwt(username, email, user._id);
 
         const allUsers = await getAllUsers(result.email);
         io.emit('users', allUsers)
