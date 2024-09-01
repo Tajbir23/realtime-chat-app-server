@@ -29,8 +29,9 @@ router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
 router.post('/login', loginUser_1.default);
 router.get('/users', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, username } = req.user;
+    console.log("route called", username);
     try {
-        const users = yield (0, getAllUsers_1.default)(email);
+        const users = yield (0, getAllUsers_1.default)();
         res.send(users);
     }
     catch (error) {

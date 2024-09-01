@@ -22,7 +22,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = new userSchema_1.default({ name, username, email, photoUrl, password });
         const result = yield user.save();
         const token = yield (0, generateJwt_1.default)(username, email);
-        const allUsers = yield (0, getAllUsers_1.default)(email);
+        const allUsers = yield (0, getAllUsers_1.default)(result.email);
         __1.io.emit('users', allUsers);
         res.status(201).send({ token, name, username, email, photoUrl });
     }

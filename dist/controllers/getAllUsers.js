@@ -14,9 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("not equal to user", email);
+    // console.log("user", email)
     try {
-        const users = yield userSchema_1.default.find({ email: { $ne: email } });
+        const users = yield userSchema_1.default.find(email ? { email } : {});
+        // console.log("users",users)
         return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
     }
     catch (error) {
