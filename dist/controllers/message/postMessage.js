@@ -67,8 +67,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 message,
             });
             const result = yield messageSave.save();
-            __1.io.to(receiver.username).emit("message", result);
-            __1.io.to(sender.username).emit("message", result);
+            __1.io.emit("message", result);
             return res.status(201).send(result);
         }
     }
