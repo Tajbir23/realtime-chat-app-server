@@ -15,6 +15,7 @@ const getFriends = async (req: Request, res: Response) => {
     })
     .populate("senderId", "-password")
     .populate("receiverId", "-password")
+    .sort({lastMessageAt: -1})
     .skip(skip)
     .limit(10)
     .lean();

@@ -12,6 +12,12 @@ const connectionSchema = new mongoose_1.Schema({
         required: true,
         ref: "Users"
     },
+    lastMessage: {
+        type: String,
+    },
+    lastMessageAt: {
+        type: Number
+    }
 }, {
     timestamps: true
 });

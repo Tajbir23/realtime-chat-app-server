@@ -13,6 +13,12 @@ const connectionSchema = new Schema<userConnections>({
         required: true,
         ref: "Users"
     },
+    lastMessage: {
+        type: String,
+    },
+    lastMessageAt: {
+        type: Number
+    }
 },{
     timestamps: true
 })

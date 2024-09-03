@@ -4,6 +4,7 @@ import userModel from "../../models/userSchema";
 import user from "../../interface/userInterface";
 import messageModel from "../../models/messageSchema";
 import { io } from "../..";
+import getLastMsgFriend from "../friends/getLastMsgFriend";
 
 const postMessage = async (req: Request, res: Response) => {
     const senderData = (req as any).user;
@@ -25,7 +26,7 @@ const postMessage = async (req: Request, res: Response) => {
         }
 
         let chatId = "";
-        const connection = await connectionModel.find({
+        const connection = await connectionModel.findOneAndUpdate({
             $or: [
                 {
                     senderId: sender._id,
@@ -36,16 +37,23 @@ const postMessage = async (req: Request, res: Response) => {
                     receiverId: sender._id
                 }
             ]
+        },{
+            lastMessage: message,
+            lastMessageAt: Number(Date.now()),
         });
 
-        if (connection && connection.length > 0) {
-            chatId = connection[0]._id.toString();
+        console.log(connection)
+
+        if (connection) {
+            chatId = connection._id.toString()
         }
 
-        if (!connection || connection.length === 0) {
+        if (!connection) {
             const createConnection = new connectionModel({
                 senderId: sender._id,
                 receiverId: receiver._id,
+                lastMessage: message,
+                lastMessageAt: Number(Date.now()),
             });
             const { _id } = await createConnection.save();
             
@@ -68,7 +76,9 @@ const postMessage = async (req: Request, res: Response) => {
             const result = await messageSave.save();
 
             io.emit("message", result);
-            
+
+            await getLastMsgFriend(receiver._id)
+
             return res.status(201).send(result);
         }
 

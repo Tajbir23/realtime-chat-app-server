@@ -12,34 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("../..");
 const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
-const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, email } = req.user;
-    const { currentPage = 1 } = req.query;
-    try {
-        const skip = (Number(currentPage - 1) * 10);
-        const friends = yield connectionSchema_1.default
-            .find({
-            $or: [{ receiverId: _id }, { senderId: _id }],
-        })
-            .populate("senderId", "-password")
-            .populate("receiverId", "-password")
-            .sort({ lastMessageAt: -1 })
-            .skip(skip)
-            .limit(10)
-            .lean();
-        const data = friends.map((friend) => {
-            if (friend.senderId.email === email) {
-                return friend.receiverId;
-            }
-            else {
-                return friend.senderId;
-            }
-        });
-        res.send(data);
-    }
-    catch (error) {
-        res.send(error);
-    }
+const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const recentMessage = yield connectionSchema_1.default.find({
+        $or: [
+            { senderId: id },
+            { receiverId: id }
+        ]
+    })
+        .sort({ lastMessageAt: -1 })
+        .limit(1)
+        .populate("senderId", "-password")
+        .populate("receiverId", "-password");
+    __1.io.emit("recentMessage", recentMessage[0]);
 });
-exports.default = getFriends;
+exports.default = getLastMsgFriend;

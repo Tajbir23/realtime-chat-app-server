@@ -16,6 +16,7 @@ const connectionSchema_1 = __importDefault(require("../../models/connectionSchem
 const userSchema_1 = __importDefault(require("../../models/userSchema"));
 const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
 const __1 = require("../..");
+const getLastMsgFriend_1 = __importDefault(require("../friends/getLastMsgFriend"));
 const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const senderData = req.user;
     const receiver = req.body.user;
@@ -30,7 +31,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             throw new Error('Sender not found');
         }
         let chatId = "";
-        const connection = yield connectionSchema_1.default.find({
+        const connection = yield connectionSchema_1.default.findOneAndUpdate({
             $or: [
                 {
                     senderId: sender._id,
@@ -41,14 +42,20 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     receiverId: sender._id
                 }
             ]
+        }, {
+            lastMessage: message,
+            lastMessageAt: Number(Date.now()),
         });
-        if (connection && connection.length > 0) {
-            chatId = connection[0]._id.toString();
+        console.log(connection);
+        if (connection) {
+            chatId = connection._id.toString();
         }
-        if (!connection || connection.length === 0) {
+        if (!connection) {
             const createConnection = new connectionSchema_1.default({
                 senderId: sender._id,
                 receiverId: receiver._id,
+                lastMessage: message,
+                lastMessageAt: Number(Date.now()),
             });
             const { _id } = yield createConnection.save();
             chatId = _id.toString();
@@ -68,6 +75,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             const result = yield messageSave.save();
             __1.io.emit("message", result);
+            yield (0, getLastMsgFriend_1.default)(receiver._id);
             return res.status(201).send(result);
         }
     }
