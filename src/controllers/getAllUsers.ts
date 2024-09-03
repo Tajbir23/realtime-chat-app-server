@@ -6,7 +6,7 @@ const getAllUsers = async(email?: string) => {
     try {
         const users = await userModel.find(email ? {email}: {})
         // console.log("users",users)
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
+        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id, lastActive: user.lastActive }));
     } catch (error:any) {
         throw new Error(error.message)
     }

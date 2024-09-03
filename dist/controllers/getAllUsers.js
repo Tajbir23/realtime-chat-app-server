@@ -18,7 +18,7 @@ const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userSchema_1.default.find(email ? { email } : {});
         // console.log("users",users)
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id }));
+        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id, lastActive: user.lastActive }));
     }
     catch (error) {
         throw new Error(error.message);

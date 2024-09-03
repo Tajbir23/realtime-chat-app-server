@@ -22,10 +22,15 @@ const getFriends = async (req: Request, res: Response) => {
 
     
   const data = friends.map((friend) => {
-    if (friend.senderId.email === email) {
-      return friend.receiverId;
-    } else {
-      return friend.senderId;
+    const {senderId, receiverId, ...rest} = friend;
+
+    const removeSender = senderId && senderId.email === email;
+    const removeReceiver = receiverId && receiverId.email === email;
+
+    return {
+      ...rest,
+      ...(removeSender ? {} : {senderId}),
+      ...(removeReceiver? {} : {receiverId}),
     }
   });
 

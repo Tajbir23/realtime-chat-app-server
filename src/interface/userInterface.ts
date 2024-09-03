@@ -6,7 +6,8 @@ interface user extends Document {
     photoUrl: string;
     password: string;
     isActive: boolean;
-    _id: string
+    _id: string;
+    lastActive: number;
 }
 
 export default user

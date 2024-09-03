@@ -31,6 +31,10 @@ const userSchema = new mongoose_1.Schema({
         minlength: 8,
         maxlength: 200
     },
+    lastActive: {
+        type: Number,
+        default: Number(Date.now())
+    },
     isActive: {
         type: Boolean,
         default: false
