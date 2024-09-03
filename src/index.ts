@@ -17,12 +17,12 @@ const server = createServer(app)
 
 export const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: ['https://chat.tajbirideas.com', 'http://localhost:5173'],
     }
 })
 
 app.use(cors({
-    origin: '*'
+    origin: ['https://chat.tajbirideas.com', 'http://localhost:5173'],
 }))
 
 app.use(express.json())
