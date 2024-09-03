@@ -28,11 +28,11 @@ const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
 exports.io = new socket_io_1.Server(server, {
     cors: {
-        origin: ['https://chat.tajbirideas.com', 'http://localhost:5173'],
+        origin: '*',
     }
 });
 app.use((0, cors_1.default)({
-    origin: ['https://chat.tajbirideas.com', 'http://localhost:5173'],
+    origin: '*',
 }));
 app.use(express_1.default.json());
 (0, db_1.default)();
