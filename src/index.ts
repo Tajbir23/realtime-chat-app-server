@@ -17,12 +17,12 @@ const server = createServer(app)
 
 export const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: ['http://localhost:5173'],
     }
 })
 
 app.use(cors({
-    origin: '*',
+    origin: ['http://localhost:5173'],
 }))
 
 app.use(express.json())
@@ -71,6 +71,7 @@ io.on('connection', (socket) => {
 
 })
 
+// export default server
 server.listen(port, async() => {
     console.log('Server is running on port 3000')
 })
