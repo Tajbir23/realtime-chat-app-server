@@ -81,7 +81,7 @@ exports.io.on('connection', (socket) => {
 //             console.error('Error pinging server:', error);
 //         });
 // });
-exports.default = server;
-// server.listen(port, async() => {
-//     console.log('Server is running on port 3000')
-// })
+// export default server
+server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Server is running on port 3000');
+}));
