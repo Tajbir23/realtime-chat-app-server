@@ -30,11 +30,11 @@ const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
 exports.io = new socket_io_1.Server(server, {
     cors: {
-        origin: "*",
+        origin: "http://localhost:5173",
     }
 });
 app.use((0, cors_1.default)({
-    origin: "*",
+    origin: "http://localhost:5173",
 }));
 app.use(express_1.default.json());
 (0, db_1.default)();
@@ -81,7 +81,7 @@ exports.io.on('connection', (socket) => {
 //             console.error('Error pinging server:', error);
 //         });
 // });
-// export default server
-server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Server is running on port 3000');
-}));
+exports.default = server;
+// server.listen(port, async() => {
+//     console.log('Server is running on port 3000')
+// })
