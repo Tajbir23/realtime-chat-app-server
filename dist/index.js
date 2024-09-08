@@ -23,8 +23,8 @@ const node_http_1 = require("node:http");
 const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getAllUsers_1 = __importDefault(require("./controllers/getAllUsers"));
-const node_cron_1 = __importDefault(require("node-cron"));
-const axios_1 = __importDefault(require("axios"));
+// import cron from 'node-cron'
+// import axios from 'axios'
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
@@ -72,15 +72,15 @@ exports.io.on('connection', (socket) => {
         }
     }));
 });
-node_cron_1.default.schedule('*/5 * * * *', () => {
-    axios_1.default.get(`http://localhost:${port}/`)
-        .then(response => {
-        console.log('Server pinged successfully');
-    })
-        .catch(error => {
-        console.error('Error pinging server:', error);
-    });
-});
+// cron.schedule('*/5 * * * *', () => {
+//     axios.get(`http://localhost:${port}/`)
+//         .then(response => {
+//             console.log('Server pinged successfully');
+//         })
+//         .catch(error => {
+//             console.error('Error pinging server:', error);
+//         });
+// });
 // export default server
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Server is running on port 3000');

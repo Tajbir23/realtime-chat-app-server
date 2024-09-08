@@ -76,6 +76,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             const result = yield messageSave.save();
             __1.io.emit("message", result);
             yield (0, getLastMsgFriend_1.default)(receiver._id);
+            __1.io.emit("lastMessage", connection);
             return res.status(201).send(result);
         }
     }

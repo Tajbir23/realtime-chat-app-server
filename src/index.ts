@@ -8,8 +8,8 @@ import { createServer } from 'node:http'
 import {Server} from 'socket.io'
 import userModel from './models/userSchema'
 import getAllUsers from './controllers/getAllUsers'
-import cron from 'node-cron'
-import axios from 'axios'
+// import cron from 'node-cron'
+// import axios from 'axios'
 
 
 const port = process.env.PORT || 3000
@@ -73,15 +73,15 @@ io.on('connection', (socket) => {
 
 })
 
-cron.schedule('*/5 * * * *', () => {
-    axios.get(`http://localhost:${port}/`)
-        .then(response => {
-            console.log('Server pinged successfully');
-        })
-        .catch(error => {
-            console.error('Error pinging server:', error);
-        });
-});
+// cron.schedule('*/5 * * * *', () => {
+//     axios.get(`http://localhost:${port}/`)
+//         .then(response => {
+//             console.log('Server pinged successfully');
+//         })
+//         .catch(error => {
+//             console.error('Error pinging server:', error);
+//         });
+// });
 
 
 // export default server

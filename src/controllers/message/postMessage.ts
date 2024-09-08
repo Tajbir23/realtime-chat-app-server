@@ -79,6 +79,8 @@ const postMessage = async (req: Request, res: Response) => {
 
             await getLastMsgFriend(receiver._id)
 
+            io.emit("lastMessage", connection);
+
             return res.status(201).send(result);
         }
 
