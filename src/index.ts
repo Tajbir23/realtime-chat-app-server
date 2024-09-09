@@ -37,12 +37,12 @@ app.get('/', async(req: Request, res: Response) => {
 
 app.use('/api', router)
 
-const users = new Map<string, string>()
+export const connectedUsers = new Map<string, string>()
 io.on('connection', (socket) => {
     
     socket.on('connected', async(email) => {
-        users.set(socket.id, email)
-        const update = await userModel.updateOne({email: email}, {$set: {isActive: true}})
+        connectedUsers.set(socket.id, email)
+        const update = await userModel.updateOne({email: email}, {$set: {isActive: true, socketId: socket.id}})
         console.log("connected", email)
         const updatedUser = await getAllUsers(email)
         io.emit('users', updatedUser)
@@ -50,24 +50,24 @@ io.on('connection', (socket) => {
     })
 
     socket.on('logout', async() => {
-        const email: any = users.get(socket.id)
+        const email: any = connectedUsers.get(socket.id)
         if(email){
-            const update = await userModel.updateOne({email: email},{isActive: false, lastActive: Number(Date.now())});
+            const update = await userModel.updateOne({email: email},{isActive: false, lastActive: Number(Date.now()), socketId: null});
             const updatedUser = await getAllUsers(email);
             io.emit('users', updatedUser);
-            users.delete(socket.id)
+            connectedUsers.delete(socket.id)
             socket.disconnect()
         }
     })
     socket.on('disconnect', async() => {
-        const email: any = users.get(socket.id)
+        const email: any = connectedUsers.get(socket.id)
         if(email){
 
-            const update = await userModel.updateOne({email: email}, {isActive: false, lastActive: Number(Date.now())});
+            const update = await userModel.updateOne({email: email}, {isActive: false, lastActive: Number(Date.now()), socketId: null});
             const allUsers = await getAllUsers(email);
             console.log('disconnect', email)
             io.emit('users', allUsers);
-            users.delete(socket.id)
+            connectedUsers.delete(socket.id)
         }
     });
 

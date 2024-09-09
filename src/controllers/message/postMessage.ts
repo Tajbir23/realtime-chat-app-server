@@ -3,8 +3,9 @@ import connectionModel from "../../models/connectionSchema";
 import userModel from "../../models/userSchema";
 import user from "../../interface/userInterface";
 import messageModel from "../../models/messageSchema";
-import { io } from "../..";
 import getLastMsgFriend from "../friends/getLastMsgFriend";
+import { io } from "../..";
+import findSocketIdByEmail from "../findSocketIdByEmail";
 
 const postMessage = async (req: Request, res: Response) => {
     const senderData = (req as any).user;
@@ -75,7 +76,22 @@ const postMessage = async (req: Request, res: Response) => {
             });
             const result = await messageSave.save();
 
-            io.emit("message", result);
+            
+            console.log("receiver", receiver)
+            const receiverSocketId = await findSocketIdByEmail(receiver.email)
+            const senderSocketId = await findSocketIdByEmail(sender.email)
+            console.log("receiverSocketId", receiverSocketId)
+            console.log("sender socket id", senderSocketId)
+
+            if(receiverSocketId){
+                io.to(receiverSocketId).emit("message", result);
+            }
+
+            if(senderSocketId){
+                io.to(senderSocketId).emit("message", result);
+            }
+
+            // io.emit("message", result);
 
             await getLastMsgFriend(receiver._id)
 
