@@ -1,4 +1,5 @@
 import { io } from "../..";
+import user from "../../interface/userInterface";
 import connectionModel from "../../models/connectionSchema"
 
 const getLastMsgFriend = async (id: string) => {
@@ -15,17 +16,25 @@ const getLastMsgFriend = async (id: string) => {
 
     const deleteObject = (key: string, message: any) => {
         delete message[key]
+        console.log(message)
         return message
     }
 
     const messageObject = recentMessage[0].toObject()
-    if(id === messageObject.senderId){
+    // console.log(messageObject)
+    const sender = messageObject.senderId as unknown as user;
+    const receiver = messageObject.receiverId as unknown as user;
+
+    const senderId: string = sender._id.toString()
+    const receiverId: string = receiver._id.toString()
+
+    if(id === senderId){
         const updatedObject = deleteObject("receiverId", messageObject)
+        console.log(updatedObject)
         io.emit("recentMessage", updatedObject)
-        io.emit("recentMessage", updatedObject)
-    }else{
+    }else if(id === receiverId){
         const updatedObject = deleteObject("senderId", messageObject)
-        io.emit("recentMessage", updatedObject)
+        console.log(updatedObject)
         io.emit("recentMessage", updatedObject)
     }
 
