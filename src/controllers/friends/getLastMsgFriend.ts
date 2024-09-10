@@ -13,7 +13,22 @@ const getLastMsgFriend = async (id: string) => {
     .populate("senderId", "-password")
     .populate("receiverId", "-password")
 
-    io.emit("recentMessage", recentMessage[0])
+    const deleteObject = (key: string, message: any) => {
+        delete message[key]
+        return message
+    }
+
+    const messageObject = recentMessage[0].toObject()
+    if(id === messageObject.senderId){
+        const updatedObject = deleteObject("receiverId", messageObject)
+        io.emit("recentMessage", updatedObject)
+        io.emit("recentMessage", updatedObject)
+    }else{
+        const updatedObject = deleteObject("senderId", messageObject)
+        io.emit("recentMessage", updatedObject)
+        io.emit("recentMessage", updatedObject)
+    }
+
 }
 
 export default getLastMsgFriend;

@@ -43,7 +43,6 @@ const postMessage = async (req: Request, res: Response) => {
             lastMessageAt: Number(Date.now()),
         });
 
-        console.log(connection)
 
         if (connection) {
             chatId = connection._id.toString()
@@ -77,11 +76,10 @@ const postMessage = async (req: Request, res: Response) => {
             const result = await messageSave.save();
 
             
-            console.log("receiver", receiver)
+            
             const receiverSocketId = await findSocketIdByEmail(receiver.email)
             const senderSocketId = await findSocketIdByEmail(sender.email)
-            console.log("receiverSocketId", receiverSocketId)
-            console.log("sender socket id", senderSocketId)
+            
 
             if(receiverSocketId){
                 io.to(receiverSocketId).emit("message", result);
@@ -95,7 +93,7 @@ const postMessage = async (req: Request, res: Response) => {
 
             await getLastMsgFriend(receiver._id)
 
-            io.emit("lastMessage", connection);
+            // io.emit("lastMessage", getLastMsgFriend);
 
             return res.status(201).send(result);
         }
