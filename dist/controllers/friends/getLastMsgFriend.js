@@ -25,6 +25,20 @@ const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () 
         .limit(1)
         .populate("senderId", "-password")
         .populate("receiverId", "-password");
-    __1.io.emit("recentMessage", recentMessage[0]);
+    const deleteObject = (key, message) => {
+        delete message[key];
+        return message;
+    };
+    const messageObject = recentMessage[0].toObject();
+    if (id === messageObject.senderId) {
+        const updatedObject = deleteObject("receiverId", messageObject);
+        __1.io.emit("recentMessage", updatedObject);
+        __1.io.emit("recentMessage", updatedObject);
+    }
+    else {
+        const updatedObject = deleteObject("senderId", messageObject);
+        __1.io.emit("recentMessage", updatedObject);
+        __1.io.emit("recentMessage", updatedObject);
+    }
 });
 exports.default = getLastMsgFriend;
