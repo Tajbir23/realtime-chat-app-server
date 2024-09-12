@@ -13,7 +13,7 @@ const createUser = async(req: Request, res: Response) => {
 
         const allUsers = await getAllUsers(result.email);
         io.emit('users', allUsers)
-        res.status(201).send({token, name, username, email, photoUrl})
+        res.status(201).send({token, name, username, email, photoUrl, _id: user._id})
     } catch (error:any) {
         console.log(error)
         return res.status(500).send({ message: error.message })
