@@ -8,6 +8,7 @@ import { createServer } from 'node:http'
 import {Server} from 'socket.io'
 import userModel from './models/userSchema'
 import getAllUsers from './controllers/getAllUsers'
+import getFriendsConnectionByEmail from './controllers/friends/getFriendsConnection'
 // import cron from 'node-cron'
 // import axios from 'axios'
 
@@ -47,6 +48,7 @@ io.on('connection', (socket) => {
         const update = await userModel.updateOne({email: email}, {$set: {isActive: true, socketId: socket.id}})
         console.log("connected", email)
         const updatedUser = await getAllUsers(email)
+        await getFriendsConnectionByEmail(email)
         io.emit('users', updatedUser)
         
     })
@@ -58,6 +60,7 @@ io.on('connection', (socket) => {
             const updatedUser = await getAllUsers(email);
             io.emit('users', updatedUser);
             connectedUsers.delete(socket.id)
+            // await getFriendsConnectionByEmail(email)
             socket.disconnect()
         }
     })
@@ -69,21 +72,12 @@ io.on('connection', (socket) => {
             const allUsers = await getAllUsers(email);
             console.log('disconnect', email)
             io.emit('users', allUsers);
+            // await getFriendsConnectionByEmail(email)
             connectedUsers.delete(socket.id)
         }
     });
 
 })
-
-// cron.schedule('*/5 * * * *', () => {
-//     axios.get(`http://localhost:${port}/`)
-//         .then(response => {
-//             console.log('Server pinged successfully');
-//         })
-//         .catch(error => {
-//             console.error('Error pinging server:', error);
-//         });
-// });
 
 
 // export default server
