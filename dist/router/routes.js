@@ -29,10 +29,13 @@ router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
 router.post('/login', loginUser_1.default);
 router.get('/users', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { email, username } = req.user;
+    const { page } = req.query;
+    // const pageNumber = Number(page);
     // console.log("route called",username)
     try {
-        const users = yield (0, getAllUsers_1.default)();
+        const users = yield (0, getAllUsers_1.default)((_a = page) !== null && _a !== void 0 ? _a : 1);
         res.send(users);
     }
     catch (error) {

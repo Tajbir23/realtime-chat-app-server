@@ -1,12 +1,16 @@
 
 import userModel from "../models/userSchema"
 
-const getAllUsers = async(email?: string) => {
-    // console.log("user", email)
+const getAllUsers = async(page: string,) => {
+    const pageNumber = Number(page || 1)
+    const limit = 10
+    const skip = (pageNumber - 1) * limit 
+    
     try {
-        const users = await userModel.find(email ? {email}: {})
-        // console.log("users",users)
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id, lastActive: user.lastActive }));
+        const users = await userModel.find().limit(limit).skip(skip).select("-password")
+        
+        return users
+        
     } catch (error:any) {
         throw new Error(error.message)
     }

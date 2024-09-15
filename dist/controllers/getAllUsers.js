@@ -13,12 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
-const getAllUsers = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log("user", email)
+const getAllUsers = (page) => __awaiter(void 0, void 0, void 0, function* () {
+    const pageNumber = Number(page || 1);
+    const limit = 10;
+    const skip = (pageNumber - 1) * limit;
     try {
-        const users = yield userSchema_1.default.find(email ? { email } : {});
-        // console.log("users",users)
-        return users.map((user) => ({ name: user.name, username: user.username, email: user.email, photoUrl: user.photoUrl, isActive: user.isActive, _id: user._id, lastActive: user.lastActive }));
+        const users = yield userSchema_1.default.find().limit(limit).skip(skip).select("-password");
+        return users;
     }
     catch (error) {
         throw new Error(error.message);

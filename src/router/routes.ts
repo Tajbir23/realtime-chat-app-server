@@ -25,9 +25,12 @@ router.post('/login', loginUser)
 
 router.get('/users',verifyJwt, async(req:Request, res: Response) => {
     const {email, username} = (req as any).user
+    const {page} = req.query;
+    // const pageNumber = Number(page);
     // console.log("route called",username)
     try {
-        const users = await getAllUsers()
+        const users = await getAllUsers(page as string ?? 1)
+        
         res.send(users)
     } catch (error: any) {
         res.status(500).send({ error: error.message })
