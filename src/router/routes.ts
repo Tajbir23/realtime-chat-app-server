@@ -11,6 +11,7 @@ import getMessage from "../controllers/message/getMessage";
 import userModel from "../models/userSchema";
 import mongoose from "mongoose";
 import getFriends from "../controllers/friends/getFriends";
+import searchUsers from "../controllers/search";
 
 
 
@@ -66,5 +67,12 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
 })
 
 router.get('/friends', verifyJwt, getFriends)
+
+router.get('/search/:search', verifyJwt, async (req, res) => {
+    const {search} = req.params
+    const {email} = req.query
+    const result = await searchUsers(search, email as string)
+    res.send(result)
+})
 
 export default router;

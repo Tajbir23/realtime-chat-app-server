@@ -24,6 +24,7 @@ const getMessage_1 = __importDefault(require("../controllers/message/getMessage"
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getFriends_1 = __importDefault(require("../controllers/friends/getFriends"));
+const search_1 = __importDefault(require("../controllers/search"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -67,4 +68,10 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
     }
 }));
 router.get('/friends', verifyJwt_1.default, getFriends_1.default);
+router.get('/search/:search', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { search } = req.params;
+    const { email } = req.query;
+    const result = yield (0, search_1.default)(search, email);
+    res.send(result);
+}));
 exports.default = router;
