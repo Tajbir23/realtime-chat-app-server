@@ -23,6 +23,7 @@ const node_http_1 = require("node:http");
 const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getAllUsers_1 = __importDefault(require("./controllers/getAllUsers"));
+const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
 // import cron from 'node-cron'
 // import axios from 'axios'
 const port = process.env.PORT || 3000;
@@ -51,6 +52,7 @@ exports.io.on('connection', (socket) => {
         const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: true, socketId: socket.id } });
         console.log("connected", email);
         const updatedUser = yield (0, getAllUsers_1.default)(email);
+        yield (0, getFriendsConnection_1.default)(email);
         exports.io.emit('users', updatedUser);
     }));
     socket.on('logout', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -60,6 +62,7 @@ exports.io.on('connection', (socket) => {
             const updatedUser = yield (0, getAllUsers_1.default)(email);
             exports.io.emit('users', updatedUser);
             exports.connectedUsers.delete(socket.id);
+            yield (0, getFriendsConnection_1.default)(email);
             socket.disconnect();
         }
     }));
@@ -70,19 +73,11 @@ exports.io.on('connection', (socket) => {
             const allUsers = yield (0, getAllUsers_1.default)(email);
             console.log('disconnect', email);
             exports.io.emit('users', allUsers);
+            yield (0, getFriendsConnection_1.default)(email);
             exports.connectedUsers.delete(socket.id);
         }
     }));
 });
-// cron.schedule('*/5 * * * *', () => {
-//     axios.get(`http://localhost:${port}/`)
-//         .then(response => {
-//             console.log('Server pinged successfully');
-//         })
-//         .catch(error => {
-//             console.error('Error pinging server:', error);
-//         });
-// });
 // export default server
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Server is running on port 3000');

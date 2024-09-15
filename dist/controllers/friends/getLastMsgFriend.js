@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("../..");
 const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
+const findSocketIdByEmail_1 = __importDefault(require("../findSocketIdByEmail"));
 const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const recentMessage = yield connectionSchema_1.default.find({
         $or: [
@@ -25,26 +26,9 @@ const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () 
         .limit(1)
         .populate("senderId", "-password")
         .populate("receiverId", "-password");
-    const deleteObject = (key, message) => {
-        delete message[key];
-        console.log(message);
-        return message;
-    };
-    const messageObject = recentMessage[0].toObject();
-    // console.log(messageObject)
-    const sender = messageObject.senderId;
-    const receiver = messageObject.receiverId;
-    const senderId = sender._id.toString();
-    const receiverId = receiver._id.toString();
-    if (id === senderId) {
-        const updatedObject = deleteObject("receiverId", messageObject);
-        console.log(updatedObject);
-        __1.io.emit("recentMessage", updatedObject);
-    }
-    else if (id === receiverId) {
-        const updatedObject = deleteObject("senderId", messageObject);
-        console.log(updatedObject);
-        __1.io.emit("recentMessage", updatedObject);
-    }
+    const receiverSocketId = (0, findSocketIdByEmail_1.default)(recentMessage[0].receiverId.email);
+    const senderSocketId = (0, findSocketIdByEmail_1.default)(recentMessage[0].senderId.email);
+    __1.io.to(receiverSocketId).emit("recentMessage", recentMessage);
+    __1.io.to(senderSocketId).emit("recentMessage", recentMessage);
 });
 exports.default = getLastMsgFriend;

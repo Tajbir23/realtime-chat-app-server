@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
             const updatedUser = await getAllUsers(email);
             io.emit('users', updatedUser);
             connectedUsers.delete(socket.id)
-            // await getFriendsConnectionByEmail(email)
+            await getFriendsConnectionByEmail(email)
             socket.disconnect()
         }
     })
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
             const allUsers = await getAllUsers(email);
             console.log('disconnect', email)
             io.emit('users', allUsers);
-            // await getFriendsConnectionByEmail(email)
+            await getFriendsConnectionByEmail(email)
             connectedUsers.delete(socket.id)
         }
     });

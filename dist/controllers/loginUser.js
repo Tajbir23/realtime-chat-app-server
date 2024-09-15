@@ -22,7 +22,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
         const token = yield (0, generateJwt_1.default)(user.username, user.email, user._id);
-        res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name });
+        res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name, _id: user._id });
     }
     catch (error) {
         res.send(error);
