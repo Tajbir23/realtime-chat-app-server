@@ -1,8 +1,8 @@
 import { connectedUsers } from ".."
 
 const findSocketIdByEmail = (email: string) => {
-    for(let [socketId, storedEmail] of connectedUsers.entries()){
-        if(storedEmail === email){
+    for(let [socketId, userData] of connectedUsers.entries()){
+        if(userData.email === email){
             return socketId;
         }
     }

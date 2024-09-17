@@ -38,41 +38,52 @@ app.get('/', async(req: Request, res: Response) => {
     res.send('Hello, World!')
 })
 
+
+
 app.use('/api', router)
 
-export const connectedUsers = new Map<string, string>()
+export const connectedUsers = new Map<string, {email: string, _id: string}>()
 io.on('connection', (socket) => {
-    
-    socket.on('connected', async(email) => {
-        connectedUsers.set(socket.id, email)
-        const update = await userModel.updateOne({email: email}, {$set: {isActive: true, socketId: socket.id}})
-        console.log("connected", email)
-        const updatedUser = await getAllUsers(email)
-        await getFriendsConnectionByEmail(email)
+
+    socket.on('sendUpcomingMessage', (message) => {
+        const receiverId = message?.receiverId
+        for(let [socketId, userData] of connectedUsers.entries()){
+            if(userData._id === receiverId){
+                io.to(socketId).emit('upcomingMessage', message)
+            }
+        }
+    })
+
+    socket.on('connected', async(user: any) => {
+        connectedUsers.set(socket.id, {email: user?.email, _id: user?._id})
+        const update = await userModel.updateOne({email: user?.email}, {$set: {isActive: true, socketId: socket.id}})
+        console.log("connected", user?.email)
+        const updatedUser = await getAllUsers(user?.email)
+        await getFriendsConnectionByEmail(user?.email)
         io.emit('users', updatedUser)
         
     })
 
     socket.on('logout', async() => {
-        const email: any = connectedUsers.get(socket.id)
-        if(email){
-            const update = await userModel.updateOne({email: email},{isActive: false, lastActive: Number(Date.now()), socketId: null});
-            const updatedUser = await getAllUsers(email);
+        const user: any = connectedUsers.get(socket.id)
+        if(user){
+            const update = await userModel.updateOne({email: user.email},{isActive: false, lastActive: Number(Date.now()), socketId: null});
+            const updatedUser = await getAllUsers(user.email);
             io.emit('users', updatedUser);
             connectedUsers.delete(socket.id)
-            await getFriendsConnectionByEmail(email)
+            await getFriendsConnectionByEmail(user.email)
             socket.disconnect()
         }
     })
     socket.on('disconnect', async() => {
-        const email: any = connectedUsers.get(socket.id)
-        if(email){
+        const user: any = connectedUsers.get(socket.id)
+        if(user){
 
-            const update = await userModel.updateOne({email: email}, {isActive: false, lastActive: Number(Date.now()), socketId: null});
-            const allUsers = await getAllUsers(email);
-            console.log('disconnect', email)
+            const update = await userModel.updateOne({email: user.email}, {isActive: false, lastActive: Number(Date.now()), socketId: null});
+            const allUsers = await getAllUsers(user.email);
+            console.log('disconnect', user.email)
             io.emit('users', allUsers);
-            await getFriendsConnectionByEmail(email)
+            await getFriendsConnectionByEmail(user.email)
             connectedUsers.delete(socket.id)
         }
     });

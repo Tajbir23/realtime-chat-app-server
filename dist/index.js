@@ -47,33 +47,41 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 app.use('/api', routes_1.default);
 exports.connectedUsers = new Map();
 exports.io.on('connection', (socket) => {
-    socket.on('connected', (email) => __awaiter(void 0, void 0, void 0, function* () {
-        exports.connectedUsers.set(socket.id, email);
-        const update = yield userSchema_1.default.updateOne({ email: email }, { $set: { isActive: true, socketId: socket.id } });
-        console.log("connected", email);
-        const updatedUser = yield (0, getAllUsers_1.default)(email);
-        yield (0, getFriendsConnection_1.default)(email);
+    socket.on('sendUpcomingMessage', (message) => {
+        const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
+        for (let [socketId, userData] of exports.connectedUsers.entries()) {
+            if (userData._id === receiverId) {
+                exports.io.to(socketId).emit('upcomingMessage', message);
+            }
+        }
+    });
+    socket.on('connected', (user) => __awaiter(void 0, void 0, void 0, function* () {
+        exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id });
+        const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
+        console.log("connected", user === null || user === void 0 ? void 0 : user.email);
+        const updatedUser = yield (0, getAllUsers_1.default)(user === null || user === void 0 ? void 0 : user.email);
+        yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user.email);
         exports.io.emit('users', updatedUser);
     }));
     socket.on('logout', () => __awaiter(void 0, void 0, void 0, function* () {
-        const email = exports.connectedUsers.get(socket.id);
-        if (email) {
-            const update = yield userSchema_1.default.updateOne({ email: email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const updatedUser = yield (0, getAllUsers_1.default)(email);
+        const user = exports.connectedUsers.get(socket.id);
+        if (user) {
+            const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
+            const updatedUser = yield (0, getAllUsers_1.default)(user.email);
             exports.io.emit('users', updatedUser);
             exports.connectedUsers.delete(socket.id);
-            yield (0, getFriendsConnection_1.default)(email);
+            yield (0, getFriendsConnection_1.default)(user.email);
             socket.disconnect();
         }
     }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
-        const email = exports.connectedUsers.get(socket.id);
-        if (email) {
-            const update = yield userSchema_1.default.updateOne({ email: email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const allUsers = yield (0, getAllUsers_1.default)(email);
-            console.log('disconnect', email);
+        const user = exports.connectedUsers.get(socket.id);
+        if (user) {
+            const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
+            const allUsers = yield (0, getAllUsers_1.default)(user.email);
+            console.log('disconnect', user.email);
             exports.io.emit('users', allUsers);
-            yield (0, getFriendsConnection_1.default)(email);
+            yield (0, getFriendsConnection_1.default)(user.email);
             exports.connectedUsers.delete(socket.id);
         }
     }));
