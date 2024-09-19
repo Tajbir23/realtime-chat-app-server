@@ -11,8 +11,8 @@ const findOne = async(req: Request, res: Response) => {
             return res.status(404).json({message: 'User not found'})
         }
         
-        const user = await userModel.findById(id)
-        res.send({email: user?.email, isActive: user?.isActive, name: user?.name, username: user?.username, photoUrl: user?.photoUrl, _id: user?._id})
+        const user = await userModel.findById(id).select("-password")
+        res.send(user)
     } catch (error) {
         console.log(error)
     }
