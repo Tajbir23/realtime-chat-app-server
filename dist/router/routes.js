@@ -49,6 +49,7 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
     const { id } = req.params;
     const { username } = req.user;
     const { currentPage = 1 } = req.query;
+    console.log(id, currentPage);
     try {
         const skip = (Number(currentPage - 1) * 10);
         const isValidId = yield mongoose_1.default.Types.ObjectId.isValid(id);

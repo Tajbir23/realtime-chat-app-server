@@ -46,6 +46,7 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
     const {id} = req.params
     const {username} = (req as any).user
     const {currentPage = 1} = (req as any).query
+    console.log(id, currentPage)
     try {
         const skip = (Number(currentPage - 1) * 10)
         
