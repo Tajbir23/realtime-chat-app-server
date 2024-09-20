@@ -1,8 +1,8 @@
 import {Request, Response} from 'express'
 import userModel from '../models/userSchema'
 import generateJwt from './generateJwt'
-import getAllUsers from './getAllUsers'
 import { io } from '..'
+import findOneUser from './findUser'
 const createUser = async(req: Request, res: Response) => {
     try {
         const { name, username, email, photoUrl, password } = req.body
@@ -11,7 +11,7 @@ const createUser = async(req: Request, res: Response) => {
         
         const token = await generateJwt(username, email, user._id);
 
-        const allUsers = await getAllUsers(result.email);
+        const allUsers = await findOneUser(result._id);
         io.emit('users', allUsers)
         res.status(201).send({token, name, username, email, photoUrl, _id: user._id})
     } catch (error:any) {

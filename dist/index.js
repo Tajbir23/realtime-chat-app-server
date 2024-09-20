@@ -22,8 +22,8 @@ const cors_1 = __importDefault(require("cors"));
 const node_http_1 = require("node:http");
 const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
-const getAllUsers_1 = __importDefault(require("./controllers/getAllUsers"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
+const findUser_1 = __importDefault(require("./controllers/findUser"));
 // import cron from 'node-cron'
 // import axios from 'axios'
 const port = process.env.PORT || 3000;
@@ -59,7 +59,8 @@ exports.io.on('connection', (socket) => {
         exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id });
         const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
         console.log("connected", user === null || user === void 0 ? void 0 : user.email);
-        const updatedUser = yield (0, getAllUsers_1.default)(user === null || user === void 0 ? void 0 : user.email);
+        const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
+        console.log("Update user", updatedUser);
         yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user.email);
         exports.io.emit('users', updatedUser);
     }));
@@ -67,7 +68,7 @@ exports.io.on('connection', (socket) => {
         const user = exports.connectedUsers.get(socket.id);
         if (user) {
             const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const updatedUser = yield (0, getAllUsers_1.default)(user.email);
+            const updatedUser = yield (0, findUser_1.default)(user._id);
             exports.io.emit('users', updatedUser);
             exports.connectedUsers.delete(socket.id);
             yield (0, getFriendsConnection_1.default)(user.email);
@@ -78,9 +79,9 @@ exports.io.on('connection', (socket) => {
         const user = exports.connectedUsers.get(socket.id);
         if (user) {
             const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const allUsers = yield (0, getAllUsers_1.default)(user.email);
-            console.log('disconnect', user.email);
-            exports.io.emit('users', allUsers);
+            const upDatedUser = yield (0, findUser_1.default)(user._id);
+            console.log('disconnect', user._id);
+            exports.io.emit('users', upDatedUser);
             yield (0, getFriendsConnection_1.default)(user.email);
             exports.connectedUsers.delete(socket.id);
         }

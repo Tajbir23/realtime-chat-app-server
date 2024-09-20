@@ -14,18 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const findOne = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const findOneUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.params;
         const isValidId = yield mongoose_1.default.Types.ObjectId.isValid(id);
         if (!isValidId) {
-            return res.status(404).json({ message: 'User not found' });
+            throw new Error;
         }
         const user = yield userSchema_1.default.findById(id).select("-password");
-        res.send(user);
+        return user;
     }
     catch (error) {
         console.log(error);
     }
 });
-exports.default = findOne;
+exports.default = findOneUser;

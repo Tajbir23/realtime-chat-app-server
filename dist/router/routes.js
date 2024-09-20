@@ -18,13 +18,13 @@ const verifyJwt_1 = __importDefault(require("../controllers/verifyJwt"));
 const validationUser_1 = __importDefault(require("../controllers/validationUser"));
 const loginUser_1 = __importDefault(require("../controllers/loginUser"));
 const getAllUsers_1 = __importDefault(require("../controllers/getAllUsers"));
-const findUser_1 = __importDefault(require("../controllers/findUser"));
 const postMessage_1 = __importDefault(require("../controllers/message/postMessage"));
 const getMessage_1 = __importDefault(require("../controllers/message/getMessage"));
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const getFriends_1 = __importDefault(require("../controllers/friends/getFriends"));
 const search_1 = __importDefault(require("../controllers/search"));
+const findUser_1 = __importDefault(require("../controllers/findUser"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -43,7 +43,19 @@ router.get('/users', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0
         res.status(500).send({ error: error.message });
     }
 }));
-router.get('/user/:id', verifyJwt_1.default, findUser_1.default);
+router.get('/user/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const user = yield (0, findUser_1.default)(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.send(user);
+    }
+    catch (error) {
+        res.status(404).json({ message: "user not found" });
+    }
+}));
 router.post('/message', verifyJwt_1.default, postMessage_1.default);
 router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;

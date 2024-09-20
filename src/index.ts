@@ -7,8 +7,8 @@ import cors from 'cors'
 import { createServer } from 'node:http'
 import {Server} from 'socket.io'
 import userModel from './models/userSchema'
-import getAllUsers from './controllers/getAllUsers'
 import getFriendsConnectionByEmail from './controllers/friends/getFriendsConnection'
+import findOneUser from './controllers/findUser'
 // import cron from 'node-cron'
 // import axios from 'axios'
 
@@ -58,7 +58,8 @@ io.on('connection', (socket) => {
         connectedUsers.set(socket.id, {email: user?.email, _id: user?._id})
         const update = await userModel.updateOne({email: user?.email}, {$set: {isActive: true, socketId: socket.id}})
         console.log("connected", user?.email)
-        const updatedUser = await getAllUsers(user?.email)
+        const updatedUser = await findOneUser(user?._id)
+        console.log("Update user",updatedUser)
         await getFriendsConnectionByEmail(user?.email)
         io.emit('users', updatedUser)
         
@@ -68,7 +69,7 @@ io.on('connection', (socket) => {
         const user: any = connectedUsers.get(socket.id)
         if(user){
             const update = await userModel.updateOne({email: user.email},{isActive: false, lastActive: Number(Date.now()), socketId: null});
-            const updatedUser = await getAllUsers(user.email);
+            const updatedUser = await findOneUser(user._id);
             io.emit('users', updatedUser);
             connectedUsers.delete(socket.id)
             await getFriendsConnectionByEmail(user.email)
@@ -80,9 +81,9 @@ io.on('connection', (socket) => {
         if(user){
 
             const update = await userModel.updateOne({email: user.email}, {isActive: false, lastActive: Number(Date.now()), socketId: null});
-            const allUsers = await getAllUsers(user.email);
-            console.log('disconnect', user.email)
-            io.emit('users', allUsers);
+            const upDatedUser = await findOneUser(user._id);
+            console.log('disconnect', user._id)
+            io.emit('users', upDatedUser);
             await getFriendsConnectionByEmail(user.email)
             connectedUsers.delete(socket.id)
         }

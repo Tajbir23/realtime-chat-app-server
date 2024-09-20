@@ -5,13 +5,13 @@ import validationUser from "../controllers/validationUser";
 import loginUser from "../controllers/loginUser";
 
 import getAllUsers from "../controllers/getAllUsers";
-import findOne from "../controllers/findUser";
 import postMessage from "../controllers/message/postMessage";
 import getMessage from "../controllers/message/getMessage";
 import userModel from "../models/userSchema";
 import mongoose from "mongoose";
 import getFriends from "../controllers/friends/getFriends";
 import searchUsers from "../controllers/search";
+import findOneUser from "../controllers/findUser";
 
 
 
@@ -38,7 +38,18 @@ router.get('/users',verifyJwt, async(req:Request, res: Response) => {
     }
 })
 
-router.get('/user/:id', verifyJwt, findOne)
+router.get('/user/:id', verifyJwt, async(req: Request, res: Response) => {
+    const {id} = req.params
+    try {
+        const user = await findOneUser(id)
+        if(!user){
+            return res.status(404).json({message: 'User not found'})
+        }
+        res.send(user)
+    } catch (error) {
+        res.status(404).json({message: "user not found" })
+    }
+})
 
 router.post('/message', verifyJwt, postMessage)
 
