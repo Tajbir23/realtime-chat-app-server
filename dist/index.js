@@ -31,63 +31,70 @@ const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
 exports.io = new socket_io_1.Server(server, {
     cors: {
-        origin: ["http://localhost:5173", "https://chat.tajbirideas.com", "https://realtime-chat-app-tajbir.web.app"],
+        origin: [
+            "http://localhost:5173",
+            "https://chat.tajbirideas.com",
+            "https://realtime-chat-app-tajbir.web.app",
+        ],
         // origin: "*",
-    }
+    },
 });
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:5173", "https://chat.tajbirideas.com", "https://realtime-chat-app-tajbir.web.app"],
+    origin: [
+        "http://localhost:5173",
+        "https://chat.tajbirideas.com",
+        "https://realtime-chat-app-tajbir.web.app",
+    ],
     // origin: "*",
 }));
 app.use(express_1.default.json());
 (0, db_1.default)();
-app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send('Hello, World!');
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send("Hello, World!");
 }));
-app.use('/api', routes_1.default);
+app.use("/api", routes_1.default);
 exports.connectedUsers = new Map();
-exports.io.on('connection', (socket) => {
-    socket.on('sendUpcomingMessage', (message) => {
+exports.io.on("connection", (socket) => {
+    socket.on("sendUpcomingMessage", (message) => {
         const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
         for (let [socketId, userData] of exports.connectedUsers.entries()) {
             if (userData._id === receiverId) {
-                exports.io.to(socketId).emit('upcomingMessage', message);
+                exports.io.to(socketId).emit("upcomingMessage", message);
             }
         }
     });
-    socket.on('connected', (user) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
         exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id });
         const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
         console.log("connected", user === null || user === void 0 ? void 0 : user.email);
         const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
-        console.log("Update user", updatedUser);
-        yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user.email);
-        exports.io.emit('users', updatedUser);
+        yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
+        exports.io.emit("users", updatedUser);
     }));
-    socket.on('logout', () => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on("logout", () => __awaiter(void 0, void 0, void 0, function* () {
         const user = exports.connectedUsers.get(socket.id);
         if (user) {
             const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
             const updatedUser = yield (0, findUser_1.default)(user._id);
-            exports.io.emit('users', updatedUser);
+            exports.io.emit("users", updatedUser);
             exports.connectedUsers.delete(socket.id);
-            yield (0, getFriendsConnection_1.default)(user.email);
+            yield (0, getFriendsConnection_1.default)(user._id);
             socket.disconnect();
         }
     }));
-    socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
         const user = exports.connectedUsers.get(socket.id);
         if (user) {
             const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
             const upDatedUser = yield (0, findUser_1.default)(user._id);
-            console.log('disconnect', user._id);
-            exports.io.emit('users', upDatedUser);
-            yield (0, getFriendsConnection_1.default)(user.email);
+            console.log("disconnect", user._id);
+            exports.io.emit("users", upDatedUser);
+            yield (0, getFriendsConnection_1.default)(user._id);
             exports.connectedUsers.delete(socket.id);
         }
     }));
 });
 // export default server
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Server is running on port 3000');
+    console.log("Server is running on port 3000");
 }));

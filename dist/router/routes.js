@@ -25,6 +25,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const getFriends_1 = __importDefault(require("../controllers/friends/getFriends"));
 const search_1 = __importDefault(require("../controllers/search"));
 const findUser_1 = __importDefault(require("../controllers/findUser"));
+const blockFriend_1 = __importDefault(require("../controllers/friends/blockFriend"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -86,5 +87,11 @@ router.get('/search/:search', verifyJwt_1.default, (req, res) => __awaiter(void 
     const { email } = req.query;
     const result = yield (0, search_1.default)(search, email);
     res.send(result);
+}));
+router.post('/friend/block/:chatId', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.user;
+    const { chatId } = req.params;
+    const { blockUserId, isBlock } = req.body;
+    yield (0, blockFriend_1.default)(_id, chatId, blockUserId, isBlock);
 }));
 exports.default = router;

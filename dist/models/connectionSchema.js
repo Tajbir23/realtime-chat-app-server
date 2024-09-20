@@ -17,6 +17,17 @@ const connectionSchema = new mongoose_1.Schema({
     },
     lastMessageAt: {
         type: Number
+    },
+    blockUserId: {
+        type: String
+    },
+    isBlock: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
+    blockSender: {
+        type: String
     }
 }, {
     timestamps: true

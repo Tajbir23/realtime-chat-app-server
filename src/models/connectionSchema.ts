@@ -18,6 +18,17 @@ const connectionSchema = new Schema<userConnections>({
     },
     lastMessageAt: {
         type: Number
+    },
+    blockUserId: {
+        type: String
+    },
+    isBlock: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
+    blockSender: {
+        type: String
     }
 },{
     timestamps: true

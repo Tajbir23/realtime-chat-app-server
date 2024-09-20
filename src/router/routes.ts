@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import getFriends from "../controllers/friends/getFriends";
 import searchUsers from "../controllers/search";
 import findOneUser from "../controllers/findUser";
+import blockFriend from "../controllers/friends/blockFriend";
 
 
 
@@ -85,6 +86,13 @@ router.get('/search/:search', verifyJwt, async (req, res) => {
     const {email} = req.query
     const result = await searchUsers(search, email as string)
     res.send(result)
+})
+
+router.post('/friend/block/:chatId',verifyJwt, async (req : Request, res : Response) => {
+    const {_id} = (req as any).user
+    const {chatId} = req.params
+    const {blockUserId, isBlock} = (req as Request).body
+    await blockFriend(_id, chatId, blockUserId, isBlock)
 })
 
 export default router;

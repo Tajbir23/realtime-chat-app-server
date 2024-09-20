@@ -4,49 +4,51 @@ import findSocketIdByEmail from "../findSocketIdByEmail";
 import { io } from "../..";
 import friendsInterface from "../../interface/friendsInterface";
 
-const getFriendsConnectionByEmail = async (email: string) => {
-    try {
-        // Fetch the current user (your details)
-        const me = await userModel.findOne({ email });
-        if (!me) {
-            throw new Error('User not found');
+const getFriendsConnectionById = async (_id: string) => {
+    console.log("getFriendsConnectionById", _id);
+  try {
+    // Fetch the current user (your details)
+    // const me = await userModel.findOne({ email });
+    // if (!me) {
+    //     throw new Error('User not found');
+    // }
+
+    const friends: friendsInterface[] = await connectionModel
+      .find({
+        $or: [
+          { senderId: _id }, // If you're the sender
+          { receiverId: _id }, // If you're the receiver
+        ],
+      })
+      .populate("senderId", "-password")
+      .populate("receiverId", "-password")
+      .lean();
+
+    friends.forEach((friend) => {
+
+      if (friend.senderId._id.toString() === _id) {
+        const receiverEmail = friend.receiverId.email;
+        console.log("if condition", receiverEmail)
+        delete (friend as any).receiverId;
+
+        const socketId = findSocketIdByEmail(receiverEmail);
+        if (socketId) {
+          io.to(socketId).emit("updateFriendStatus", friend);
         }
+      } else if (friend.receiverId._id.toString() === _id) {
+        const senderEmail = friend.senderId.email;
+        console.log("else condition", senderEmail)
+        delete (friend as any).senderId;
 
-        
-        const friends: friendsInterface[] = await connectionModel.find({
-            $or: [
-                { senderId: me._id },   // If you're the sender
-                { receiverId: me._id }  // If you're the receiver
-            ]
-        }).populate("senderId").populate("receiverId").lean();
-
-        
-
-        friends.forEach((friend) => {
-            if(friend.senderId.email === email){
-                const receiverEmail = friend.receiverId.email
-                
-                delete (friend as any).receiverId
-                
-                const socketId = findSocketIdByEmail(receiverEmail);
-                if (socketId) {
-                    io.to(socketId).emit("updateFriendStatus", friend);
-                }
-            }else if(friend.receiverId.email === email){
-                const senderEmail = friend.senderId.email
-                delete (friend as any).senderId
-                
-                const socketId = findSocketIdByEmail(senderEmail);
-                if (socketId) {
-                    io.to(socketId).emit("updateFriendStatus", friend);
-                }
-            }
-        })
-
-
-    } catch (error) {
-        console.error('Error in getFriendsConnectionByEmail:', error);
-    }
+        const socketId = findSocketIdByEmail(senderEmail);
+        if (socketId) {
+          io.to(socketId).emit("updateFriendStatus", friend);
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Error in getFriendsConnectionById:", error);
+  }
 };
 
-export default getFriendsConnectionByEmail;
+export default getFriendsConnectionById;
