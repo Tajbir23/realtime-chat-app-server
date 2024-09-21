@@ -6,7 +6,7 @@ const loginUser = async(req: Request, res: Response) => {
     const { email, password } = req.body;
     
     try {
-        const user = await userModel.findOne({email, password});
+        const user = await userModel.findOne({email, password}).select('-password');
         
     if(!user) {
         return res.status(401).json({message: 'Invalid credentials'});

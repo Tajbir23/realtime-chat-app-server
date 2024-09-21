@@ -57,6 +57,7 @@ exports.connectedUsers = new Map();
 exports.io.on("connection", (socket) => {
     socket.on("sendUpcomingMessage", (message) => {
         const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
+        console.log("message", message);
         for (let [socketId, userData] of exports.connectedUsers.entries()) {
             if (userData._id === receiverId) {
                 exports.io.to(socketId).emit("upcomingMessage", message);

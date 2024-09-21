@@ -17,7 +17,7 @@ const generateJwt_1 = __importDefault(require("./generateJwt"));
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const user = yield userSchema_1.default.findOne({ email, password });
+        const user = yield userSchema_1.default.findOne({ email, password }).select('-password');
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }

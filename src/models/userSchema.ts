@@ -37,6 +37,12 @@ const userSchema = new Schema<user>({
         type: Boolean,
         default: false
     },
+    myDay: {
+        type: String
+    },
+    myDayEndAt: {
+        type: Number
+    }
 })
 
 userSchema.plugin(uniqueValidator, { message: '{PATH} to be unique.' })

@@ -39,6 +39,12 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false
     },
+    myDay: {
+        type: String
+    },
+    myDayEndAt: {
+        type: Number
+    }
 });
 userSchema.plugin(mongoose_unique_validator_1.default, { message: '{PATH} to be unique.' });
 const userModel = (0, mongoose_1.model)('Users', userSchema);

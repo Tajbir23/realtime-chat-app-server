@@ -8,6 +8,8 @@ interface user extends Document {
     isActive: boolean;
     _id: string;
     lastActive: number;
+    myDay: string;
+    myDayEndAt: number
 }
 
 export default user

@@ -53,6 +53,7 @@ export const connectedUsers = new Map<string, { email: string; _id: string }>();
 io.on("connection", (socket) => {
   socket.on("sendUpcomingMessage", (message) => {
     const receiverId = message?.receiverId;
+    console.log("message", message);
     for (let [socketId, userData] of connectedUsers.entries()) {
       if (userData._id === receiverId) {
         io.to(socketId).emit("upcomingMessage", message);

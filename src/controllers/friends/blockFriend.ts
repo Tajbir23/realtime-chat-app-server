@@ -2,7 +2,7 @@ import connectionModel from "../../models/connectionSchema";
 import getFriendsConnectionById from "./getFriendsConnection";
 
 const blockFriend = async(_id: string, chatId: string, blockUserId: string, isBlock: boolean) => {
-    console.log("_id", _id, "chatId", chatId, blockUserId, isBlock)
+    
     try {
         await connectionModel.updateOne(
             { _id: chatId },
