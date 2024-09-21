@@ -9,7 +9,8 @@ interface user extends Document {
     _id: string;
     lastActive: number;
     myDay: string;
-    myDayEndAt: number
+    myDayEndAt: number;
+    isActiveMyDay: boolean;
 }
 
 export default user

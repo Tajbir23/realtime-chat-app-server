@@ -42,6 +42,10 @@ const userSchema = new Schema<user>({
     },
     myDayEndAt: {
         type: Number
+    },
+    isActiveMyDay: {
+        type: Boolean,
+        default: false
     }
 })
 

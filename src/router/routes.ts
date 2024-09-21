@@ -13,6 +13,7 @@ import getFriends from "../controllers/friends/getFriends";
 import searchUsers from "../controllers/search";
 import findOneUser from "../controllers/findUser";
 import blockFriend from "../controllers/friends/blockFriend";
+import postMyDay from "../controllers/Day/postMyDay";
 
 
 
@@ -94,5 +95,7 @@ router.post('/friend/block/:chatId',verifyJwt, async (req : Request, res : Respo
     const {blockUserId, isBlock} = (req as Request).body
     await blockFriend(_id, chatId, blockUserId, isBlock)
 })
+
+router.post('/create_my_day', verifyJwt, postMyDay)
 
 export default router;
