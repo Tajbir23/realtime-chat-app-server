@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 import userModel from "./models/userSchema";
 import getFriendsConnectionById from "./controllers/friends/getFriendsConnection";
 import findOneUser from "./controllers/findUser";
-// import cron from 'node-cron'
+import cron from 'node-cron'
 // import axios from 'axios'
 
 const port = process.env.PORT || 3000;
@@ -104,6 +104,12 @@ io.on("connection", (socket) => {
   });
 });
 
+cron.schedule('0 * * * *', async () => {
+  console.log('Running cron job');
+  const now = Date.now()
+  const BATCH_SIZE = 100
+  await userModel.updateMany({myDayEndAt: {$lt: now}, isActiveMyDay: true}, {$set: {isActiveMyDay: false, myDayId: null, myDay: null}}).limit(BATCH_SIZE)
+})
 // export default server
 server.listen(port, async () => {
   console.log("Server is running on port 3000");

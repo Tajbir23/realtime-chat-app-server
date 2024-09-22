@@ -24,7 +24,7 @@ const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
 const findUser_1 = __importDefault(require("./controllers/findUser"));
-// import cron from 'node-cron'
+const node_cron_1 = __importDefault(require("node-cron"));
 // import axios from 'axios'
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
@@ -95,6 +95,12 @@ exports.io.on("connection", (socket) => {
         }
     }));
 });
+node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Running cron job');
+    const now = Date.now();
+    const BATCH_SIZE = 100;
+    yield userSchema_1.default.updateMany({ myDayEndAt: { $lt: now }, isActiveMyDay: true }, { $set: { isActiveMyDay: false, myDayId: null, myDay: null } }).limit(BATCH_SIZE);
+}));
 // export default server
 server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Server is running on port 3000");
