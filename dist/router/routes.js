@@ -27,6 +27,8 @@ const search_1 = __importDefault(require("../controllers/search"));
 const findUser_1 = __importDefault(require("../controllers/findUser"));
 const blockFriend_1 = __importDefault(require("../controllers/friends/blockFriend"));
 const postMyDay_1 = __importDefault(require("../controllers/Day/postMyDay"));
+const postLike_1 = __importDefault(require("../controllers/Day/postLike"));
+const getTotalLikeAndComments_1 = __importDefault(require("../controllers/Day/getTotalLikeAndComments"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -96,4 +98,6 @@ router.post('/friend/block/:chatId', verifyJwt_1.default, (req, res) => __awaite
     yield (0, blockFriend_1.default)(_id, chatId, blockUserId, isBlock);
 }));
 router.post('/create_my_day', verifyJwt_1.default, postMyDay_1.default);
+router.post('/like', verifyJwt_1.default, postLike_1.default);
+router.post('/total_like_and_comments', verifyJwt_1.default, getTotalLikeAndComments_1.default);
 exports.default = router;

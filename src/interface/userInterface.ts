@@ -11,6 +11,7 @@ interface user extends Document {
     myDay: string;
     myDayEndAt: number;
     isActiveMyDay: boolean;
+    myDayId: string;
 }
 
 export default user

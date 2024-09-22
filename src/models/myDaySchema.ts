@@ -4,7 +4,8 @@ import MyDayInterFace from "../interface/myDayInterFace";
 const myDaySchema = new Schema<MyDayInterFace>({
     userId: {
         type: String,
-        required: true
+        required: true,
+        ref: "Users",
     },
     myDay: {
         type: String,
@@ -13,8 +14,7 @@ const myDaySchema = new Schema<MyDayInterFace>({
     myDayEndAt: {
         type: Number,
         required: true
-    }
-
+    },
 })
 
 const myDayModel = model<MyDayInterFace>("Day", myDaySchema)

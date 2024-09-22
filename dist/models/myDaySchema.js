@@ -4,7 +4,8 @@ const mongoose_1 = require("mongoose");
 const myDaySchema = new mongoose_1.Schema({
     userId: {
         type: String,
-        required: true
+        required: true,
+        ref: "Users",
     },
     myDay: {
         type: String,
@@ -13,7 +14,7 @@ const myDaySchema = new mongoose_1.Schema({
     myDayEndAt: {
         type: Number,
         required: true
-    }
+    },
 });
 const myDayModel = (0, mongoose_1.model)("Day", myDaySchema);
 exports.default = myDayModel;

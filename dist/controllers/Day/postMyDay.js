@@ -20,10 +20,9 @@ const postMyDay = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
     const { content } = req.body;
     const myDayEndAt = Number(Date.now()) + 86400000;
-    console.log(content);
     try {
-        const user = yield userSchema_1.default.findByIdAndUpdate({ _id }, { myDay: content, myDayEndAt, isActiveMyDay: true }).select("-password");
-        yield myDaySchema_1.default.create({ userId: _id, myDay: content, myDayEndAt });
+        const myDayData = yield myDaySchema_1.default.create({ userId: _id, myDay: content, myDayEndAt });
+        const user = yield userSchema_1.default.findByIdAndUpdate({ _id }, { myDay: content, myDayEndAt, isActiveMyDay: true, myDayId: myDayData._id }).select("-password");
         yield (0, getFriendsConnection_1.default)(_id);
         __1.io.emit("users", user);
         res.status(201).send({ message: "My Day added successfully" });

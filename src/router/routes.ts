@@ -14,6 +14,8 @@ import searchUsers from "../controllers/search";
 import findOneUser from "../controllers/findUser";
 import blockFriend from "../controllers/friends/blockFriend";
 import postMyDay from "../controllers/Day/postMyDay";
+import postLike from "../controllers/Day/postLike";
+import getTotalLikeAndComments from "../controllers/Day/getTotalLikeAndComments";
 
 
 
@@ -97,5 +99,9 @@ router.post('/friend/block/:chatId',verifyJwt, async (req : Request, res : Respo
 })
 
 router.post('/create_my_day', verifyJwt, postMyDay)
+
+router.post('/like', verifyJwt, postLike)
+
+router.post('/total_like_and_comments', verifyJwt, getTotalLikeAndComments)
 
 export default router;
