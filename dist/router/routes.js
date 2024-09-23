@@ -29,6 +29,8 @@ const blockFriend_1 = __importDefault(require("../controllers/friends/blockFrien
 const postMyDay_1 = __importDefault(require("../controllers/Day/postMyDay"));
 const postLike_1 = __importDefault(require("../controllers/Day/postLike"));
 const getTotalLikeAndComments_1 = __importDefault(require("../controllers/Day/getTotalLikeAndComments"));
+const postComment_1 = __importDefault(require("../controllers/Day/postComment"));
+const getComments_1 = __importDefault(require("../controllers/Day/getComments"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -100,4 +102,6 @@ router.post('/friend/block/:chatId', verifyJwt_1.default, (req, res) => __awaite
 router.post('/create_my_day', verifyJwt_1.default, postMyDay_1.default);
 router.post('/like', verifyJwt_1.default, postLike_1.default);
 router.post('/total_like_and_comments', verifyJwt_1.default, getTotalLikeAndComments_1.default);
+router.post('/comment', verifyJwt_1.default, postComment_1.default);
+router.get('/comments/:myDayId', getComments_1.default);
 exports.default = router;

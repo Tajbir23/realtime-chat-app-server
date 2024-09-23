@@ -12,43 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const likeSchema_1 = __importDefault(require("../../models/likeSchema"));
+const commentSchema_1 = __importDefault(require("../../models/commentSchema"));
 const __1 = require("../..");
 const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
-const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId, myDayId, like } = req.body;
+const postComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, myDayId, comment } = req.body;
     const { _id } = req.user;
     try {
-        const likeAction = yield likeSchema_1.default.findOneAndDelete({
-            posterId: userId,
-            reactorId: _id,
-            myDayId: myDayId
-        });
-        if (likeAction) {
-            const totalLike = yield likeSchema_1.default.countDocuments({ myDayId });
-            res.status(200).send({ totalLike, message: "Like removed" });
-        }
-        else {
-            yield likeSchema_1.default.create({
-                posterId: userId,
-                reactorId: _id,
-                myDayId: myDayId,
-                like: like
-            });
-            const totalLike = yield likeSchema_1.default.countDocuments({ myDayId });
+        yield commentSchema_1.default.create({ posterId: userId, senderId: _id, myDayId, comment });
+        if (userId !== _id) {
             const socketId = (0, findSocketIdbyId_1.default)(userId);
             if (socketId) {
-                const data = {
-                    message: "Someone like your post",
-                    myDayId
-                };
-                __1.io.to(socketId).emit("likeAndCommentNotification", data);
+                __1.io.to(socketId).emit('likeAndCommentNotification', {
+                    message: "Someone comment your day"
+                });
             }
-            res.status(201).send({ totalLike, message: "Like added" });
         }
+        res.status(200).send({ message: "Comment posted" });
     }
     catch (error) {
         res.send(error);
     }
 });
-exports.default = postLike;
+exports.default = postComment;

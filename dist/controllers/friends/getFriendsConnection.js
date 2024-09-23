@@ -16,7 +16,6 @@ const connectionSchema_1 = __importDefault(require("../../models/connectionSchem
 const findSocketIdByEmail_1 = __importDefault(require("../findSocketIdByEmail"));
 const __1 = require("../..");
 const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("getFriendsConnectionById", _id);
     try {
         // Fetch the current user (your details)
         // const me = await userModel.findOne({ email });
@@ -36,7 +35,6 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
         friends.forEach((friend) => {
             if (friend.senderId._id.toString() === _id) {
                 const receiverEmail = friend.receiverId.email;
-                console.log("if condition", receiverEmail);
                 delete friend.receiverId;
                 const socketId = (0, findSocketIdByEmail_1.default)(receiverEmail);
                 if (socketId) {
@@ -45,7 +43,6 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
             }
             else if (friend.receiverId._id.toString() === _id) {
                 const senderEmail = friend.senderId.email;
-                console.log("else condition", senderEmail);
                 delete friend.senderId;
                 const socketId = (0, findSocketIdByEmail_1.default)(senderEmail);
                 if (socketId) {

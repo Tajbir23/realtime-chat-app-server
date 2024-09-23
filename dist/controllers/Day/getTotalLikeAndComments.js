@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const likeSchema_1 = __importDefault(require("../../models/likeSchema"));
+const commentSchema_1 = __importDefault(require("../../models/commentSchema"));
 const getTotalLikeAndComments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { _id } = req.user;
     const { myDayId, userId } = req.body;
-    console.log(myDayId, userId);
     try {
         const [likeData] = yield likeSchema_1.default.aggregate([
             { $facet: {
@@ -31,10 +31,11 @@ const getTotalLikeAndComments = (req, res) => __awaiter(void 0, void 0, void 0, 
                     ]
                 } }
         ]);
+        const commentData = yield commentSchema_1.default.countDocuments({ myDayId });
         const myLike = likeData.myLike.length > 0 ? true : false;
         const totalLike = ((_a = likeData.totalLike[0]) === null || _a === void 0 ? void 0 : _a.totalLike) || 0;
-        console.log(myLike, totalLike);
-        res.status(200).send({ myLike, totalLike });
+        const totalComment = commentData || 0;
+        res.status(200).send({ myLike, totalLike, totalComment });
     }
     catch (error) {
         res.send(error);
