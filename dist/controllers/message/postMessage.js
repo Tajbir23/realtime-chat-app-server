@@ -63,10 +63,12 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (chatId) {
             const messageSave = new messageSchema_1.default({
                 chatId,
+                senderId: sender._id,
                 senderName: sender.name,
                 senderUsername: sender.username,
                 senderEmail: sender.email,
                 senderPhotoUrl: sender.photoUrl,
+                receiverId: receiver._id,
                 receiverName: receiver.name,
                 receiverUsername: receiver.username,
                 receiverEmail: receiver.email,

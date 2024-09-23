@@ -63,10 +63,12 @@ const postMessage = async (req: Request, res: Response) => {
         if (chatId) {
             const messageSave = new messageModel({
                 chatId,
+                senderId: sender._id,
                 senderName: sender.name,
                 senderUsername: sender.username,
                 senderEmail: sender.email,
                 senderPhotoUrl: sender.photoUrl,
+                receiverId: receiver._id,
                 receiverName: receiver.name,
                 receiverUsername: receiver.username,
                 receiverEmail: receiver.email,

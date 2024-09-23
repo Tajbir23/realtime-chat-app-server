@@ -6,6 +6,11 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    senderId: {
+        type: String,
+        // required: true,
+        // ref: "Users"
+    },
     senderName: {
         type: String,
         required: true
@@ -21,6 +26,11 @@ const messageSchema = new mongoose_1.Schema({
     senderPhotoUrl: {
         type: String,
         required: true
+    },
+    receiverId: {
+        type: String,
+        // required: true,
+        // ref: "Users"
     },
     receiverName: {
         type: String,
