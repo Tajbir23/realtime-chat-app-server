@@ -16,6 +16,8 @@ import blockFriend from "../controllers/friends/blockFriend";
 import postMyDay from "../controllers/Day/postMyDay";
 import postLike from "../controllers/Day/postLike";
 import getTotalLikeAndComments from "../controllers/Day/getTotalLikeAndComments";
+import postComment from "../controllers/Day/postComment";
+import getComments from "../controllers/Day/getComments";
 
 
 
@@ -103,5 +105,9 @@ router.post('/create_my_day', verifyJwt, postMyDay)
 router.post('/like', verifyJwt, postLike)
 
 router.post('/total_like_and_comments', verifyJwt, getTotalLikeAndComments)
+
+router.post('/comment', verifyJwt, postComment)
+
+router.get('/comments/:myDayId', getComments)
 
 export default router;

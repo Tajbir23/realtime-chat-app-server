@@ -5,7 +5,7 @@ import { io } from "../..";
 import friendsInterface from "../../interface/friendsInterface";
 
 const getFriendsConnectionById = async (_id: string) => {
-    console.log("getFriendsConnectionById", _id);
+    
   try {
     // Fetch the current user (your details)
     // const me = await userModel.findOne({ email });
@@ -28,7 +28,7 @@ const getFriendsConnectionById = async (_id: string) => {
 
       if (friend.senderId._id.toString() === _id) {
         const receiverEmail = friend.receiverId.email;
-        console.log("if condition", receiverEmail)
+        
         delete (friend as any).receiverId;
 
         const socketId = findSocketIdByEmail(receiverEmail);
@@ -37,7 +37,7 @@ const getFriendsConnectionById = async (_id: string) => {
         }
       } else if (friend.receiverId._id.toString() === _id) {
         const senderEmail = friend.senderId.email;
-        console.log("else condition", senderEmail)
+       
         delete (friend as any).senderId;
 
         const socketId = findSocketIdByEmail(senderEmail);
