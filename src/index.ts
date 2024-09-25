@@ -10,7 +10,6 @@ import userModel from "./models/userSchema";
 import getFriendsConnectionById from "./controllers/friends/getFriendsConnection";
 import findOneUser from "./controllers/findUser";
 import cron from 'node-cron'
-// import axios from 'axios'
 
 const port = process.env.PORT || 3000;
 

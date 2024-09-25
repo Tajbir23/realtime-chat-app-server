@@ -25,7 +25,6 @@ const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
 const findUser_1 = __importDefault(require("./controllers/findUser"));
 const node_cron_1 = __importDefault(require("node-cron"));
-// import axios from 'axios'
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);

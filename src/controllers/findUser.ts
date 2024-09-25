@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import userModel from "../models/userSchema";
 import mongoose from "mongoose";
 
