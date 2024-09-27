@@ -67,6 +67,7 @@ io.on("connection", (socket) => {
       { $set: { isActive: true, socketId: socket.id } }
     );
     console.log("connected", user?.email);
+    console.log("connected2", user)
     const updatedUser = await findOneUser(user?._id);
 
     await getFriendsConnectionById(user?._id);

@@ -18,6 +18,7 @@ import postLike from "../controllers/Day/postLike";
 import getTotalLikeAndComments from "../controllers/Day/getTotalLikeAndComments";
 import postComment from "../controllers/Day/postComment";
 import getComments from "../controllers/Day/getComments";
+import shareMyDay from "../controllers/Day/shareMyDay";
 
 
 
@@ -107,5 +108,7 @@ router.post('/total_like_and_comments', verifyJwt, getTotalLikeAndComments)
 router.post('/comment', verifyJwt, postComment)
 
 router.get('/comments/:myDayId', getComments)
+
+router.get('/share/:id', shareMyDay)
 
 export default router;

@@ -31,6 +31,7 @@ const postLike_1 = __importDefault(require("../controllers/Day/postLike"));
 const getTotalLikeAndComments_1 = __importDefault(require("../controllers/Day/getTotalLikeAndComments"));
 const postComment_1 = __importDefault(require("../controllers/Day/postComment"));
 const getComments_1 = __importDefault(require("../controllers/Day/getComments"));
+const shareMyDay_1 = __importDefault(require("../controllers/Day/shareMyDay"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -39,8 +40,6 @@ router.get('/users', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0
     var _a;
     const { email, username } = req.user;
     const { page } = req.query;
-    // const pageNumber = Number(page);
-    // console.log("route called",username)
     try {
         const users = yield (0, getAllUsers_1.default)((_a = page) !== null && _a !== void 0 ? _a : 1);
         res.send(users);
@@ -104,4 +103,5 @@ router.post('/like', verifyJwt_1.default, postLike_1.default);
 router.post('/total_like_and_comments', verifyJwt_1.default, getTotalLikeAndComments_1.default);
 router.post('/comment', verifyJwt_1.default, postComment_1.default);
 router.get('/comments/:myDayId', getComments_1.default);
+router.get('/share/:id', shareMyDay_1.default);
 exports.default = router;

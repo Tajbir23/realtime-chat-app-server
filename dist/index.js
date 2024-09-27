@@ -66,6 +66,7 @@ exports.io.on("connection", (socket) => {
         exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id });
         const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
         console.log("connected", user === null || user === void 0 ? void 0 : user.email);
+        console.log("connected2", user);
         const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
         yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
         exports.io.emit("users", updatedUser);
