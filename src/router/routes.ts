@@ -74,7 +74,6 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
         }
         userModel.findOne({_id: id}).then(async(user) => {
             const receiverUsername = user?.username ?? ''
-            // console.log(receiverUsername, username)
             const message = await getMessage(username, receiverUsername, skip)
             res.send(message)
         })
