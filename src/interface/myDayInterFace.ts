@@ -1,7 +1,8 @@
 interface MyDayInterFace {
     userId: string;
     myDay: string;
-    myDayEndAt: number
+    myDayEndAt: number;
+    share: number
 }
 
 export default MyDayInterFace;

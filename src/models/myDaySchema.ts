@@ -15,6 +15,10 @@ const myDaySchema = new Schema<MyDayInterFace>({
         type: Number,
         required: true
     },
+    share: {
+        type: Number,
+        required: true
+    }
 })
 
 const myDayModel = model<MyDayInterFace>("Day", myDaySchema)

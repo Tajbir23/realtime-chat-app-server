@@ -32,6 +32,7 @@ const getTotalLikeAndComments_1 = __importDefault(require("../controllers/Day/ge
 const postComment_1 = __importDefault(require("../controllers/Day/postComment"));
 const getComments_1 = __importDefault(require("../controllers/Day/getComments"));
 const shareMyDay_1 = __importDefault(require("../controllers/Day/shareMyDay"));
+const shareCountMyDay_1 = __importDefault(require("../controllers/Day/shareCountMyDay"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -104,4 +105,5 @@ router.post('/total_like_and_comments', verifyJwt_1.default, getTotalLikeAndComm
 router.post('/comment', verifyJwt_1.default, postComment_1.default);
 router.get('/comments/:myDayId', getComments_1.default);
 router.get('/share/:id', shareMyDay_1.default);
+router.post('/share', shareCountMyDay_1.default);
 exports.default = router;

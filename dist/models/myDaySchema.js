@@ -15,6 +15,10 @@ const myDaySchema = new mongoose_1.Schema({
         type: Number,
         required: true
     },
+    share: {
+        type: Number,
+        required: true
+    }
 });
 const myDayModel = (0, mongoose_1.model)("Day", myDaySchema);
 exports.default = myDayModel;
