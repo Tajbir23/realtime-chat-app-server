@@ -47,7 +47,6 @@ const userSchema = new mongoose_1.Schema({
     },
     isActiveMyDay: {
         type: Boolean,
-        default: false
     },
     myDayId: {
         type: String

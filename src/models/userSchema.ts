@@ -45,7 +45,6 @@ const userSchema = new Schema<user>({
     },
     isActiveMyDay: {
         type: Boolean,
-        default: false
     },
     myDayId : {
         type: String
