@@ -16,8 +16,7 @@ const myDaySchema = new Schema<MyDayInterFace>({
         required: true
     },
     share: {
-        type: Number,
-        required: true
+        type: Number
     }
 })
 
