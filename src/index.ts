@@ -50,15 +50,6 @@ app.use("/api", router);
 
 export const connectedUsers = new Map<string, { email: string; _id: string }>();
 io.on("connection", (socket) => {
-  socket.on("sendUpcomingMessage", (message) => {
-    const receiverId = message?.receiverId;
-    
-    for (let [socketId, userData] of connectedUsers.entries()) {
-      if (userData._id === receiverId) {
-        io.to(socketId).emit("upcomingMessage", message);
-      }
-    }
-  });
 
   socket.on("connected", async (user: any) => {
     connectedUsers.set(socket.id, { email: user?.email, _id: user?._id });
@@ -72,6 +63,16 @@ io.on("connection", (socket) => {
 
     await getFriendsConnectionById(user?._id);
     io.emit("users", updatedUser);
+  });
+
+  socket.on("sendUpcomingMessage", (message) => {
+    const receiverId = message?.receiverId;
+    
+    for (let [socketId, userData] of connectedUsers.entries()) {
+      if (userData._id === receiverId) {
+        io.to(socketId).emit("upcomingMessage", message);
+      }
+    }
   });
 
   socket.on("logout", async () => {

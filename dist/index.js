@@ -54,14 +54,6 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 app.use("/api", routes_1.default);
 exports.connectedUsers = new Map();
 exports.io.on("connection", (socket) => {
-    socket.on("sendUpcomingMessage", (message) => {
-        const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
-        for (let [socketId, userData] of exports.connectedUsers.entries()) {
-            if (userData._id === receiverId) {
-                exports.io.to(socketId).emit("upcomingMessage", message);
-            }
-        }
-    });
     socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
         exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id });
         const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
@@ -71,6 +63,14 @@ exports.io.on("connection", (socket) => {
         yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
         exports.io.emit("users", updatedUser);
     }));
+    socket.on("sendUpcomingMessage", (message) => {
+        const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
+        for (let [socketId, userData] of exports.connectedUsers.entries()) {
+            if (userData._id === receiverId) {
+                exports.io.to(socketId).emit("upcomingMessage", message);
+            }
+        }
+    });
     socket.on("logout", () => __awaiter(void 0, void 0, void 0, function* () {
         const user = exports.connectedUsers.get(socket.id);
         if (user) {

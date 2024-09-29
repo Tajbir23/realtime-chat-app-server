@@ -37,7 +37,6 @@ const userSchema = new mongoose_1.Schema({
     },
     isActive: {
         type: Boolean,
-        default: false
     },
     myDay: {
         type: String
