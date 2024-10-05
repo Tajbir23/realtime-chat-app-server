@@ -11,6 +11,7 @@ const validationUser = async(req: Request, res: Response) => {
        console.log('user validation ip', ip, userIp)
        if(!user || ip !== user.ip) return res.status(401).send({message: 'User not found'})
 
+        console.log("user validation 2", ip, user.ip)
        res.send({name: user?.name, email: user?.email, photoUrl: user?.photoUrl, username: username, isActive: user?.isActive, _id: user._id})
     } catch (error: any) {
         res.status(500).send({ error: error.message })
