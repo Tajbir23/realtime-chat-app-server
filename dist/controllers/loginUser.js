@@ -16,15 +16,17 @@ const userSchema_1 = __importDefault(require("../models/userSchema"));
 const generateJwt_1 = __importDefault(require("./generateJwt"));
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const ip = ipAddress === null || ipAddress === void 0 ? void 0 : ipAddress.toString();
+    // const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    // const ip = ipAddress?.toString()
     try {
-        const user = yield userSchema_1.default.findOneAndUpdate({ email, password }, { ip: ip }).select('-password');
+        // const user = await userModel.findOneAndUpdate({email, password}, {ip: ip}).select('-password');
+        const user = yield userSchema_1.default.findOne({ email, password }).select('-password');
         console.log(user);
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        const token = yield (0, generateJwt_1.default)(user.username, user.email, user._id, user.ip);
+        // const token = await generateJwt(user.username, user.email, user._id, user.ip)
+        const token = yield (0, generateJwt_1.default)(user.username, user.email, user._id);
         res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name, _id: user._id });
     }
     catch (error) {
