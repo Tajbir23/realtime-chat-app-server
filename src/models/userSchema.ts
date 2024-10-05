@@ -47,6 +47,9 @@ const userSchema = new Schema<user>({
     },
     myDayId : {
         type: String
+    },
+    ip: {
+        type: String
     }
 })
 

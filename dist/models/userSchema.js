@@ -49,6 +49,9 @@ const userSchema = new mongoose_1.Schema({
     },
     myDayId: {
         type: String
+    },
+    ip: {
+        type: String
     }
 });
 userSchema.plugin(mongoose_unique_validator_1.default, { message: '{PATH} to be unique.' });

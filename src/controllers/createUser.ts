@@ -4,12 +4,16 @@ import generateJwt from './generateJwt'
 import { io } from '..'
 import findOneUser from './findUser'
 const createUser = async(req: Request, res: Response) => {
+    const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    
+    const ip = ipAddress?.toString()
+
     try {
         const { name, username, email, photoUrl, password } = req.body
-        const user = new userModel({ name, username, email, photoUrl, password })
+        const user = new userModel({ name, username, email, photoUrl, password, ip })
         const result = await user.save()
         
-        const token = await generateJwt(username, email, user._id);
+        const token = await generateJwt(username, email, user._id, user.ip);
 
         const allUsers = await findOneUser(result._id);
         io.emit('users', allUsers)
