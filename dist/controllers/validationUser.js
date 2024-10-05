@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const validationUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    console.log(ip);
     try {
         const { username, email } = req.user;
         const user = yield userSchema_1.default.findOne({ username, email });

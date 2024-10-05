@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import userModel from "../models/userSchema";
 const validationUser = async(req: Request, res: Response) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    
+    console.log(ip);
     try {
         const { username, email } = (req as any).user
        const user = await userModel.findOne({username, email})
