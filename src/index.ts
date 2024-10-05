@@ -48,11 +48,13 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api", router);
 
-export const connectedUsers = new Map<string, { email: string; _id: string }>();
+export const connectedUsers = new Map<string, { email: string; _id: string, ip: string }>();
 io.on("connection", (socket) => {
-
   socket.on("connected", async (user: any) => {
-    connectedUsers.set(socket.id, { email: user?.email, _id: user?._id });
+    const ip = socket.handshake.address;
+    console.log(`User connected from ${ip}`);
+
+    connectedUsers.set(socket.id, { email: user?.email, _id: user?._id, ip });
     const update = await userModel.updateOne(
       { email: user?.email },
       { $set: { isActive: true, socketId: socket.id } }
