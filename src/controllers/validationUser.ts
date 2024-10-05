@@ -9,7 +9,7 @@ const validationUser = async(req: Request, res: Response) => {
        const user = await userModel.findOne({username, email})
        
        console.log('user validation ip', ip, userIp)
-       if(!user || ip !== userIp) return res.status(401).send({message: 'User not found'})
+       if(!user || ip !== user.ip) return res.status(401).send({message: 'User not found'})
 
        res.send({name: user?.name, email: user?.email, photoUrl: user?.photoUrl, username: username, isActive: user?.isActive, _id: user._id})
     } catch (error: any) {
