@@ -20,6 +20,8 @@ import postComment from "../controllers/Day/postComment";
 import getComments from "../controllers/Day/getComments";
 import shareMyDay from "../controllers/Day/shareMyDay";
 import shareCountMyDay from "../controllers/Day/shareCountMyDay";
+import getNotification from "../controllers/Day/notification/getNotification";
+import getUnreadNotificationCount from "../controllers/Day/notification/getUnreadNotificationCount";
 
 
 
@@ -113,4 +115,7 @@ router.get('/share/:id', shareMyDay)
 
 router.post('/share', shareCountMyDay)
 
+router.get('/notifications', verifyJwt, getNotification)
+
+router.get('/notifications/unread', verifyJwt, getUnreadNotificationCount)
 export default router;

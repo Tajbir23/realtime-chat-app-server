@@ -6,6 +6,7 @@ const findSocketIdById = (id) => {
         if (userData._id === id) {
             return socketId;
         }
+        return undefined;
     }
 };
 exports.default = findSocketIdById;

@@ -25,6 +25,7 @@ const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
 const findUser_1 = __importDefault(require("./controllers/findUser"));
 const node_cron_1 = __importDefault(require("node-cron"));
+const findSocketIdbyId_1 = __importDefault(require("./controllers/findSocketIdbyId"));
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
@@ -94,6 +95,37 @@ exports.io.on("connection", (socket) => {
         }
     }));
 });
+// cron job to check active users every 10 minutes
+node_cron_1.default.schedule('*/10 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Checking active users');
+    try {
+        // Fetch all users who are marked as active in the database
+        const users = yield userSchema_1.default.find({ isActive: true });
+        console.log(users);
+        // Process users in parallel using Promise.all and map
+        yield Promise.all(users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
+            const activeUserSocketId = (0, findSocketIdbyId_1.default)(user._id);
+            // If user is not actively connected via Socket.IO
+            if (!activeUserSocketId) {
+                // Update user status in the database to mark them as inactive
+                yield userSchema_1.default.updateOne({ _id: user._id }, {
+                    $set: {
+                        isActive: false,
+                        lastActive: Date.now(),
+                        socketId: null
+                    }
+                });
+                // Emit the updated user data to all connected clients
+                const updatedUser = yield (0, findUser_1.default)(user._id);
+                console.log(`User ${user._id} disconnected`);
+                exports.io.emit('users', updatedUser);
+            }
+        })));
+    }
+    catch (error) {
+        console.error('Error checking active users:', error);
+    }
+}));
 node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Running cron job');
     const now = Date.now();

@@ -101,6 +101,7 @@ const postMessage = async (req: Request, res: Response) => {
         }
 
     } catch (error) {
+        console.log(error)
         console.log('error', (error as any).message);
         return res.status(500).send({ error: (error as any).message });
     }

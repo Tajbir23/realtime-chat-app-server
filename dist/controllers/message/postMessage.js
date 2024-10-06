@@ -91,6 +91,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
+        console.log(error);
         console.log('error', error.message);
         return res.status(500).send({ error: error.message });
     }

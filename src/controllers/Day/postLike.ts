@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import likeModel from "../../models/likeSchema";
 import { io } from "../..";
 import findSocketIdById from "../findSocketIdbyId";
+import notificationModel from "../../models/notificationSchema";
 
 const postLike = async(req: Request, res: Response) => {
     const {userId, myDayId, like} = req.body;
@@ -25,11 +26,22 @@ const postLike = async(req: Request, res: Response) => {
             })
             const totalLike = await likeModel.countDocuments({myDayId})
 
-            const socketId = findSocketIdById(userId)
+            // create notification
+            await notificationModel.create({
+                senderId: _id,
+                receiverId: userId,
+                type: "like",
+                postId: myDayId
+            })
+
+            const unreadNotification = await notificationModel.countDocuments({receiverId: userId, isRead: false})
+
+            const socketId = await findSocketIdById(userId)
             if(socketId){
-                const data: {message: string, myDayId: string} = {
+                const data: {message: string, myDayId: string, unreadNotification: number} = {
                     message: "Someone like your post",
-                    myDayId
+                    myDayId,
+                    unreadNotification
                 }
                 io.to(socketId).emit("likeAndCommentNotification", data)
             }

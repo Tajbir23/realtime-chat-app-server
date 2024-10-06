@@ -33,6 +33,8 @@ const postComment_1 = __importDefault(require("../controllers/Day/postComment"))
 const getComments_1 = __importDefault(require("../controllers/Day/getComments"));
 const shareMyDay_1 = __importDefault(require("../controllers/Day/shareMyDay"));
 const shareCountMyDay_1 = __importDefault(require("../controllers/Day/shareCountMyDay"));
+const getNotification_1 = __importDefault(require("../controllers/Day/notification/getNotification"));
+const getUnreadNotificationCount_1 = __importDefault(require("../controllers/Day/notification/getUnreadNotificationCount"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -105,4 +107,6 @@ router.post('/comment', verifyJwt_1.default, postComment_1.default);
 router.get('/comments/:myDayId', getComments_1.default);
 router.get('/share/:id', shareMyDay_1.default);
 router.post('/share', shareCountMyDay_1.default);
+router.get('/notifications', verifyJwt_1.default, getNotification_1.default);
+router.get('/notifications/unread', verifyJwt_1.default, getUnreadNotificationCount_1.default);
 exports.default = router;

@@ -5,6 +5,7 @@ const findSocketIdById = (id: string) => {
         if(userData._id === id){
             return socketId;
         }
+        return undefined
     }
 }
 

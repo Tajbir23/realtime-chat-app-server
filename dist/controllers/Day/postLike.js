@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const likeSchema_1 = __importDefault(require("../../models/likeSchema"));
 const __1 = require("../..");
 const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
+const notificationSchema_1 = __importDefault(require("../../models/notificationSchema"));
 const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, myDayId, like } = req.body;
     const { _id } = req.user;
@@ -36,11 +37,20 @@ const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 like: like
             });
             const totalLike = yield likeSchema_1.default.countDocuments({ myDayId });
-            const socketId = (0, findSocketIdbyId_1.default)(userId);
+            // create notification
+            yield notificationSchema_1.default.create({
+                senderId: _id,
+                receiverId: userId,
+                type: "like",
+                postId: myDayId
+            });
+            const unreadNotification = yield notificationSchema_1.default.countDocuments({ receiverId: userId, isRead: false });
+            const socketId = yield (0, findSocketIdbyId_1.default)(userId);
             if (socketId) {
                 const data = {
                     message: "Someone like your post",
-                    myDayId
+                    myDayId,
+                    unreadNotification
                 };
                 __1.io.to(socketId).emit("likeAndCommentNotification", data);
             }
