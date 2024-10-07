@@ -27,7 +27,6 @@ const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function
             .populate("senderId", "-password")
             .populate("receiverId", "-password")
             .populate("postId");
-        // Mark notifications as read and save each
         yield Promise.all(notifications.map((item) => __awaiter(void 0, void 0, void 0, function* () {
             item.isRead = true;
             yield item.save();

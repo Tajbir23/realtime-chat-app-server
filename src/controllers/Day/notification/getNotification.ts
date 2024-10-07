@@ -18,7 +18,7 @@ const getNotification = async (req: Request, res: Response) => {
             .populate("receiverId", "-password")
             .populate("postId");
 
-        // Mark notifications as read and save each
+        
         await Promise.all(
             notifications.map(async (item) => {
                 item.isRead = true;
