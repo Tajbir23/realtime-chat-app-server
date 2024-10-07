@@ -24,8 +24,12 @@ const notificationSchema = new Schema<notificationInterface>({
         type: String,
         required: true,
         ref: 'Day'
+    },
+    time: {
+        type: Number,
+        default: Number(Date.now())
     }
-}, { timestamps: true });
+});
 
 const notificationModel = model<notificationInterface>('notifications', notificationSchema);
 

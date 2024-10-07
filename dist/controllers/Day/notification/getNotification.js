@@ -16,12 +16,12 @@ const notificationSchema_1 = __importDefault(require("../../../models/notificati
 const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
     // console.log(userId);
-    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ createdAt: -1 }).populate("senderId").populate('receiverId').populate('postId');
+    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ createdAt: -1 }).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
     notification.forEach((item) => {
         item.isRead = true;
         item.save();
     });
-    console.log(notification);
+    // console.log(notification);
     res.send(notification);
 });
 exports.default = getNotification;

@@ -52,6 +52,7 @@ const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     myDayId,
                     unreadNotification
                 };
+                console.log(data);
                 __1.io.to(socketId).emit("likeAndCommentNotification", data);
             }
             res.status(201).send({ totalLike, message: "Like added" });

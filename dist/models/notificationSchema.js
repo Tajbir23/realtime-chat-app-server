@@ -24,7 +24,11 @@ const notificationSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         ref: 'Day'
+    },
+    time: {
+        type: Number,
+        default: Number(Date.now())
     }
-}, { timestamps: true });
+});
 const notificationModel = (0, mongoose_1.model)('notifications', notificationSchema);
 exports.default = notificationModel;

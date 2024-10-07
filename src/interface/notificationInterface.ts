@@ -4,6 +4,7 @@ interface notificationInterface {
     type: string;
     isRead: boolean;
     postId: string;
+    time: number;
 }
 
 export default notificationInterface;

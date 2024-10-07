@@ -63,6 +63,7 @@ exports.io.on("connection", (socket) => {
         const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
         yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
         exports.io.emit("users", updatedUser);
+        console.log("Active users", exports.connectedUsers);
     }));
     socket.on("sendUpcomingMessage", (message) => {
         const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
@@ -81,6 +82,7 @@ exports.io.on("connection", (socket) => {
             exports.connectedUsers.delete(socket.id);
             yield (0, getFriendsConnection_1.default)(user._id);
             socket.disconnect();
+            console.log("Active users", exports.connectedUsers);
         }
     }));
     socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -92,6 +94,7 @@ exports.io.on("connection", (socket) => {
             exports.io.emit("users", upDatedUser);
             yield (0, getFriendsConnection_1.default)(user._id);
             exports.connectedUsers.delete(socket.id);
+            console.log("Active users", exports.connectedUsers);
         }
     }));
 });
@@ -118,6 +121,7 @@ node_cron_1.default.schedule('*/10 * * * *', () => __awaiter(void 0, void 0, voi
                 // Emit the updated user data to all connected clients
                 const updatedUser = yield (0, findUser_1.default)(user._id);
                 console.log(`User ${user._id} disconnected`);
+                console.log("Active users", exports.connectedUsers);
                 exports.io.emit('users', updatedUser);
             }
         })));

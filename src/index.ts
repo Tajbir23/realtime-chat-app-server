@@ -50,6 +50,7 @@ app.get("/", async (req: Request, res: Response) => {
 app.use("/api", router);
 
 export const connectedUsers = new Map<string, { email: string; _id: string, ip: string }>();
+
 io.on("connection", (socket) => {
   socket.on("connected", async (user: any) => {
     const ip = socket.handshake.address;
@@ -65,6 +66,8 @@ io.on("connection", (socket) => {
 
     await getFriendsConnectionById(user?._id);
     io.emit("users", updatedUser);
+
+    console.log("Active users",connectedUsers)
   });
 
   socket.on("sendUpcomingMessage", (message) => {
@@ -89,6 +92,8 @@ io.on("connection", (socket) => {
       connectedUsers.delete(socket.id);
       await getFriendsConnectionById(user._id);
       socket.disconnect();
+
+      console.log("Active users",connectedUsers)
     }
   });
   socket.on("disconnect", async () => {
@@ -103,6 +108,8 @@ io.on("connection", (socket) => {
       io.emit("users", upDatedUser);
       await getFriendsConnectionById(user._id);
       connectedUsers.delete(socket.id);
+
+      console.log("Active users",connectedUsers)
     }
   });
 
@@ -140,7 +147,7 @@ cron.schedule('*/10 * * * *', async () => {
         // Emit the updated user data to all connected clients
         const updatedUser = await findOneUser(user._id);
         console.log(`User ${user._id} disconnected`);
-
+        console.log("Active users",connectedUsers)
         io.emit('users', updatedUser);
       }
     }));

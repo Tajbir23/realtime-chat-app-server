@@ -36,13 +36,16 @@ const postLike = async(req: Request, res: Response) => {
 
             const unreadNotification = await notificationModel.countDocuments({receiverId: userId, isRead: false})
 
+            
             const socketId = await findSocketIdById(userId)
+            
             if(socketId){
                 const data: {message: string, myDayId: string, unreadNotification: number} = {
                     message: "Someone like your post",
                     myDayId,
                     unreadNotification
                 }
+                console.log(data)
                 io.to(socketId).emit("likeAndCommentNotification", data)
             }
             res.status(201).send({totalLike ,message: "Like added"})
