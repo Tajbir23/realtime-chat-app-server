@@ -14,17 +14,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const notificationSchema_1 = __importDefault(require("../../../models/notificationSchema"));
 const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.user;
-    const { page, limit } = req.query;
-    // console.log(userId);
-    const startIndex = page * Number(limit);
-    // const endIndex = startIndex + Number(limit) as unknown as number;
-    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ time: -1 }).skip(startIndex).limit(limit).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
-    notification.forEach((item) => {
-        item.isRead = true;
-        item.save();
-    });
-    // console.log(notification);
-    res.send(notification);
+    try {
+        const { _id } = req.user;
+        const page = Number(req.query.page) || 0; // Default page to 0 if not provided
+        const limit = Number(req.query.limit) || 10; // Default limit to 10 if not provided
+        const startIndex = page * limit;
+        const notifications = yield notificationSchema_1.default
+            .find({ receiverId: _id })
+            .sort({ time: -1 }) // Recent to last by time
+            .skip(startIndex)
+            .limit(limit)
+            .populate("senderId", "-password")
+            .populate("receiverId", "-password")
+            .populate("postId");
+        // Mark notifications as read and save each
+        yield Promise.all(notifications.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+            item.isRead = true;
+            yield item.save();
+        })));
+        res.status(200).send(notifications);
+    }
+    catch (error) {
+        console.error("Error fetching notifications:", error);
+        res.status(500).send({ error: "Failed to fetch notifications." });
+    }
 });
 exports.default = getNotification;

@@ -62,7 +62,7 @@ exports.io.on("connection", (socket) => {
         const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
         yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
         exports.io.emit("users", updatedUser);
-        console.log("Active users", exports.connectedUsers);
+        // console.log("Active users",connectedUsers)
     }));
     socket.on("sendUpcomingMessage", (message) => {
         const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
@@ -81,7 +81,7 @@ exports.io.on("connection", (socket) => {
             exports.connectedUsers.delete(socket.id);
             yield (0, getFriendsConnection_1.default)(user._id);
             socket.disconnect();
-            console.log("Active users", exports.connectedUsers);
+            // console.log("Active users",connectedUsers)
         }
     }));
     socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,7 +93,7 @@ exports.io.on("connection", (socket) => {
             exports.io.emit("users", upDatedUser);
             yield (0, getFriendsConnection_1.default)(user._id);
             exports.connectedUsers.delete(socket.id);
-            console.log("Active users", exports.connectedUsers);
+            // console.log("Active users",connectedUsers)
         }
     }));
 });

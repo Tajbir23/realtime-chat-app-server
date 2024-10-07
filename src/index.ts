@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
     await getFriendsConnectionById(user?._id);
     io.emit("users", updatedUser);
 
-    console.log("Active users",connectedUsers)
+    // console.log("Active users",connectedUsers)
   });
 
   socket.on("sendUpcomingMessage", (message) => {
@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
       await getFriendsConnectionById(user._id);
       socket.disconnect();
 
-      console.log("Active users",connectedUsers)
+      // console.log("Active users",connectedUsers)
     }
   });
   socket.on("disconnect", async () => {
@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
       await getFriendsConnectionById(user._id);
       connectedUsers.delete(socket.id);
 
-      console.log("Active users",connectedUsers)
+      // console.log("Active users",connectedUsers)
     }
   });
 

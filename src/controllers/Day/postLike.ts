@@ -39,7 +39,7 @@ const postLike = async(req: Request, res: Response) => {
             const newNotification = await (await (await createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId')
 
             const socketId = await findSocketIdById(userId)
-            
+            console.log("socket id",socketId)
             if(socketId){
                 const data: {message: string, myDayId: string, unreadNotification: number, newNotification: any} = {
                     message: "Someone like your post",

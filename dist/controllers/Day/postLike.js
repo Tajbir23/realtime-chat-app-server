@@ -47,6 +47,7 @@ const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const unreadNotification = yield notificationSchema_1.default.countDocuments({ receiverId: userId, isRead: false });
             const newNotification = yield (yield (yield createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId');
             const socketId = yield (0, findSocketIdbyId_1.default)(userId);
+            console.log("socket id", socketId);
             if (socketId) {
                 const data = {
                     message: "Someone like your post",
