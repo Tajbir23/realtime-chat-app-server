@@ -15,8 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const notificationSchema_1 = __importDefault(require("../../../models/notificationSchema"));
 const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
+    const { page, limit } = req.query;
     // console.log(userId);
-    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ time: -1 }).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
+    const startIndex = page * Number(limit);
+    // const endIndex = startIndex + Number(limit) as unknown as number;
+    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ time: -1 }).skip(startIndex).limit(limit).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
     notification.forEach((item) => {
         item.isRead = true;
         item.save();
