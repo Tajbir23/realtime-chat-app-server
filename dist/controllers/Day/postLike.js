@@ -38,19 +38,21 @@ const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             const totalLike = yield likeSchema_1.default.countDocuments({ myDayId });
             // create notification
-            yield notificationSchema_1.default.create({
+            const createNotification = yield notificationSchema_1.default.create({
                 senderId: _id,
                 receiverId: userId,
                 type: "like",
                 postId: myDayId
             });
             const unreadNotification = yield notificationSchema_1.default.countDocuments({ receiverId: userId, isRead: false });
+            const newNotification = yield (yield (yield createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId');
             const socketId = yield (0, findSocketIdbyId_1.default)(userId);
             if (socketId) {
                 const data = {
                     message: "Someone like your post",
                     myDayId,
-                    unreadNotification
+                    unreadNotification,
+                    newNotification
                 };
                 console.log(data);
                 __1.io.to(socketId).emit("likeAndCommentNotification", data);

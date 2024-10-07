@@ -11,12 +11,14 @@ const postComment = async (req: Request, res: Response) => {
         await commentModel.create({posterId: userId, senderId: _id, myDayId, comment})
 
         if(userId !== _id){
-            await notificationModel.create({
+            const createNotification = await notificationModel.create({
                 senderId: _id,
                 receiverId: userId,
                 type: "comment",
                 postId: myDayId
             })
+
+            const newNotification = await (await (await createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId')
 
             const unreadNotification = await notificationModel.countDocuments({receiverId: userId, isRead: false})
 
@@ -24,7 +26,8 @@ const postComment = async (req: Request, res: Response) => {
         if(socketId){
             io.to(socketId).emit('likeAndCommentNotification', {
                 message: "Someone comment your day",
-                unreadNotification
+                unreadNotification,
+                newNotification
             })
         }
         }

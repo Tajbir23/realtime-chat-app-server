@@ -4,7 +4,7 @@ import notificationModel from "../../../models/notificationSchema";
 const getNotification = async(req: Request, res: Response) => {
     const { _id } = (req as any).user;
     // console.log(userId);
-    const notification = await notificationModel.find({ receiverId: _id }).sort({ createdAt: -1 }).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
+    const notification = await notificationModel.find({ receiverId: _id }).sort({ time: -1 }).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
     notification.forEach((item) => {
         item.isRead = true;
         item.save();

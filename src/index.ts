@@ -118,44 +118,44 @@ io.on("connection", (socket) => {
 
 // cron job to check active users every 10 minutes
 
-cron.schedule('*/10 * * * *', async () => {
-  console.log('Checking active users');
+// cron.schedule('*/10 * * * *', async () => {
+//   console.log('Checking active users');
 
-  try {
-    // Fetch all users who are marked as active in the database
-    const users = await userModel.find({ isActive: true });
-    console.log(users);
+//   try {
+//     // Fetch all users who are marked as active in the database
+//     const users = await userModel.find({ isActive: true });
+//     console.log(users);
 
-    // Process users in parallel using Promise.all and map
-    await Promise.all(users.map(async (user) => {
-      const activeUserSocketId = findSocketIdById(user._id);
+//     // Process users in parallel using Promise.all and map
+//     await Promise.all(users.map(async (user) => {
+//       const activeUserSocketId = findSocketIdById(user._id);
 
-      // If user is not actively connected via Socket.IO
-      if (!activeUserSocketId) {
-        // Update user status in the database to mark them as inactive
-        await userModel.updateOne(
-          { _id: user._id },
-          {
-            $set: {
-              isActive: false,
-              lastActive: Date.now(),
-              socketId: null
-            }
-          }
-        );
+//       // If user is not actively connected via Socket.IO
+//       if (!activeUserSocketId) {
+//         // Update user status in the database to mark them as inactive
+//         await userModel.updateOne(
+//           { _id: user._id },
+//           {
+//             $set: {
+//               isActive: false,
+//               lastActive: Date.now(),
+//               socketId: null
+//             }
+//           }
+//         );
 
-        // Emit the updated user data to all connected clients
-        const updatedUser = await findOneUser(user._id);
-        console.log(`User ${user._id} disconnected`);
-        console.log("Active users",connectedUsers)
-        io.emit('users', updatedUser);
-      }
-    }));
+//         // Emit the updated user data to all connected clients
+//         const updatedUser = await findOneUser(user._id);
+//         console.log(`User ${user._id} disconnected`);
+//         console.log("Active users",connectedUsers)
+//         io.emit('users', updatedUser);
+//       }
+//     }));
 
-  } catch (error) {
-    console.error('Error checking active users:', error);
-  }
-});
+//   } catch (error) {
+//     console.error('Error checking active users:', error);
+//   }
+// });
 
 cron.schedule('0 * * * *', async () => {
   console.log('Running cron job');

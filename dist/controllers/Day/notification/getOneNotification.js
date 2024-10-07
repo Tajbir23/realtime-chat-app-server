@@ -13,15 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const notificationSchema_1 = __importDefault(require("../../../models/notificationSchema"));
-const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.user;
-    // console.log(userId);
-    const notification = yield notificationSchema_1.default.find({ receiverId: _id }).sort({ time: -1 }).populate("senderId", "-password").populate('receiverId', '-password').populate('postId');
-    notification.forEach((item) => {
-        item.isRead = true;
-        item.save();
-    });
-    // console.log(notification);
-    res.send(notification);
+const getOneNotification = (_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const notification = yield notificationSchema_1.default.findById(_id).populate('senderId', '-password').populate('receiverId', '-password').populate('postId');
+    return notification;
 });
-exports.default = getNotification;
+exports.default = getOneNotification;

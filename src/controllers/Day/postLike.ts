@@ -27,7 +27,7 @@ const postLike = async(req: Request, res: Response) => {
             const totalLike = await likeModel.countDocuments({myDayId})
 
             // create notification
-            await notificationModel.create({
+            const createNotification = await notificationModel.create({
                 senderId: _id,
                 receiverId: userId,
                 type: "like",
@@ -35,15 +35,17 @@ const postLike = async(req: Request, res: Response) => {
             })
 
             const unreadNotification = await notificationModel.countDocuments({receiverId: userId, isRead: false})
+        
+            const newNotification = await (await (await createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId')
 
-            
             const socketId = await findSocketIdById(userId)
             
             if(socketId){
-                const data: {message: string, myDayId: string, unreadNotification: number} = {
+                const data: {message: string, myDayId: string, unreadNotification: number, newNotification: any} = {
                     message: "Someone like your post",
                     myDayId,
-                    unreadNotification
+                    unreadNotification,
+                    newNotification
                 }
                 console.log(data)
                 io.to(socketId).emit("likeAndCommentNotification", data)
@@ -54,4 +56,5 @@ const postLike = async(req: Request, res: Response) => {
         res.send(error)
     }
 }
+
 export default postLike;
