@@ -17,7 +17,7 @@ const getNotification = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const { _id } = req.user;
         const page = Number(req.query.page) || 0; // Default page to 0 if not provided
-        const limit = Number(req.query.limit) || 10; // Default limit to 10 if not provided
+        const limit = Number(req.query.limit) || 12; // Default limit to 10 if not provided
         const startIndex = page * limit;
         const notifications = yield notificationSchema_1.default
             .find({ receiverId: _id })
