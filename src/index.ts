@@ -23,6 +23,7 @@ export const io = new Server(server, {
       "http://localhost:5173",
       "https://chat.tajbirideas.com",
       "https://realtime-chat-app-tajbir.web.app",
+      "https://g4pnft81-5173.inc1.devtunnels.ms",
     ],
     // origin: "*",
   },
@@ -34,6 +35,7 @@ app.use(
       "http://localhost:5173",
       "https://chat.tajbirideas.com",
       "https://realtime-chat-app-tajbir.web.app",
+      "https://g4pnft81-5173.inc1.devtunnels.ms",
     ],
     // origin: "*",
   })
