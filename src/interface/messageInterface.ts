@@ -11,6 +11,7 @@ interface messageInterface {
     receiverEmail: string;
     receiverPhotoUrl: string;
     message: string;
+    emoji: string;
     createdAt: Date;
 }
 

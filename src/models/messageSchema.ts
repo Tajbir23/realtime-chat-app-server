@@ -52,6 +52,9 @@ const messageSchema= new Schema<messageInterface>({
         type: String,
         required: true
     },
+    emoji: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: () => Date.now()

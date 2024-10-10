@@ -52,6 +52,9 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    emoji: {
+        type: String
+    },
     createdAt: {
         type: Date,
         default: () => Date.now()
