@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
-const getMessage = (senderUsername, receiverUsername, skip) => __awaiter(void 0, void 0, void 0, function* () {
+const getMessage = (senderUsername, receiverUsername, myId, skip) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const message = yield messageSchema_1.default.find({
             $or: [
@@ -25,7 +25,8 @@ const getMessage = (senderUsername, receiverUsername, skip) => __awaiter(void 0,
                     senderUsername: receiverUsername,
                     receiverUsername: senderUsername
                 }
-            ]
+            ],
+            deletedFor: { $ne: myId }
         }).sort({ createdAt: -1 }).skip(skip !== null && skip !== void 0 ? skip : 0).limit(10);
         return message;
     }

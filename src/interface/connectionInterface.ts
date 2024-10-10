@@ -6,7 +6,7 @@ interface userConnections {
     lastMessageAt: Number;
     blockUserId: string;
     isBlock: boolean;
-    blockSender: string
+    blockSender: string;
 }
 
 export default userConnections

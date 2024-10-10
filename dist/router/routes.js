@@ -36,6 +36,7 @@ const shareCountMyDay_1 = __importDefault(require("../controllers/Day/shareCount
 const getNotification_1 = __importDefault(require("../controllers/Day/notification/getNotification"));
 const getUnreadNotificationCount_1 = __importDefault(require("../controllers/Day/notification/getUnreadNotificationCount"));
 const postEmoji_1 = __importDefault(require("../controllers/message/postEmoji"));
+const deleteMessage_1 = __importDefault(require("../controllers/message/deleteMessage"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -68,7 +69,7 @@ router.get('/user/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, voi
 router.post('/message', verifyJwt_1.default, postMessage_1.default);
 router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { username } = req.user;
+    const { username, _id } = req.user;
     const { currentPage = 1 } = req.query;
     console.log(id, currentPage);
     try {
@@ -80,7 +81,7 @@ router.get('/message/:id', verifyJwt_1.default, (req, res) => __awaiter(void 0, 
         userSchema_1.default.findOne({ _id: id }).then((user) => __awaiter(void 0, void 0, void 0, function* () {
             var _a;
             const receiverUsername = (_a = user === null || user === void 0 ? void 0 : user.username) !== null && _a !== void 0 ? _a : '';
-            const message = yield (0, getMessage_1.default)(username, receiverUsername, skip);
+            const message = yield (0, getMessage_1.default)(username, receiverUsername, _id, skip);
             res.send(message);
         }));
     }
@@ -111,4 +112,5 @@ router.post('/share', shareCountMyDay_1.default);
 router.get('/notifications', verifyJwt_1.default, getNotification_1.default);
 router.get('/notifications/unread', verifyJwt_1.default, getUnreadNotificationCount_1.default);
 router.post('/emoji', verifyJwt_1.default, postEmoji_1.default);
+router.post('/message/delete/:id', verifyJwt_1.default, deleteMessage_1.default);
 exports.default = router;

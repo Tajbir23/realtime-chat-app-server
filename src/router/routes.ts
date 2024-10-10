@@ -23,6 +23,7 @@ import shareCountMyDay from "../controllers/Day/shareCountMyDay";
 import getNotification from "../controllers/Day/notification/getNotification";
 import getUnreadNotificationCount from "../controllers/Day/notification/getUnreadNotificationCount";
 import postEmoji from "../controllers/message/postEmoji";
+import deleteMessage from "../controllers/message/deleteMessage";
 
 
 
@@ -64,7 +65,7 @@ router.post('/message', verifyJwt, postMessage)
 
 router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
     const {id} = req.params
-    const {username} = (req as any).user
+    const {username, _id} = (req as any).user
     const {currentPage = 1} = (req as any).query
     console.log(id, currentPage)
     try {
@@ -77,7 +78,7 @@ router.get('/message/:id', verifyJwt, async(req:Request, res: Response) => {
         }
         userModel.findOne({_id: id}).then(async(user) => {
             const receiverUsername = user?.username ?? ''
-            const message = await getMessage(username, receiverUsername, skip)
+            const message = await getMessage(username, receiverUsername, _id, skip)
             res.send(message)
         })
         
@@ -121,4 +122,6 @@ router.get('/notifications', verifyJwt, getNotification)
 router.get('/notifications/unread', verifyJwt, getUnreadNotificationCount)
 
 router.post('/emoji', verifyJwt, postEmoji)
+
+router.post('/message/delete/:id', verifyJwt, deleteMessage)
 export default router;

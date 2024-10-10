@@ -52,6 +52,10 @@ const messageSchema= new Schema<messageInterface>({
         type: String,
         required: true
     },
+    deletedFor: {
+        type: String,
+        default: null
+    },
     emoji: {
         type: String
     },
