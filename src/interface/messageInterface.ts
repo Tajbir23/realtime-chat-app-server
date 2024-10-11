@@ -12,6 +12,8 @@ interface messageInterface {
     receiverPhotoUrl: string;
     message: string;
     deletedFor: string;
+    edited: boolean;
+    unsent: boolean;
     emoji: string;
     createdAt: Date;
 }

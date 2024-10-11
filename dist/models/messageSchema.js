@@ -56,6 +56,14 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         default: null
     },
+    edited: {
+        type: Boolean,
+        default: false
+    },
+    unsent: {
+        type: Boolean,
+        default: false
+    },
     emoji: {
         type: String
     },

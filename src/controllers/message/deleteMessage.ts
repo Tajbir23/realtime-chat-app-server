@@ -24,9 +24,9 @@ const deleteMessage = async(req: Request, res: Response) => {
         }
 
         if(type === 'unsent' && message?.senderId === _id){
-            const result = await messageModel.findOneAndUpdate({_id: messageId}, {$set: {message: 'unsent'}}, {new: true})
+            const result = await messageModel.findOneAndUpdate({_id: messageId}, {message: 'unsent', unsent:true}, {new: true})
             if(opponentSocketId && opponentId){
-                io.to(opponentSocketId).emit("unsentMessage", result)
+                io.to(opponentSocketId).emit("updateMessage", result)
             }
             res.send(result)
         }

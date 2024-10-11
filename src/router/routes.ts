@@ -24,6 +24,7 @@ import getNotification from "../controllers/Day/notification/getNotification";
 import getUnreadNotificationCount from "../controllers/Day/notification/getUnreadNotificationCount";
 import postEmoji from "../controllers/message/postEmoji";
 import deleteMessage from "../controllers/message/deleteMessage";
+import editMessage from "../controllers/message/editMessage";
 
 
 
@@ -124,4 +125,6 @@ router.get('/notifications/unread', verifyJwt, getUnreadNotificationCount)
 router.post('/emoji', verifyJwt, postEmoji)
 
 router.post('/message/delete/:id', verifyJwt, deleteMessage)
+
+router.put('/message/edit/:messageId', verifyJwt, editMessage)
 export default router;

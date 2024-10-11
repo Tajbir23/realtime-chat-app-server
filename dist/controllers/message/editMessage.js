@@ -15,34 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
 const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
 const __1 = require("../..");
-const deleteMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { type, messageId, opponentId } = req.body;
+const editMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { messageId } = req.params;
+    const { message } = req.body;
     const { _id } = req.user;
     try {
-        const message = yield messageSchema_1.default.findById(messageId);
-        const opponentSocketId = yield (0, findSocketIdbyId_1.default)(opponentId);
-        if (type === 'deleteForMe') {
-            if ((message === null || message === void 0 ? void 0 : message.deletedFor) === null) {
-                const result = yield messageSchema_1.default.findOneAndUpdate({ _id: id }, { $set: { deletedFor: _id } }, { new: true });
-                res.send(result);
-            }
-            else {
-                const result = yield messageSchema_1.default.deleteOne({ _id: messageId });
-                res.send(result);
-            }
-        }
-        if (type === 'unsent' && (message === null || message === void 0 ? void 0 : message.senderId) === _id) {
-            const result = yield messageSchema_1.default.findOneAndUpdate({ _id: messageId }, { message: 'unsent', unsent: true }, { new: true });
-            if (opponentSocketId && opponentId) {
+        const result = yield messageSchema_1.default.findOneAndUpdate({ _id: messageId, senderId: _id }, { message, edited: true }, { new: true });
+        if (result === null || result === void 0 ? void 0 : result.receiverId) {
+            const opponentSocketId = yield (0, findSocketIdbyId_1.default)(result === null || result === void 0 ? void 0 : result.receiverId);
+            if (opponentSocketId) {
                 __1.io.to(opponentSocketId).emit("updateMessage", result);
             }
-            res.send(result);
         }
+        res.send(result);
     }
     catch (error) {
-        console.log(error);
-        res.send(error);
+        res.status(500).send({ error: error.message });
     }
 });
-exports.default = deleteMessage;
+exports.default = editMessage;
