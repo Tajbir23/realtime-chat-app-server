@@ -29,6 +29,12 @@ const connectionSchema = new Schema<userConnections>({
     },
     blockSender: {
         type: String
+    },
+    theme: {
+        type: String,
+    },
+    themeUpdateBy: {
+        type: String
     }
 },{
     timestamps: true

@@ -7,6 +7,8 @@ interface userConnections {
     blockUserId: string;
     isBlock: boolean;
     blockSender: string;
+    theme: string;
+    themeUpdateBy: string;
 }
 
 export default userConnections
