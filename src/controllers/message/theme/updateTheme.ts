@@ -5,12 +5,12 @@ import { io } from "../../..";
 
 const updateTheme = async(req: Request, res: Response) => {
     const {_id} = (req as any).user
-    const {theme} = req.body
+    const {theme, themeType} = req.body
     const {chatId} = req.params
 
     console.log('chatId', chatId)
     try {
-        const result = await connectionModel.findOneAndUpdate({_id: chatId}, {theme, themeUpdateBy: _id}, {new: true})
+        const result = await connectionModel.findOneAndUpdate({_id: chatId}, {theme, themeUpdateBy: _id, themeType}, {new: true})
         const userId = result?.senderId === _id ? result?.receiverId : result?.senderId
 
         if(userId){

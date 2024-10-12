@@ -41,6 +41,10 @@ const postMessage = async (req: Request, res: Response) => {
         },{
             lastMessage: message,
             lastMessageAt: Number(Date.now()),
+            deleteFor: '',
+            delete: false
+        }, {
+            new: true
         });
 
 

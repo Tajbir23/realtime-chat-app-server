@@ -26,6 +26,7 @@ import postEmoji from "../controllers/message/postEmoji";
 import deleteMessage from "../controllers/message/deleteMessage";
 import editMessage from "../controllers/message/editMessage";
 import updateTheme from "../controllers/message/theme/updateTheme";
+import deleteChat from "../controllers/friends/deleteChat";
 
 
 
@@ -130,5 +131,7 @@ router.post('/message/delete/:id', verifyJwt, deleteMessage)
 router.put('/message/edit/:messageId', verifyJwt, editMessage)
 
 router.put('/chat/theme/:chatId', verifyJwt, updateTheme)
+
+router.post('/chat/deleteChat', verifyJwt, deleteChat)
 
 export default router;

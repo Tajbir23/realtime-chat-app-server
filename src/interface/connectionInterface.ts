@@ -9,6 +9,9 @@ interface userConnections {
     blockSender: string;
     theme: string;
     themeUpdateBy: string;
+    themeType: string;
+    deleteFor: string;
+    delete: boolean;
 }
 
 export default userConnections

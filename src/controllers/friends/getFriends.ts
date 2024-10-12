@@ -11,7 +11,7 @@ const getFriends = async (req: Request, res: Response) => {
     const skip = (Number(currentPage - 1) * 10)
     const friends: friendsInterface[] = await connectionModel
     .find({
-      $or: [{ receiverId: _id }, { senderId: _id }],
+      $or: [{ receiverId: _id }, { senderId: _id }], deleteFor: {$ne: _id}
     })
     .populate("senderId", "-password")
     .populate("receiverId", "-password")

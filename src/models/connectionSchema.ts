@@ -35,6 +35,16 @@ const connectionSchema = new Schema<userConnections>({
     },
     themeUpdateBy: {
         type: String
+    },
+    themeType: {
+        type: String,
+    },
+    deleteFor: {
+        type: String
+    },
+    delete: {
+        type: Boolean,
+        default: false,
     }
 },{
     timestamps: true
