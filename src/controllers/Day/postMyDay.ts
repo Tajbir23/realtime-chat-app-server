@@ -17,7 +17,7 @@ const postMyDay = async (req: Request, res: Response) => {
         const user = await userModel.findByIdAndUpdate({_id}, {myDay: content, myDayEndAt, isActiveMyDay: true, myDayId: myDayData._id}).select("-password")
 
         await getFriendsConnectionById(_id)
-        io.emit("users", user)
+        io?.emit("users", user)
         res.status(201).send({message: "My Day added successfully"})
     } catch (error) {
         console.log(error)

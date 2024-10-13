@@ -1,8 +1,7 @@
 import connectionModel from "../../models/connectionSchema";
-import userModel from "../../models/userSchema";
-import findSocketIdByEmail from "../findSocketIdByEmail";
 import { io } from "../..";
 import friendsInterface from "../../interface/friendsInterface";
+import findSocketIdById from "../findSocketIdbyId";
 
 const getFriendsConnectionById = async (_id: string) => {
     
@@ -24,29 +23,27 @@ const getFriendsConnectionById = async (_id: string) => {
       .populate("receiverId", "-password")
       .lean();
 
-    friends.forEach((friend) => {
-
+    friends.forEach(async (friend) => {
       if (friend.senderId._id.toString() === _id) {
-        const receiverEmail = friend.receiverId.email;
-        
+        // const receiverEmail = friend.receiverId.email;
+        const receiverId = friend.receiverId._id
         delete (friend as any).receiverId;
 
-        const socketId = findSocketIdByEmail(receiverEmail);
+        const socketId = await findSocketIdById(receiverId);
         if (socketId) {
-          io.to(socketId).emit("updateFriendStatus", friend);
+          io?.to(socketId).emit("updateFriendStatus", friend);
         }
       } else if (friend.receiverId._id.toString() === _id) {
-        const senderEmail = friend.senderId.email;
-       
+        // const senderEmail = friend.senderId.email;
+        const senderId = friend.senderId._id
         delete (friend as any).senderId;
 
-        const socketId = findSocketIdByEmail(senderEmail);
+        const socketId = await findSocketIdById(senderId);
         if (socketId) {
-          io.to(socketId).emit("updateFriendStatus", friend);
+          io?.to(socketId).emit("updateFriendStatus", friend);
         }
       }
-    });
-  } catch (error) {
+    });  } catch (error) {
     console.error("Error in getFriendsConnectionById:", error);
   }
 };

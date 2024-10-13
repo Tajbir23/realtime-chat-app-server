@@ -22,9 +22,9 @@ const postComment = async (req: Request, res: Response) => {
 
             const unreadNotification = await notificationModel.countDocuments({receiverId: userId, isRead: false})
 
-            const socketId = findSocketIdById(userId)
+            const socketId = await findSocketIdById(userId)
         if(socketId){
-            io.to(socketId).emit('likeAndCommentNotification', {
+            io?.to(socketId).emit('likeAndCommentNotification', {
                 message: "Someone comment your day",
                 unreadNotification,
                 newNotification

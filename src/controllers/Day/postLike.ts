@@ -48,7 +48,7 @@ const postLike = async(req: Request, res: Response) => {
                     newNotification
                 }
                 console.log(data)
-                io.to(socketId).emit("likeAndCommentNotification", data)
+                io?.to(socketId).emit("likeAndCommentNotification", data)
             }
             res.status(201).send({totalLike ,message: "Like added"})
         }

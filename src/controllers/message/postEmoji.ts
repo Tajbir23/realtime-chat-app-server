@@ -13,7 +13,7 @@ const postEmoji = async (req: Request, res: Response) => {
         const receiver = await findSocketIdById(receiverId)
 
         if(result && receiver){
-            io.to(receiver).emit("emojiUpdate", result)
+            io?.to(receiver).emit("emojiUpdate", result)
             
         }
 

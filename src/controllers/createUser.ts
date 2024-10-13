@@ -18,7 +18,7 @@ const createUser = async(req: Request, res: Response) => {
         const token = await generateJwt(username, email, user._id);
 
         const allUsers = await findOneUser(result._id);
-        io.emit('users', allUsers)
+        io?.emit('users', allUsers)
         res.status(201).send({token, name, username, email, photoUrl, _id: user._id})
     } catch (error:any) {
         console.log(error)
@@ -26,5 +26,4 @@ const createUser = async(req: Request, res: Response) => {
     }
     
 }
-
 export default createUser

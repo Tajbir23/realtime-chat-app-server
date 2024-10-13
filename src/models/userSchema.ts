@@ -50,6 +50,9 @@ const userSchema = new Schema<user>({
     },
     ip: {
         type: String
+    },
+    socketId: {
+        type: String,
     }
 })
 

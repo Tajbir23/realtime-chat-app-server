@@ -13,6 +13,7 @@ interface user extends Document {
     isActiveMyDay: boolean;
     myDayId: string;
     ip: string
+    socketId: string;
 }
 
 export default user
