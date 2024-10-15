@@ -46,6 +46,10 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }, {
             lastMessage: message,
             lastMessageAt: Number(Date.now()),
+            deleteFor: '',
+            delete: false
+        }, {
+            new: true
         });
         if (connection) {
             chatId = connection._id.toString();

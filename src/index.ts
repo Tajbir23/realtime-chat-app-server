@@ -11,7 +11,11 @@ import getFriendsConnectionById from "./controllers/friends/getFriendsConnection
 import findOneUser from "./controllers/findUser";
 import cron from 'node-cron'
 import findSocketIdById from "./controllers/findSocketIdbyId";
+import os from "os"
+// import { pid } from "node:process";
 
+const numCPUs = os.cpus().length;
+console.log("processor core : ", numCPUs)
 const port = process.env.PORT || 3000;
 
 const app = express();
@@ -46,6 +50,11 @@ app.use(express.json());
 connection();
 
 app.get("/", async (req: Request, res: Response) => {
+  // let value = 1000000
+  // while (value > 0) {
+  //   value--;
+  // }
+  // console.log(`handling the request using ${pid}`)
   res.send("Hello, World!");
 });
 

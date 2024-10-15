@@ -13,14 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connectionSchema_1 = __importDefault(require("../../../models/connectionSchema"));
+const findSocketIdbyId_1 = __importDefault(require("../../findSocketIdbyId"));
+const __1 = require("../../..");
 const updateTheme = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
-    const { theme } = req.body;
+    const { theme, themeType } = req.body;
     const { chatId } = req.params;
     console.log('chatId', chatId);
     try {
-        const result = yield connectionSchema_1.default.findOneAndUpdate({ _id: chatId }, { theme, themeUpdateBy: _id }, { new: true });
-        console.log(result);
+        const result = yield connectionSchema_1.default.findOneAndUpdate({ _id: chatId }, { theme, themeUpdateBy: _id, themeType }, { new: true });
+        const userId = (result === null || result === void 0 ? void 0 : result.senderId) === _id ? result === null || result === void 0 ? void 0 : result.receiverId : result === null || result === void 0 ? void 0 : result.senderId;
+        if (userId) {
+            const socketId = yield (0, findSocketIdbyId_1.default)(userId);
+            if (socketId) {
+                __1.io.to(socketId).emit("themeUpdate", result);
+            }
+        }
         res.send(result);
     }
     catch (error) {
