@@ -15,8 +15,10 @@ const getLastMsgFriend = async (id: string) => {
     .populate("senderId", "-password")
     .populate("receiverId", "-password")
 
-    const receiverSocketId = await findSocketIdById((recentMessage[0].receiverId as unknown as user)._id)
-    const senderSocketId = await findSocketIdById((recentMessage[0].senderId as unknown as user)._id)
+    const receiverId = (recentMessage[0].receiverId as unknown as user)._id.toString()
+    const senderId = (recentMessage[0].senderId as unknown as user)._id.toString()
+    const receiverSocketId = await findSocketIdById(receiverId)
+    const senderSocketId = await findSocketIdById(senderId)
     if (receiverSocketId) io?.to(receiverSocketId).emit("recentMessage", recentMessage)
     if (senderSocketId) io?.to(senderSocketId).emit("recentMessage", recentMessage)
 }

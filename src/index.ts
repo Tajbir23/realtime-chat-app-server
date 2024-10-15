@@ -14,8 +14,10 @@ import cluster from "node:cluster";
 import os from "node:os";
 import { createAdapter } from "socket.io-redis";
 import { pubClient, subClient } from "./config/redis";
+import { pid } from "node:process";
 
 const numCPUs = os.cpus().length;
+// const numCPUs = 2;
 const port = process.env.PORT || 3000;
 
 // Redis setup for shared state in a clustered environment
@@ -34,6 +36,14 @@ if (cluster.isMaster) {
     console.log(`Worker ${worker.process.pid} died. Restarting a new worker...`);
     cluster.fork();
   });
+
+  cron.schedule('0 * * * *', async () => {
+    console.log('Running cron job');
+    const now = Date.now()
+    const BATCH_SIZE = 100
+    await userModel.updateMany({myDayEndAt: {$lt: now}, isActiveMyDay: true}, {$set: {isActiveMyDay: false, myDayId: null, myDay: null}}).limit(BATCH_SIZE)
+  })
+  
 } else {
   const app = express();
   const server = createServer(app);
@@ -66,7 +76,12 @@ if (cluster.isMaster) {
   connection();
 
   app.get("/", async (req: Request, res: Response) => {
-    res.send("Hello, World!");
+    let value = 1000000
+  while (value > 0) {
+    value--;
+  }
+  console.log(`handling the request using ${pid}`)
+  res.send("Hello, World!");
   });
 
   app.use("/api", router);
@@ -75,25 +90,31 @@ if (cluster.isMaster) {
   io.on("connection", (socket) => {
     socket.on("connected", async (user: any) => {
       const ip = socket.handshake.address;
+      const userId = user?._id;
 
-      await pubClient.hSet('emailToSocketId', user?.email, socket.id);
-      await pubClient.hSet('idToSocketId', socket.id, user?._id);
+      console.log(socket.id, userId)
+
 
       const update = await userModel.findOneAndUpdate(
         { email: user?.email },
         { $set: { isActive: true, socketId: socket.id } }, {new: true}
-      ).populate('-password');
+      );
+
+      if(userId){
+        await pubClient.hSet('idToSocketId', userId, socket.id);
+      }
 
       // const updatedUser = await findOneUser(user?._id);
-      await getFriendsConnectionById(user?._id);
+      await getFriendsConnectionById(userId);
       io?.emit("users", update);
     });
 
     socket.on("sendUpcomingMessage", async (message) => {
       const receiverId = message?.receiverId;
+      console.log('receiverId', receiverId)
       // const connectedUsers = await pubClient.hGetAll("connectedUsers");
       const socketId = await pubClient.hGet('idToSocketId', receiverId)
-
+      console.log('socketId', socketId)
       if(socketId){
         io?.to(socketId).emit("upcomingMessage", message);
       }
@@ -103,12 +124,13 @@ if (cluster.isMaster) {
 
         const update = await userModel.findOneAndUpdate(
           { socketId: socket.id },
-          { isActive: false, lastActive: Number(Date.now()), socketId: null }, {new: true} ).populate('-password');
+          { isActive: false, lastActive: Number(Date.now()), socketId: null }, {new: true} );
        
         if(update){
+          const userId = update._id.toString()
           io?.emit("users", update);
-        await pubClient.hDel("idToSocketId", update?._id);
-        await getFriendsConnectionById(update._id);
+        await pubClient.hDel("idToSocketId", userId);
+        await getFriendsConnectionById(userId);
         socket.disconnect();
         }
       })
@@ -117,12 +139,13 @@ if (cluster.isMaster) {
 
           const update = await userModel.findOneAndUpdate(
             { socketId: socket.id },
-            { isActive: false, lastActive: Number(Date.now()), socketId: null }, {new: true} ).populate('-password');
+            { isActive: false, lastActive: Number(Date.now()), socketId: null }, {new: true} );
 
           if(update){
+            const userId = update._id.toString()
             io?.emit("users", update);
-            await pubClient.hDel("idToSocketId", update?._id);
-            await getFriendsConnectionById(update._id);
+            await pubClient.hDel("idToSocketId", userId);
+            await getFriendsConnectionById(userId);
             socket.disconnect();
           }
       });

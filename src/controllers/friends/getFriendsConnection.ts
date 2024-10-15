@@ -26,7 +26,7 @@ const getFriendsConnectionById = async (_id: string) => {
     friends.forEach(async (friend) => {
       if (friend.senderId._id.toString() === _id) {
         // const receiverEmail = friend.receiverId.email;
-        const receiverId = friend.receiverId._id
+        const receiverId = friend.receiverId._id.toString()
         delete (friend as any).receiverId;
 
         const socketId = await findSocketIdById(receiverId);
@@ -35,7 +35,7 @@ const getFriendsConnectionById = async (_id: string) => {
         }
       } else if (friend.receiverId._id.toString() === _id) {
         // const senderEmail = friend.senderId.email;
-        const senderId = friend.senderId._id
+        const senderId = friend.senderId._id.toString()
         delete (friend as any).senderId;
 
         const socketId = await findSocketIdById(senderId);
