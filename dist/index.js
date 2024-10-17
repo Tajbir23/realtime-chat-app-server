@@ -90,7 +90,7 @@ else {
         socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
             const ip = socket.handshake.address;
             const userId = user === null || user === void 0 ? void 0 : user._id;
-            console.log(socket.id, userId);
+            console.log("Connect user ", socket.id, userId);
             const update = yield userSchema_1.default.findOneAndUpdate({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } }, { new: true });
             if (userId) {
                 yield redis_1.pubClient.hSet('idToSocketId', userId, socket.id);
@@ -121,6 +121,7 @@ else {
         }));
         socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
             const update = yield userSchema_1.default.findOneAndUpdate({ socketId: socket.id }, { isActive: false, lastActive: Number(Date.now()), socketId: null }, { new: true });
+            console.log('disconnect', socket.id, update === null || update === void 0 ? void 0 : update.name);
             if (update) {
                 const userId = update._id.toString();
                 io === null || io === void 0 ? void 0 : io.emit("users", update);

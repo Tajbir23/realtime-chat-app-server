@@ -16,8 +16,8 @@ import { createAdapter } from "socket.io-redis";
 import { pubClient, subClient } from "./config/redis";
 import { pid } from "node:process";
 
-// const numCPUs = os.cpus().length;
-const numCPUs = 2;
+const numCPUs = os.cpus().length;
+// const numCPUs = 2;
 const port = process.env.PORT || 3000;
 
 // Redis setup for shared state in a clustered environment

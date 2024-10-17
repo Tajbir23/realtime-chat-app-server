@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redis_1 = require("../config/redis");
 const findSocketIdById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = yield id.toString();
-    console.log('find socket id', userId);
+    // console.log('find socket id', userId)
     const socketId = yield redis_1.pubClient.hGet('idToSocketId', userId);
-    console.log('find socket by socketId', socketId);
+    // console.log('find socket by socketId',socketId)
     return socketId;
 });
 exports.default = findSocketIdById;

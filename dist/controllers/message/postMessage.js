@@ -84,10 +84,12 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             const senderSocketId = yield (0, findSocketIdbyId_1.default)(sender._id);
             if (receiverSocketId) {
                 console.log('receiverSocketId', receiverSocketId);
+                console.log('receiverSocketId', result);
                 __1.io === null || __1.io === void 0 ? void 0 : __1.io.to(receiverSocketId).emit("message", result);
             }
             if (senderSocketId) {
                 console.log('senderSocketId', senderSocketId);
+                console.log('senderSocketId', result);
                 __1.io === null || __1.io === void 0 ? void 0 : __1.io.to(senderSocketId).emit("message", result);
             }
             // io.emit("message", result);
