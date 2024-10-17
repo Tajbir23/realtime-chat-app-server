@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import {createClient} from "redis"
 // import { io } from "..";
 // import { createAdapter } from "socket.io-redis";
