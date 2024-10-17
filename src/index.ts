@@ -16,8 +16,8 @@ import os from "node:os";
 import { pubClient, subClient } from "./config/redis";
 // import { pid } from "node:process";
 
-const numCPUs = Math.max(os.cpus().length - 2, 1)
-// const numCPUs = 2;
+// const numCPUs = Math.max(os.cpus().length - 1, 1)
+const numCPUs = 5;
 const port = process.env.PORT || 3000;
 
 // Redis setup for shared state in a clustered environment

@@ -25,12 +25,11 @@ const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const node_cluster_1 = __importDefault(require("node:cluster"));
-const node_os_1 = __importDefault(require("node:os"));
 // import { createAdapter } from "socket.io-redis";
 const redis_1 = require("./config/redis");
 // import { pid } from "node:process";
-const numCPUs = Math.max(node_os_1.default.cpus().length - 2, 1);
-// const numCPUs = 2;
+// const numCPUs = Math.max(os.cpus().length - 1, 1)
+const numCPUs = 5;
 const port = process.env.PORT || 3000;
 // Redis setup for shared state in a clustered environment
 console.log("Number of CPU cores:", numCPUs);
