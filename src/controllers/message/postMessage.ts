@@ -89,11 +89,13 @@ const postMessage = async (req: Request, res: Response) => {
 
             if(receiverSocketId){
                 console.log('receiverSocketId', receiverSocketId)
+                console.log('receiverSocketId', result)
                 io?.to(receiverSocketId).emit("message", result);
             }
 
             if(senderSocketId){
                 console.log('senderSocketId', senderSocketId)
+                console.log('senderSocketId', result)
                 io?.to(senderSocketId).emit("message", result);
             }
 

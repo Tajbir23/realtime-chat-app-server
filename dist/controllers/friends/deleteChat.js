@@ -12,25 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
 const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
-const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
-const __1 = require("../..");
-const editMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { messageId } = req.params;
-    const { message } = req.body;
+const deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
+    const { chatId } = req.body;
     try {
-        const result = yield messageSchema_1.default.findOneAndUpdate({ _id: messageId, senderId: _id }, { message, edited: true }, { new: true });
-        if (result === null || result === void 0 ? void 0 : result.receiverId) {
-            const opponentSocketId = yield (0, findSocketIdbyId_1.default)(result === null || result === void 0 ? void 0 : result.receiverId);
-            if (opponentSocketId) {
-                __1.io === null || __1.io === void 0 ? void 0 : __1.io.to(opponentSocketId).emit("updateMessage", result);
-            }
+        const isDeleted = yield connectionSchema_1.default.findById(chatId);
+        if ((isDeleted === null || isDeleted === void 0 ? void 0 : isDeleted.delete) && isDeleted.deleteFor !== _id) {
+            const result = yield connectionSchema_1.default.findByIdAndDelete(chatId);
+            yield messageSchema_1.default.deleteMany({ chatId });
+            res.send(result);
         }
-        res.send(result);
+        else {
+            const result = yield connectionSchema_1.default.findOneAndUpdate({ _id: chatId }, { deleteFor: _id, delete: true }, { new: true });
+            res.send(result);
+        }
     }
     catch (error) {
-        res.status(500).send({ error: error.message });
+        res.send(error);
     }
 });
-exports.default = editMessage;
+exports.default = deleteChat;

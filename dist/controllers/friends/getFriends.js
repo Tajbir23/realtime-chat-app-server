@@ -31,7 +31,7 @@ const getFriends = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const skip = (Number(currentPage - 1) * 10);
         const friends = yield connectionSchema_1.default
             .find({
-            $or: [{ receiverId: _id }, { senderId: _id }],
+            $or: [{ receiverId: _id }, { senderId: _id }], deleteFor: { $ne: _id }
         })
             .populate("senderId", "-password")
             .populate("receiverId", "-password")

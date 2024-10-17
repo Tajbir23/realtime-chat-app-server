@@ -34,6 +34,16 @@ const connectionSchema = new mongoose_1.Schema({
     },
     themeUpdateBy: {
         type: String
+    },
+    themeType: {
+        type: String,
+    },
+    deleteFor: {
+        type: String
+    },
+    delete: {
+        type: Boolean,
+        default: false,
     }
 }, {
     timestamps: true

@@ -1,12 +1,20 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const __1 = require("..");
-const findSocketIdById = (id) => {
-    for (let [socketId, userData] of __1.connectedUsers.entries()) {
-        if (userData._id === id) {
-            return socketId;
-        }
-        return undefined;
-    }
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const redis_1 = require("../config/redis");
+const findSocketIdById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = yield id.toString();
+    console.log('find socket id', userId);
+    const socketId = yield redis_1.pubClient.hGet('idToSocketId', userId);
+    console.log('find socket by socketId', socketId);
+    return socketId;
+});
 exports.default = findSocketIdById;

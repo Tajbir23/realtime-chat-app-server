@@ -27,7 +27,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // const token = await generateJwt(username, email, user._id, user.ip);
         const token = yield (0, generateJwt_1.default)(username, email, user._id);
         const allUsers = yield (0, findUser_1.default)(result._id);
-        __1.io.emit('users', allUsers);
+        __1.io === null || __1.io === void 0 ? void 0 : __1.io.emit('users', allUsers);
         res.status(201).send({ token, name, username, email, photoUrl, _id: user._id });
     }
     catch (error) {

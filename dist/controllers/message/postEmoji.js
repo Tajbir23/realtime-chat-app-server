@@ -23,7 +23,7 @@ const postEmoji = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // console.log(result)
         const receiver = yield (0, findSocketIdbyId_1.default)(receiverId);
         if (result && receiver) {
-            __1.io.to(receiver).emit("emojiUpdate", result);
+            __1.io === null || __1.io === void 0 ? void 0 : __1.io.to(receiver).emit("emojiUpdate", result);
         }
         res.send(result);
     }

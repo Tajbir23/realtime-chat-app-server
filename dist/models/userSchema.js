@@ -52,6 +52,9 @@ const userSchema = new mongoose_1.Schema({
     },
     ip: {
         type: String
+    },
+    socketId: {
+        type: String,
     }
 });
 userSchema.plugin(mongoose_unique_validator_1.default, { message: '{PATH} to be unique.' });

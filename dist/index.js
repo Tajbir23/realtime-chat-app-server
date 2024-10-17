@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectedUsers = exports.io = void 0;
+exports.io = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
@@ -23,123 +23,114 @@ const node_http_1 = require("node:http");
 const socket_io_1 = require("socket.io");
 const userSchema_1 = __importDefault(require("./models/userSchema"));
 const getFriendsConnection_1 = __importDefault(require("./controllers/friends/getFriendsConnection"));
-const findUser_1 = __importDefault(require("./controllers/findUser"));
 const node_cron_1 = __importDefault(require("node-cron"));
+const node_cluster_1 = __importDefault(require("node:cluster"));
+const node_os_1 = __importDefault(require("node:os"));
+const redis_1 = require("./config/redis");
+const node_process_1 = require("node:process");
+const numCPUs = node_os_1.default.cpus().length;
+// const numCPUs = 2;
 const port = process.env.PORT || 3000;
-const app = (0, express_1.default)();
-const server = (0, node_http_1.createServer)(app);
-exports.io = new socket_io_1.Server(server, {
-    cors: {
+// Redis setup for shared state in a clustered environment
+let io = null;
+exports.io = io;
+if (node_cluster_1.default.isMaster) {
+    console.log(`Master process is running on PID: ${process.pid}`);
+    for (let i = 0; i < numCPUs; i++) {
+        node_cluster_1.default.fork();
+    }
+    node_cluster_1.default.on("exit", (worker, code, signal) => {
+        console.log(`Worker ${worker.process.pid} died. Restarting a new worker...`);
+        node_cluster_1.default.fork();
+    });
+    node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('Running cron job');
+        const now = Date.now();
+        const BATCH_SIZE = 100;
+        yield userSchema_1.default.updateMany({ myDayEndAt: { $lt: now }, isActiveMyDay: true }, { $set: { isActiveMyDay: false, myDayId: null, myDay: null } }).limit(BATCH_SIZE);
+    }));
+}
+else {
+    const app = (0, express_1.default)();
+    const server = (0, node_http_1.createServer)(app);
+    // Initialize Socket.io with Redis adapter
+    exports.io = io = new socket_io_1.Server(server, {
+        cors: {
+            origin: [
+                "http://localhost:5173",
+                "https://chat.tajbirideas.com",
+                "https://realtime-chat-app-tajbir.web.app",
+                "https://g4pnft81-5173.inc1.devtunnels.ms",
+            ],
+        },
+    });
+    // Use Redis adapter for Socket.io
+    // io.adapter(createAdapter({pubClient, subClient}));
+    app.use((0, cors_1.default)({
         origin: [
             "http://localhost:5173",
             "https://chat.tajbirideas.com",
             "https://realtime-chat-app-tajbir.web.app",
             "https://g4pnft81-5173.inc1.devtunnels.ms",
         ],
-        // origin: "*",
-    },
-});
-app.use((0, cors_1.default)({
-    origin: [
-        "http://localhost:5173",
-        "https://chat.tajbirideas.com",
-        "https://realtime-chat-app-tajbir.web.app",
-        "https://g4pnft81-5173.inc1.devtunnels.ms",
-    ],
-    // origin: "*",
-}));
-app.use(express_1.default.json());
-(0, db_1.default)();
-app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("Hello, World!");
-}));
-app.use("/api", routes_1.default);
-exports.connectedUsers = new Map();
-exports.io.on("connection", (socket) => {
-    socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
-        const ip = socket.handshake.address;
-        console.log(`User connected from ${ip}`);
-        exports.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id, ip });
-        const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
-        const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
-        yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);
-        exports.io.emit("users", updatedUser);
-        // console.log("Active users",connectedUsers)
     }));
-    socket.on("sendUpcomingMessage", (message) => {
-        const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
-        for (let [socketId, userData] of exports.connectedUsers.entries()) {
-            if (userData._id === receiverId) {
-                exports.io.to(socketId).emit("upcomingMessage", message);
+    app.use(express_1.default.json());
+    (0, db_1.default)();
+    app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        let value = 1000000;
+        while (value > 0) {
+            value--;
+        }
+        console.log(`handling the request using ${node_process_1.pid}`);
+        res.send("Hello, World!");
+    }));
+    app.use("/api", routes_1.default);
+    // Socket.io connection with Redis-based connected users
+    io.on("connection", (socket) => {
+        socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
+            const ip = socket.handshake.address;
+            const userId = user === null || user === void 0 ? void 0 : user._id;
+            console.log(socket.id, userId);
+            const update = yield userSchema_1.default.findOneAndUpdate({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } }, { new: true });
+            if (userId) {
+                yield redis_1.pubClient.hSet('idToSocketId', userId, socket.id);
             }
-        }
+            // const updatedUser = await findOneUser(user?._id);
+            yield (0, getFriendsConnection_1.default)(userId);
+            io === null || io === void 0 ? void 0 : io.emit("users", update);
+        }));
+        socket.on("sendUpcomingMessage", (message) => __awaiter(void 0, void 0, void 0, function* () {
+            const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
+            console.log('receiverId', receiverId);
+            // const connectedUsers = await pubClient.hGetAll("connectedUsers");
+            const socketId = yield redis_1.pubClient.hGet('idToSocketId', receiverId);
+            console.log('socketId', socketId);
+            if (socketId) {
+                io === null || io === void 0 ? void 0 : io.to(socketId).emit("upcomingMessage", message);
+            }
+        }));
+        socket.on("logout", () => __awaiter(void 0, void 0, void 0, function* () {
+            const update = yield userSchema_1.default.findOneAndUpdate({ socketId: socket.id }, { isActive: false, lastActive: Number(Date.now()), socketId: null }, { new: true });
+            if (update) {
+                const userId = update._id.toString();
+                io === null || io === void 0 ? void 0 : io.emit("users", update);
+                yield redis_1.pubClient.hDel("idToSocketId", userId);
+                yield (0, getFriendsConnection_1.default)(userId);
+                socket.disconnect();
+            }
+        }));
+        socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
+            const update = yield userSchema_1.default.findOneAndUpdate({ socketId: socket.id }, { isActive: false, lastActive: Number(Date.now()), socketId: null }, { new: true });
+            if (update) {
+                const userId = update._id.toString();
+                io === null || io === void 0 ? void 0 : io.emit("users", update);
+                yield redis_1.pubClient.hDel("idToSocketId", userId);
+                yield (0, getFriendsConnection_1.default)(userId);
+                socket.disconnect();
+            }
+        }));
     });
-    socket.on("logout", () => __awaiter(void 0, void 0, void 0, function* () {
-        const user = exports.connectedUsers.get(socket.id);
-        if (user) {
-            const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const updatedUser = yield (0, findUser_1.default)(user._id);
-            exports.io.emit("users", updatedUser);
-            exports.connectedUsers.delete(socket.id);
-            yield (0, getFriendsConnection_1.default)(user._id);
-            socket.disconnect();
-            // console.log("Active users",connectedUsers)
-        }
+    server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(`Worker ${process.pid} is running on port ${port}`);
     }));
-    socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {
-        const user = exports.connectedUsers.get(socket.id);
-        if (user) {
-            const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-            const upDatedUser = yield (0, findUser_1.default)(user._id);
-            console.log("disconnect", user._id);
-            exports.io.emit("users", upDatedUser);
-            yield (0, getFriendsConnection_1.default)(user._id);
-            exports.connectedUsers.delete(socket.id);
-            // console.log("Active users",connectedUsers)
-        }
-    }));
-});
-// cron job to check active users every 10 minutes
-// cron.schedule('*/10 * * * *', async () => {
-//   console.log('Checking active users');
-//   try {
-//     // Fetch all users who are marked as active in the database
-//     const users = await userModel.find({ isActive: true });
-//     console.log(users);
-//     // Process users in parallel using Promise.all and map
-//     await Promise.all(users.map(async (user) => {
-//       const activeUserSocketId = findSocketIdById(user._id);
-//       // If user is not actively connected via Socket.IO
-//       if (!activeUserSocketId) {
-//         // Update user status in the database to mark them as inactive
-//         await userModel.updateOne(
-//           { _id: user._id },
-//           {
-//             $set: {
-//               isActive: false,
-//               lastActive: Date.now(),
-//               socketId: null
-//             }
-//           }
-//         );
-//         // Emit the updated user data to all connected clients
-//         const updatedUser = await findOneUser(user._id);
-//         console.log(`User ${user._id} disconnected`);
-//         console.log("Active users",connectedUsers)
-//         io.emit('users', updatedUser);
-//       }
-//     }));
-//   } catch (error) {
-//     console.error('Error checking active users:', error);
-//   }
-// });
-node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Running cron job');
-    const now = Date.now();
-    const BATCH_SIZE = 100;
-    yield userSchema_1.default.updateMany({ myDayEndAt: { $lt: now }, isActiveMyDay: true }, { $set: { isActiveMyDay: false, myDayId: null, myDay: null } }).limit(BATCH_SIZE);
-}));
-// export default server
-server.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Server is running on port 3000");
-}));
+}

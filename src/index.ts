@@ -16,8 +16,8 @@ import { createAdapter } from "socket.io-redis";
 import { pubClient, subClient } from "./config/redis";
 import { pid } from "node:process";
 
-const numCPUs = os.cpus().length;
-// const numCPUs = 2;
+// const numCPUs = os.cpus().length;
+const numCPUs = 2;
 const port = process.env.PORT || 3000;
 
 // Redis setup for shared state in a clustered environment
@@ -92,7 +92,7 @@ if (cluster.isMaster) {
       const ip = socket.handshake.address;
       const userId = user?._id;
 
-      console.log(socket.id, userId)
+      console.log("Connect user ",socket.id, userId)
 
 
       const update = await userModel.findOneAndUpdate(
@@ -140,7 +140,7 @@ if (cluster.isMaster) {
           const update = await userModel.findOneAndUpdate(
             { socketId: socket.id },
             { isActive: false, lastActive: Number(Date.now()), socketId: null }, {new: true} );
-
+          console.log('disconnect', socket.id, update?.name)
           if(update){
             const userId = update._id.toString()
             io?.emit("users", update);
