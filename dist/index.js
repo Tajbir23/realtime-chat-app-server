@@ -92,7 +92,6 @@ exports.io.on("connection", (socket) => {
             exports.connectedUsers.delete(socket.id);
             yield (0, getFriendsConnection_1.default)(user._id);
             socket.disconnect();
-            // console.log("Active users",connectedUsers)
         }
     }));
     socket.on("disconnect", () => __awaiter(void 0, void 0, void 0, function* () {

@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
       await getFriendsConnectionById(user._id);
       socket.disconnect();
 
-      // console.log("Active users",connectedUsers)
+      
     }
   });
   socket.on("disconnect", async () => {
