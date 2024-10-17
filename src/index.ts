@@ -12,11 +12,11 @@ import findOneUser from "./controllers/findUser";
 import cron from 'node-cron';
 import cluster from "node:cluster";
 import os from "node:os";
-import { createAdapter } from "socket.io-redis";
+// import { createAdapter } from "socket.io-redis";
 import { pubClient, subClient } from "./config/redis";
-import { pid } from "node:process";
+// import { pid } from "node:process";
 
-const numCPUs = os.cpus().length;
+const numCPUs = Math.max(os.cpus().length - 2, 1)
 // const numCPUs = 2;
 const port = process.env.PORT || 3000;
 
@@ -61,8 +61,6 @@ if (cluster.isMaster) {
     },
   });
 
-  // Use Redis adapter for Socket.io
-  // io.adapter(createAdapter({pubClient, subClient}));
   
   app.use(cors({
     origin: [

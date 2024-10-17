@@ -1,4 +1,6 @@
-import { createClient } from "redis";
+import {createClient} from "redis"
+// import { io } from "..";
+import { createAdapter } from "socket.io-redis";
 
 // const REDIS_URL = 'redis://:5m1aX9UKDIfL9j296DsgIcI8eUAqUObA@redis-10369.c44.us-east-1-2.ec2.redns.redis-cloud.com:10369';
 const REDIS_URL = 'redis://default:FgxtHeVFUDbKvPacAJvpSpIZUBhsGPop@autorack.proxy.rlwy.net:51415';
@@ -14,6 +16,7 @@ const connectClients = async () => {
     try {
         await pubClient.connect();
         await subClient.connect();
+        // io?.adapter(createAdapter({pubClient, subClient}));
         console.log("Connected to Redis successfully!");
     } catch (error) {
         console.error("Error connecting to Redis:", error);

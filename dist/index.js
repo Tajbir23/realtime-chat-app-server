@@ -26,8 +26,10 @@ const getFriendsConnection_1 = __importDefault(require("./controllers/friends/ge
 const node_cron_1 = __importDefault(require("node-cron"));
 const node_cluster_1 = __importDefault(require("node:cluster"));
 const node_os_1 = __importDefault(require("node:os"));
+// import { createAdapter } from "socket.io-redis";
 const redis_1 = require("./config/redis");
-const numCPUs = node_os_1.default.cpus().length;
+// import { pid } from "node:process";
+const numCPUs = Math.max(node_os_1.default.cpus().length - 2, 1);
 // const numCPUs = 2;
 const port = process.env.PORT || 3000;
 // Redis setup for shared state in a clustered environment
@@ -64,8 +66,6 @@ else {
             ],
         },
     });
-    // Use Redis adapter for Socket.io
-    // io.adapter(createAdapter({pubClient, subClient}));
     app.use((0, cors_1.default)({
         origin: [
             "http://localhost:5173",

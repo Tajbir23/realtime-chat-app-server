@@ -22,6 +22,7 @@ const connectClients = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield exports.pubClient.connect();
         yield exports.subClient.connect();
+        // io?.adapter(createAdapter({pubClient, subClient}));
         console.log("Connected to Redis successfully!");
     }
     catch (error) {
