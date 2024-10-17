@@ -22,6 +22,7 @@ const port = process.env.PORT || 3000;
 
 // Redis setup for shared state in a clustered environment
 
+console.log("Number of CPU cores:", numCPUs);
 
 let io: Server | null = null;
 
@@ -76,11 +77,11 @@ if (cluster.isMaster) {
   connection();
 
   app.get("/", async (req: Request, res: Response) => {
-    let value = 1000000
-  while (value > 0) {
-    value--;
-  }
-  console.log(`handling the request using ${pid}`)
+  //   let value = 1000000
+  // while (value > 0) {
+  //   value--;
+  // }
+  // console.log(`handling the request using ${pid}`)
   res.send("Hello, World!");
   });
 
