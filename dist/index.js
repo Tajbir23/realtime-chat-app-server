@@ -27,11 +27,11 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const node_cluster_1 = __importDefault(require("node:cluster"));
 const node_os_1 = __importDefault(require("node:os"));
 const redis_1 = require("./config/redis");
-const node_process_1 = require("node:process");
 const numCPUs = node_os_1.default.cpus().length;
 // const numCPUs = 2;
 const port = process.env.PORT || 3000;
 // Redis setup for shared state in a clustered environment
+console.log("Number of CPU cores:", numCPUs);
 let io = null;
 exports.io = io;
 if (node_cluster_1.default.isMaster) {
@@ -77,11 +77,11 @@ else {
     app.use(express_1.default.json());
     (0, db_1.default)();
     app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        let value = 1000000;
-        while (value > 0) {
-            value--;
-        }
-        console.log(`handling the request using ${node_process_1.pid}`);
+        //   let value = 1000000
+        // while (value > 0) {
+        //   value--;
+        // }
+        // console.log(`handling the request using ${pid}`)
         res.send("Hello, World!");
     }));
     app.use("/api", routes_1.default);
