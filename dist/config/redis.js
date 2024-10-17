@@ -8,17 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subClient = exports.pubClient = void 0;
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
 const redis_1 = require("redis");
 // import { io } from "..";
 // import { createAdapter } from "socket.io-redis";
-const REDIS_URL = process.env.redis_url;
+// const REDIS_URL = 'redis://:5m1aX9UKDIfL9j296DsgIcI8eUAqUObA@redis-10369.c44.us-east-1-2.ec2.redns.redis-cloud.com:10369';
+const REDIS_URL = 'redis://default:FgxtHeVFUDbKvPacAJvpSpIZUBhsGPop@autorack.proxy.rlwy.net:51415';
+// const REDIS_URL = 'redis://127.0.0.1:6379';
 exports.pubClient = (0, redis_1.createClient)({
     url: REDIS_URL
 });
