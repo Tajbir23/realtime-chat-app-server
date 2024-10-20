@@ -22,6 +22,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const senderData = req.user;
     const receiver = req.body.user;
     const message = req.body.message;
+    const isEncrypted = req.body.isEncrypted;
     try {
         // Ensure receiver has the necessary properties
         if (!receiver || !receiver.username || !receiver.name || !receiver.email || !receiver.photoUrl) {
@@ -78,6 +79,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 receiverEmail: receiver.email,
                 receiverPhotoUrl: receiver.photoUrl,
                 message,
+                isEncrypted
             });
             const result = yield messageSave.save();
             const receiverSocketId = yield (0, findSocketIdByEmail_1.default)(receiver.email);

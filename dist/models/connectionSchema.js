@@ -44,6 +44,13 @@ const connectionSchema = new mongoose_1.Schema({
     delete: {
         type: Boolean,
         default: false,
+    },
+    publicKey: {
+        type: String
+    },
+    isEncrypted: {
+        type: Boolean,
+        default: false,
     }
 }, {
     timestamps: true

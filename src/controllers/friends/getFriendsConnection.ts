@@ -3,6 +3,7 @@ import userModel from "../../models/userSchema";
 import findSocketIdByEmail from "../findSocketIdByEmail";
 import { io } from "../..";
 import friendsInterface from "../../interface/friendsInterface";
+import findSocketIdById from "../findSocketIdbyId";
 
 const getFriendsConnectionById = async (_id: string) => {
     
@@ -27,20 +28,24 @@ const getFriendsConnectionById = async (_id: string) => {
     friends.forEach((friend) => {
 
       if (friend.senderId._id.toString() === _id) {
-        const receiverEmail = friend.receiverId.email;
+        // const receiverEmail = friend.receiverId.email;
+        const receiverId = friend.receiverId._id.toString()
         
         delete (friend as any).receiverId;
 
-        const socketId = findSocketIdByEmail(receiverEmail);
+        // const socketId = findSocketIdByEmail(receiverEmail);
+        const socketId = findSocketIdById(receiverId);
         if (socketId) {
           io.to(socketId).emit("updateFriendStatus", friend);
         }
       } else if (friend.receiverId._id.toString() === _id) {
-        const senderEmail = friend.senderId.email;
+        // const senderEmail = friend.senderId.email;
+        const senderId = friend.senderId._id.toString();
        
         delete (friend as any).senderId;
 
-        const socketId = findSocketIdByEmail(senderEmail);
+        // const socketId = findSocketIdByEmail(senderEmail);
+        const socketId = findSocketIdById(senderId);
         if (socketId) {
           io.to(socketId).emit("updateFriendStatus", friend);
         }

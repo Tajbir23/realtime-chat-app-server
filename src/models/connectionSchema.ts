@@ -45,6 +45,13 @@ const connectionSchema = new Schema<userConnections>({
     delete: {
         type: Boolean,
         default: false,
+    },
+    publicKey: {
+        type: String
+    },
+    isEncrypted: {
+        type: Boolean,
+        default: false,
     }
 },{
     timestamps: true

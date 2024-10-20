@@ -13,7 +13,8 @@ const getMessage = async(senderUsername: string, receiverUsername: string, myId:
                     receiverUsername: senderUsername
                 }
             ],
-            deletedFor: { $ne: myId }
+            deletedFor: { $ne: myId },
+            
         }).sort({createdAt: -1}).skip(skip ?? 0).limit(10);
 
         return message

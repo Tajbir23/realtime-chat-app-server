@@ -40,6 +40,7 @@ const deleteMessage_1 = __importDefault(require("../controllers/message/deleteMe
 const editMessage_1 = __importDefault(require("../controllers/message/editMessage"));
 const updateTheme_1 = __importDefault(require("../controllers/message/theme/updateTheme"));
 const deleteChat_1 = __importDefault(require("../controllers/friends/deleteChat"));
+const connectionEncryption_1 = __importDefault(require("../controllers/friends/encryption/connectionEncryption"));
 const router = (0, express_1.Router)();
 router.post('/signup', createUser_1.default);
 router.get('/user_validation', verifyJwt_1.default, validationUser_1.default);
@@ -119,4 +120,5 @@ router.post('/message/delete/:id', verifyJwt_1.default, deleteMessage_1.default)
 router.put('/message/edit/:messageId', verifyJwt_1.default, editMessage_1.default);
 router.put('/chat/theme/:chatId', verifyJwt_1.default, updateTheme_1.default);
 router.post('/chat/deleteChat', verifyJwt_1.default, deleteChat_1.default);
+router.put('/encryption', verifyJwt_1.default, connectionEncryption_1.default);
 exports.default = router;

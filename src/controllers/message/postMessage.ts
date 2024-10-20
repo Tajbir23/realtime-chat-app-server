@@ -11,6 +11,7 @@ const postMessage = async (req: Request, res: Response) => {
     const senderData = (req as any).user;
     const receiver = req.body.user;
     const message = req.body.message;
+    const isEncrypted = req.body.isEncrypted;
 
     
     try {
@@ -78,6 +79,7 @@ const postMessage = async (req: Request, res: Response) => {
                 receiverEmail: receiver.email,
                 receiverPhotoUrl: receiver.photoUrl,
                 message,
+                isEncrypted
             });
             const result = await messageSave.save();
 

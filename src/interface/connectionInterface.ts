@@ -12,6 +12,8 @@ interface userConnections {
     themeType: string;
     deleteFor: string;
     delete: boolean;
+    publicKey: string;
+    isEncrypted: boolean;
 }
 
 export default userConnections

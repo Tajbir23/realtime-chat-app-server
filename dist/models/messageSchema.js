@@ -52,9 +52,17 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    isEncrypted: {
+        type: Boolean,
+        default: false
+    },
     deletedFor: {
         type: String,
         default: null
+    },
+    deleteEveryOne: {
+        type: Boolean,
+        default: false
     },
     edited: {
         type: Boolean,
@@ -71,6 +79,8 @@ const messageSchema = new mongoose_1.Schema({
         type: Date,
         default: () => Date.now()
     }
+}, {
+    timestamps: true
 });
 const messageModel = (0, mongoose_1.model)('conversation', messageSchema);
 exports.default = messageModel;

@@ -52,9 +52,17 @@ const messageSchema= new Schema<messageInterface>({
         type: String,
         required: true
     },
+    isEncrypted: {
+        type: Boolean,
+        default: false
+    },
     deletedFor: {
         type: String,
         default: null
+    },
+    deleteEveryOne: {
+        type: Boolean,
+        default: false
     },
     edited: {
         type: Boolean,
@@ -71,6 +79,8 @@ const messageSchema= new Schema<messageInterface>({
         type: Date,
         default: () => Date.now()
     }
+}, {
+    timestamps: true
 })
 
 const messageModel = model<messageInterface>('conversation', messageSchema)
