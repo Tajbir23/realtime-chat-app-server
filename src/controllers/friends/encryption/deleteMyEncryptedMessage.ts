@@ -1,25 +1,37 @@
+import connectionModel from "../../../models/connectionSchema";
 import messageModel from "../../../models/messageSchema";
 
 const deleteMyEncryptedMessage = async (userId: string) => {
     try {
-        // Step 1: Permanently delete messages if `deletedFor` already contains any ID except the current user's
+        // Step 1: Update `connectionModel` to set `isEncrypted` to false for the user's connections
+        await connectionModel.updateMany({
+            $or: [
+                { senderId: userId },
+                { receiverId: userId }
+            ],
+            isEncrypted: true
+        }, {
+            $set: { isEncrypted: false }
+        });
+
+        // Step 2: Permanently delete messages where `deletedFor` contains an opponent's ID
         await messageModel.deleteMany({
             $or: [
                 { senderId: userId },
                 { receiverId: userId }
             ],
             isEncrypted: true,
-            deletedFor: { $ne: userId } // If `deletedFor` contains a different user's ID, delete the message
+            deletedFor: { $ne: userId } // Only delete if user's ID is not in `deletedFor`
         });
 
-        // Step 2: If `deletedFor` does not contain current user's ID, add the userId to `deletedFor`
+        // Step 3: If the message is not deleted for anyone, set `deletedFor` to the user's ID
         await messageModel.updateMany({
             $or: [
                 { senderId: userId },
                 { receiverId: userId }
             ],
             isEncrypted: true,
-            deletedFor: { $ne: userId } // Only update if user's ID is not already in `deletedFor`
+            deletedFor: { $exists: false } // Ensure `deletedFor` field is empty
         }, {
             $set: { deletedFor: userId }
         });
@@ -32,5 +44,3 @@ const deleteMyEncryptedMessage = async (userId: string) => {
 };
 
 export default deleteMyEncryptedMessage;
-
-

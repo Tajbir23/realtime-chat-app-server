@@ -12,26 +12,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const connectionSchema_1 = __importDefault(require("../../../models/connectionSchema"));
 const messageSchema_1 = __importDefault(require("../../../models/messageSchema"));
 const deleteMyEncryptedMessage = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Step 1: Permanently delete messages if `deletedFor` already contains any ID except the current user's
+        // Step 1: Update `connectionModel` to set `isEncrypted` to false for the user's connections
+        yield connectionSchema_1.default.updateMany({
+            $or: [
+                { senderId: userId },
+                { receiverId: userId }
+            ],
+            isEncrypted: true
+        }, {
+            $set: { isEncrypted: false }
+        });
+        // Step 2: Permanently delete messages where `deletedFor` contains an opponent's ID
         yield messageSchema_1.default.deleteMany({
             $or: [
                 { senderId: userId },
                 { receiverId: userId }
             ],
             isEncrypted: true,
-            deletedFor: { $ne: userId } // If `deletedFor` contains a different user's ID, delete the message
+            deletedFor: { $ne: userId } // Only delete if user's ID is not in `deletedFor`
         });
-        // Step 2: If `deletedFor` does not contain current user's ID, add the userId to `deletedFor`
+        // Step 3: If the message is not deleted for anyone, set `deletedFor` to the user's ID
         yield messageSchema_1.default.updateMany({
             $or: [
                 { senderId: userId },
                 { receiverId: userId }
             ],
             isEncrypted: true,
-            deletedFor: { $ne: userId } // Only update if user's ID is not already in `deletedFor`
+            deletedFor: { $exists: false } // Ensure `deletedFor` field is empty
         }, {
             $set: { deletedFor: userId }
         });
