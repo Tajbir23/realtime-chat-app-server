@@ -1,5 +1,6 @@
 import { connectedUsers, io } from "../..";
 import findOneUser from "../../controllers/findUser";
+import deleteMyEncryptedMessage from "../../controllers/friends/encryption/deleteMyEncryptedMessage";
 import getFriendsConnectionById from "../../controllers/friends/getFriendsConnection";
 import userModel from "../../models/userSchema";
 
@@ -16,7 +17,7 @@ const disconnectUser = async(socket: any) => {
         io.emit("users", upDatedUser);
         await getFriendsConnectionById(user._id);
         connectedUsers.delete(socket.id);
-
+        await deleteMyEncryptedMessage(user._id)
         // console.log("Active users",connectedUsers)
       }
 }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.disconnectUser = void 0;
 const __1 = require("../..");
 const findUser_1 = __importDefault(require("../../controllers/findUser"));
+const deleteMyEncryptedMessage_1 = __importDefault(require("../../controllers/friends/encryption/deleteMyEncryptedMessage"));
 const getFriendsConnection_1 = __importDefault(require("../../controllers/friends/getFriendsConnection"));
 const userSchema_1 = __importDefault(require("../../models/userSchema"));
 const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,6 +27,7 @@ const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* (
         __1.io.emit("users", upDatedUser);
         yield (0, getFriendsConnection_1.default)(user._id);
         __1.connectedUsers.delete(socket.id);
+        yield (0, deleteMyEncryptedMessage_1.default)(user._id);
         // console.log("Active users",connectedUsers)
     }
 });
