@@ -7,6 +7,7 @@ import userModel from "../../models/userSchema";
 const disconnectUser = async(socket: any) => {
 
     const user: any = connectedUsers.get(socket.id);
+    console.log("disconnect", user);
       if (user) {
         const update = await userModel.updateOne(
           { email: user.email },

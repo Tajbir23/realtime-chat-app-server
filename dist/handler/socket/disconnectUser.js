@@ -20,6 +20,7 @@ const getFriendsConnection_1 = __importDefault(require("../../controllers/friend
 const userSchema_1 = __importDefault(require("../../models/userSchema"));
 const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* () {
     const user = __1.connectedUsers.get(socket.id);
+    console.log("disconnect", user);
     if (user) {
         const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
         const upDatedUser = yield (0, findUser_1.default)(user._id);
