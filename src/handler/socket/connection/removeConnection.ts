@@ -8,9 +8,11 @@ const removeConnection = (socketId: string) => {
             connectedUsers[userId] = socketIds.filter(id => id !== socketId)
 
             if(connectedUsers[userId].length === 0){
+                
                 delete connectedUsers[userId]
+                return 0
             }
-            return connectedUsers[userId]
+            break
         }
     }
 }

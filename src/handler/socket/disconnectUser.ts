@@ -13,7 +13,8 @@ const disconnectUser = async(socket: any) => {
     console.log("disconnect user",userId)
       if (userId) {
         const activeSocketId = await removeConnection(socket.id);
-        if(activeSocketId?.length === 0){
+
+        if(activeSocketId === 0){
           const update = await userModel.findByIdAndUpdate(
             { _id: userId },
             { isActive: false, lastActive: Number(Date.now()), socketId: null }
