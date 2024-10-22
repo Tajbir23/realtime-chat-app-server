@@ -9,7 +9,7 @@ const removeConnection = (socketId) => {
             if (__1.connectedUsers[userId].length === 0) {
                 delete __1.connectedUsers[userId];
             }
-            break;
+            return __1.connectedUsers[userId];
         }
     }
 };

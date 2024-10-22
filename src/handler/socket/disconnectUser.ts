@@ -12,17 +12,19 @@ const disconnectUser = async(socket: any) => {
 
     console.log("disconnect user",userId)
       if (userId) {
-        const update = await userModel.findByIdAndUpdate(
-          { _id: userId },
-          { isActive: false, lastActive: Number(Date.now()), socketId: null }
-        );
-        const upDatedUser = await findOneUser(userId);
-        console.log("disconnect", userId);
-        io.emit("users", upDatedUser);
-        await getFriendsConnectionById(userId);
-        
-        await deleteMyEncryptedMessage(userId)
-        removeConnection(socket.id);
+        const activeSocketId = await removeConnection(socket.id);
+        if(activeSocketId?.length === 0){
+          const update = await userModel.findByIdAndUpdate(
+            { _id: userId },
+            { isActive: false, lastActive: Number(Date.now()), socketId: null }
+          );
+          const upDatedUser = await findOneUser(userId);
+          console.log("disconnect", userId);
+          io.emit("users", upDatedUser);
+          await getFriendsConnectionById(userId);
+          
+          await deleteMyEncryptedMessage(userId)
+        }
         // console.log("Active users",connectedUsers)
       }
 }

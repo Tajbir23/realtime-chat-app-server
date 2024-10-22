@@ -24,13 +24,15 @@ const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* (
     const userId = (0, findUserIdBySocketId_1.default)(socket.id);
     console.log("disconnect user", userId);
     if (userId) {
-        const update = yield userSchema_1.default.findByIdAndUpdate({ _id: userId }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-        const upDatedUser = yield (0, findUser_1.default)(userId);
-        console.log("disconnect", userId);
-        __1.io.emit("users", upDatedUser);
-        yield (0, getFriendsConnection_1.default)(userId);
-        yield (0, deleteMyEncryptedMessage_1.default)(userId);
-        (0, removeConnection_1.default)(socket.id);
+        const activeSocketId = yield (0, removeConnection_1.default)(socket.id);
+        if ((activeSocketId === null || activeSocketId === void 0 ? void 0 : activeSocketId.length) === 0) {
+            const update = yield userSchema_1.default.findByIdAndUpdate({ _id: userId }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
+            const upDatedUser = yield (0, findUser_1.default)(userId);
+            console.log("disconnect", userId);
+            __1.io.emit("users", upDatedUser);
+            yield (0, getFriendsConnection_1.default)(userId);
+            yield (0, deleteMyEncryptedMessage_1.default)(userId);
+        }
         // console.log("Active users",connectedUsers)
     }
 });
