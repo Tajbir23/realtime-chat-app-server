@@ -10,8 +10,8 @@ const connectedUser = async(user: any, socket: any) => {
 
       console.log("connectedUser",user)
       
-      if(user?._id){
-        await addConnection(user?._id, socket.id);
+      if(user?._id && user.uid){
+        await addConnection(user?._id, socket.id, user.uid);
       }
       
       const update = await userModel.updateOne(

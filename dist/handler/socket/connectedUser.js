@@ -22,8 +22,8 @@ const connectedUser = (user, socket) => __awaiter(void 0, void 0, void 0, functi
     // const ip = socket.handshake.address;
     // console.log(`User connected from ${ip}`);
     console.log("connectedUser", user);
-    if (user === null || user === void 0 ? void 0 : user._id) {
-        yield (0, addConnection_1.default)(user === null || user === void 0 ? void 0 : user._id, socket.id);
+    if ((user === null || user === void 0 ? void 0 : user._id) && user.uid) {
+        yield (0, addConnection_1.default)(user === null || user === void 0 ? void 0 : user._id, socket.id, user.uid);
     }
     const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
     const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);

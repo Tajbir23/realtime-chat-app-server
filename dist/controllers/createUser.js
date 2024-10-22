@@ -16,9 +16,11 @@ const userSchema_1 = __importDefault(require("../models/userSchema"));
 const generateJwt_1 = __importDefault(require("./generateJwt"));
 const __1 = require("..");
 const findUser_1 = __importDefault(require("./findUser"));
+const uuid_1 = require("uuid");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     // const ip = ipAddress?.toString()
+    const uid = (0, uuid_1.v4)();
     try {
         const { name, username, email, photoUrl, password } = req.body;
         // const user = new userModel({ name, username, email, photoUrl, password, ip })
@@ -28,7 +30,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const token = yield (0, generateJwt_1.default)(username, email, user._id);
         const allUsers = yield (0, findUser_1.default)(result._id);
         __1.io.emit('users', allUsers);
-        res.status(201).send({ token, name, username, email, photoUrl, _id: user._id });
+        res.status(201).send({ token, name, username, email, photoUrl, _id: user._id, uid });
     }
     catch (error) {
         console.log(error);

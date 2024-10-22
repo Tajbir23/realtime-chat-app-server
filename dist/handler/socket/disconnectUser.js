@@ -25,7 +25,7 @@ const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* (
     console.log("disconnect user", userId);
     if (userId) {
         const activeSocketId = yield (0, removeConnection_1.default)(socket.id);
-        if ((activeSocketId === null || activeSocketId === void 0 ? void 0 : activeSocketId.length) === 0) {
+        if (activeSocketId === 0) {
             const update = yield userSchema_1.default.findByIdAndUpdate({ _id: userId }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
             const upDatedUser = yield (0, findUser_1.default)(userId);
             console.log("disconnect", userId);

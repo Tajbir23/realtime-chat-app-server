@@ -1,25 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("../../..");
-const addConnection = (userId, socketId) => {
+const addConnection = (userId, socketId, deviceId) => {
+    console.log("device id", deviceId);
     // Check if the userId exists in connectedUsers
     if (!__1.connectedUsers[userId]) {
-        // If not, create a new entry with the socketId in an array
-        __1.connectedUsers[userId] = [socketId];
+        // Create a new entry for the userId and deviceId with the socketId
+        __1.connectedUsers[userId] = {
+            [deviceId]: socketId, // Store the socketId for this deviceId
+        };
     }
     else {
-        // If the userId exists, check if the socketId is already present
-        if (!__1.connectedUsers[userId].includes(socketId)) {
-            // If not present, add the new socketId
-            __1.connectedUsers[userId].push(socketId);
-        }
-        else {
-            // If the socketId is already stored, update the array if necessary
-            // Here you can implement any update logic you want.
-            // For example, you might want to refresh the socketId or simply log it.
-            console.log(`Socket ID ${socketId} is already connected for user ${userId}.`);
-        }
+        const userDevices = __1.connectedUsers[userId];
+        // Always update the deviceId with the new socketId
+        userDevices[deviceId] = socketId; // This replaces the old socketId for the same device
     }
-    console.log("Updated connectedUsers:", __1.connectedUsers);
 };
 exports.default = addConnection;

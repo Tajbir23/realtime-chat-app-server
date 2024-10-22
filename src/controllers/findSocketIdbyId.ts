@@ -1,10 +1,12 @@
-import { connectedUsers } from ".."
+import { connectedUsers } from "..";
 
-const findSocketIdById = (id: string) => {
-    if(connectedUsers[id]){
-        return connectedUsers[id]
+const findSocketIdById = (id: string): string[] => {
+    // Check if the user exists in connectedUsers
+    if (connectedUsers[id]) {
+        // Get all the socket IDs (values) associated with the user's devices (deviceId keys)
+        return Object.values(connectedUsers[id]); // Returns array of socket IDs
     }
-    return []
-}
+    return []; // Return an empty array if no sockets found
+};
 
 export default findSocketIdById;
