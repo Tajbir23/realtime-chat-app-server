@@ -17,23 +17,24 @@ const messageSchema_1 = __importDefault(require("../../../models/messageSchema")
 const findSocketIdbyId_1 = __importDefault(require("../../findSocketIdbyId"));
 const __1 = require("../../..");
 const connectionEncryption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.user;
     const { chatId, publicKey, isEncrypted, encryptPrivateKey, receiver } = req.body;
     if (!isEncrypted) {
         yield messageSchema_1.default.deleteMany({ chatId, isEncrypted: true });
     }
-    const user = yield __1.connectedUsers;
-    console.log(user);
     const receiverSocketId = yield (0, findSocketIdbyId_1.default)(receiver);
-    console.log(receiverSocketId);
-    console.log(receiver);
-    if (receiverSocketId) {
+    const senderSocketId = yield (0, findSocketIdbyId_1.default)(_id);
+    if (receiverSocketId && senderSocketId) {
         receiverSocketId.forEach(socketId => {
+            __1.io.to(socketId).emit('privateKey', { privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey });
+        });
+        senderSocketId.forEach(socketId => {
             __1.io.to(socketId).emit('privateKey', { privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey });
         });
     }
     else if (isEncrypted) {
         return res.send({
-            warning: "Your friend is not online"
+            warning: "Your friend must be online"
         });
     }
     const result = yield connectionSchema_1.default.findByIdAndUpdate(chatId, {
