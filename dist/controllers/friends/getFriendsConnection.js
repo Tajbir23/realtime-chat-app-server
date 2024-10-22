@@ -13,15 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
+// import userModel from "../../models/userSchema";
 const __1 = require("../..");
 const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
 const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Fetch the current user (your details)
-        // const me = await userModel.findOne({ email });
-        // if (!me) {
-        //     throw new Error('User not found');
-        // }
         const friends = yield connectionSchema_1.default
             .find({
             $or: [
@@ -40,7 +36,9 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
                 // const socketId = findSocketIdByEmail(receiverEmail);
                 const socketId = (0, findSocketIdbyId_1.default)(receiverId);
                 if (socketId) {
-                    __1.io.to(socketId).emit("updateFriendStatus", friend);
+                    socketId.forEach(id => {
+                        __1.io.to(id).emit("updateFriendStatus", friend);
+                    });
                 }
             }
             else if (friend.receiverId._id.toString() === _id) {
@@ -50,7 +48,9 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
                 // const socketId = findSocketIdByEmail(senderEmail);
                 const socketId = (0, findSocketIdbyId_1.default)(senderId);
                 if (socketId) {
-                    __1.io.to(socketId).emit("updateFriendStatus", friend);
+                    socketId.forEach(id => {
+                        __1.io.to(id).emit("updateFriendStatus", friend);
+                    });
                 }
             }
         });

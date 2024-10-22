@@ -17,7 +17,9 @@ const connectionEncryption = async(req: Request, res: Response) => {
     console.log(receiverSocketId)
     console.log(receiver)
     if(receiverSocketId){
-        io.to(receiverSocketId).emit('privateKey', {privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey})
+        receiverSocketId.forEach(socketId => {
+            io.to(socketId).emit('privateKey', {privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey})
+        })
     }else if(isEncrypted){
         return res.send({
             warning: "Your friend is not online"

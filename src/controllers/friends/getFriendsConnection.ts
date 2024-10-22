@@ -1,6 +1,5 @@
 import connectionModel from "../../models/connectionSchema";
-import userModel from "../../models/userSchema";
-import findSocketIdByEmail from "../findSocketIdByEmail";
+// import userModel from "../../models/userSchema";
 import { io } from "../..";
 import friendsInterface from "../../interface/friendsInterface";
 import findSocketIdById from "../findSocketIdbyId";
@@ -8,11 +7,6 @@ import findSocketIdById from "../findSocketIdbyId";
 const getFriendsConnectionById = async (_id: string) => {
     
   try {
-    // Fetch the current user (your details)
-    // const me = await userModel.findOne({ email });
-    // if (!me) {
-    //     throw new Error('User not found');
-    // }
 
     const friends: friendsInterface[] = await connectionModel
       .find({
@@ -36,7 +30,9 @@ const getFriendsConnectionById = async (_id: string) => {
         // const socketId = findSocketIdByEmail(receiverEmail);
         const socketId = findSocketIdById(receiverId);
         if (socketId) {
-          io.to(socketId).emit("updateFriendStatus", friend);
+          socketId.forEach(id => {
+            io.to(id).emit("updateFriendStatus", friend);
+          })
         }
       } else if (friend.receiverId._id.toString() === _id) {
         // const senderEmail = friend.senderId.email;
@@ -47,7 +43,10 @@ const getFriendsConnectionById = async (_id: string) => {
         // const socketId = findSocketIdByEmail(senderEmail);
         const socketId = findSocketIdById(senderId);
         if (socketId) {
-          io.to(socketId).emit("updateFriendStatus", friend);
+          socketId.forEach(id => {
+            io.to(id).emit("updateFriendStatus", friend);
+            
+          })
         }
       }
     });

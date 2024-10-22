@@ -56,7 +56,9 @@ const postLike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     newNotification
                 };
                 console.log(data);
-                __1.io.to(socketId).emit("likeAndCommentNotification", data);
+                socketId.forEach(id => {
+                    __1.io.to(id).emit("likeAndCommentNotification", data);
+                });
             }
             res.status(201).send({ totalLike, message: "Like added" });
         }

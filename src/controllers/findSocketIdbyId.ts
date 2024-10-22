@@ -1,12 +1,10 @@
 import { connectedUsers } from ".."
 
 const findSocketIdById = (id: string) => {
-    for(let [socketId, userData] of connectedUsers.entries()){
-        if(userData._id === id){
-            return socketId;
-        }
-        return undefined
+    if(connectedUsers[id]){
+        return connectedUsers[id]
     }
+    return []
 }
 
 export default findSocketIdById;

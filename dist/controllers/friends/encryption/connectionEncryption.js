@@ -27,7 +27,9 @@ const connectionEncryption = (req, res) => __awaiter(void 0, void 0, void 0, fun
     console.log(receiverSocketId);
     console.log(receiver);
     if (receiverSocketId) {
-        __1.io.to(receiverSocketId).emit('privateKey', { privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey });
+        receiverSocketId.forEach(socketId => {
+            __1.io.to(socketId).emit('privateKey', { privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey });
+        });
     }
     else if (isEncrypted) {
         return res.send({

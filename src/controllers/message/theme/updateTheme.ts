@@ -16,7 +16,9 @@ const updateTheme = async(req: Request, res: Response) => {
         if(userId){
             const socketId = await findSocketIdById(userId)
             if(socketId){
-                io.to(socketId).emit("themeUpdate", result)
+                socketId.forEach(id => {
+                    io.to(id).emit("themeUpdate", result)
+                })
             }
         }
         res.send(result)

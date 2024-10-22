@@ -10,6 +10,7 @@ import userModel from "./models/userSchema";
 import cron from "node-cron";
 import os from "os";
 import setUpSocketHandler from "./handler/socket/socketHandler";
+import ConnectedUserType from "./interface/connectedUserType";
 // import { pid } from "node:process";
 
 const numCPUs = os.cpus().length;
@@ -58,10 +59,7 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api", router);
 
-export const connectedUsers = new Map<
-  string,
-  { email: string; _id: string; ip: string }
->();
+export const connectedUsers : ConnectedUserType = {};
 
 setUpSocketHandler(io);
 

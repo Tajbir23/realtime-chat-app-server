@@ -35,7 +35,9 @@ const deleteMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (type === 'unsent' && (message === null || message === void 0 ? void 0 : message.senderId) === _id) {
             const result = yield messageSchema_1.default.findOneAndUpdate({ _id: messageId }, { message: 'unsent', unsent: true }, { new: true });
             if (opponentSocketId && opponentId) {
-                __1.io.to(opponentSocketId).emit("updateMessage", result);
+                opponentSocketId.forEach(socketId => {
+                    __1.io.to(socketId).emit("updateMessage", result);
+                });
             }
             res.send(result);
         }
