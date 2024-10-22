@@ -13,6 +13,13 @@ A real-time chat application built using React.js, Redux, TypeScript, Node.js, E
 - **Browser Notifications:** Receive notifications for new messages and events
 - **My Day:** Share daily updates (like stories)
 - **My Day Likes and Comments:** Like and comment on your friends' updates
+- **Notification:** Like and comment realtime notification, unread notification, new notification
+- **Message delete:** Message delete for me
+- **Message unsent:** Message unsent for everyone
+- **Message edit:** Message edit for everyone
+- **Unsent message can't unsent:** unsent message can't unsent again but unsent message can delete for me
+- **One time edit message:** One time edit message for everyone
+- **End to End encryption:** message is encrypted. when user offline then automatic delete message or when user turn off encryption then message is delete
 
 ## Technologies
 
