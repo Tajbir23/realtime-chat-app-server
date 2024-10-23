@@ -52,6 +52,10 @@ const messageSchema= new Schema<messageInterface>({
         type: String,
         required: true
     },
+    seen: {
+        type: Boolean,
+        default: false
+    },
     isEncrypted: {
         type: Boolean,
         default: false

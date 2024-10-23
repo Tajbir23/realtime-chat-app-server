@@ -17,6 +17,18 @@ const getMessage = async(senderUsername: string, receiverUsername: string, myId:
             
         }).sort({createdAt: -1}).skip(skip ?? 0).limit(10);
 
+        const unseenIds = message.filter(msg => msg.senderId !== myId && !msg.seen).map(msg => msg.senderId);
+
+        if(unseenIds.length > 0){
+            await messageModel.updateMany({
+                _id: { $in: unseenIds }
+            }, {
+                $set: {
+                    seen: true
+                }
+            })
+        }
+        
         return message
     } catch (error) {
         console.log(error)

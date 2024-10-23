@@ -28,6 +28,7 @@ import editMessage from "../controllers/message/editMessage";
 import updateTheme from "../controllers/message/theme/updateTheme";
 import deleteChat from "../controllers/friends/deleteChat";
 import connectionEncryption from "../controllers/friends/encryption/connectionEncryption";
+import updateSeenMessage from "../controllers/message/updateSeenMessage";
 
 
 
@@ -136,5 +137,7 @@ router.put('/chat/theme/:chatId', verifyJwt, updateTheme)
 router.post('/chat/deleteChat', verifyJwt, deleteChat)
 
 router.put('/encryption', verifyJwt, connectionEncryption)
+
+router.put('/seen_message', verifyJwt, updateSeenMessage)
 
 export default router;

@@ -48,7 +48,9 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             lastMessage: message,
             lastMessageAt: Number(Date.now()),
             deleteFor: '',
-            delete: false
+            delete: false,
+            lastMessageSeen: false,
+            lastMessageSender: sender._id,
         }, {
             new: true
         });
@@ -61,6 +63,8 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 receiverId: receiver._id,
                 lastMessage: message,
                 lastMessageAt: Number(Date.now()),
+                lastMessageSeen: false,
+                lastMessageSender: sender._id,
             });
             const { _id } = yield createConnection.save();
             chatId = _id.toString();

@@ -19,6 +19,17 @@ const connectionSchema = new Schema<userConnections>({
     lastMessageAt: {
         type: Number
     },
+    lastMessageSeen: {
+        type: Boolean
+    },
+    lastMessageSeenUserId: {
+        type: String,
+        ref: "Users"
+    },
+    lastMessageSender: {
+        type: String,
+        ref: "Users"
+    },
     blockUserId: {
         type: String
     },

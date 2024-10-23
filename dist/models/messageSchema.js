@@ -52,6 +52,10 @@ const messageSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    seen: {
+        type: Boolean,
+        default: false
+    },
     isEncrypted: {
         type: Boolean,
         default: false

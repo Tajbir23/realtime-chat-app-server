@@ -18,6 +18,17 @@ const connectionSchema = new mongoose_1.Schema({
     lastMessageAt: {
         type: Number
     },
+    lastMessageSeen: {
+        type: Boolean
+    },
+    lastMessageSeenUserId: {
+        type: String,
+        ref: "Users"
+    },
+    lastMessageSender: {
+        type: String,
+        ref: "Users"
+    },
     blockUserId: {
         type: String
     },
