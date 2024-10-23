@@ -16,6 +16,7 @@ const connectionSchema_1 = __importDefault(require("../../../models/connectionSc
 const messageSchema_1 = __importDefault(require("../../../models/messageSchema"));
 const findSocketIdbyId_1 = __importDefault(require("../../findSocketIdbyId"));
 const __1 = require("../../..");
+const detectMultipleConnection_1 = __importDefault(require("../../../handler/socket/connection/detectMultipleConnection"));
 const connectionEncryption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.user;
     const { chatId, publicKey, isEncrypted, encryptPrivateKey, receiver } = req.body;
@@ -25,6 +26,18 @@ const connectionEncryption = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const receiverSocketId = yield (0, findSocketIdbyId_1.default)(receiver);
     const senderSocketId = yield (0, findSocketIdbyId_1.default)(_id);
     if (receiverSocketId && senderSocketId) {
+        const multipleConnectionReceiver = yield (0, detectMultipleConnection_1.default)(receiver);
+        const multipleConnectionSender = yield (0, detectMultipleConnection_1.default)(_id);
+        if (multipleConnectionSender) {
+            return res.send({
+                warning: "You have multiple active connections"
+            });
+        }
+        if (multipleConnectionReceiver) {
+            return res.send({
+                warning: "Your friend has multiple active connections"
+            });
+        }
         receiverSocketId.forEach(socketId => {
             __1.io.to(socketId).emit('privateKey', { privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey });
         });

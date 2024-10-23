@@ -3,6 +3,7 @@ import connectionModel from "../../../models/connectionSchema";
 import messageModel from "../../../models/messageSchema";
 import findSocketIdById from "../../findSocketIdbyId";
 import { io } from "../../..";
+import detectMultipleConnection from "../../../handler/socket/connection/detectMultipleConnection";
 
 const connectionEncryption = async(req: Request, res: Response) => {
     const {_id} = (req as any).user
@@ -17,6 +18,22 @@ const connectionEncryption = async(req: Request, res: Response) => {
     const senderSocketId = await findSocketIdById(_id)
 
     if(receiverSocketId && senderSocketId){
+        const multipleConnectionReceiver = await detectMultipleConnection(receiver)
+        const multipleConnectionSender = await detectMultipleConnection(_id)
+
+        if(multipleConnectionSender){
+            return res.send({
+                warning: "You have multiple active connections"
+            })
+        }
+        
+        if(multipleConnectionReceiver){
+            return res.send({
+                warning: "Your friend has multiple active connections"
+            })
+        }
+
+
         receiverSocketId.forEach(socketId => {
             io.to(socketId).emit('privateKey', {privateKey: encryptPrivateKey, _id: chatId, isEncrypted, publicKey})
         })
