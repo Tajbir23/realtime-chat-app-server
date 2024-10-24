@@ -18,17 +18,21 @@ const findUser_1 = __importDefault(require("../../controllers/findUser"));
 const deleteMyEncryptedMessage_1 = __importDefault(require("../../controllers/friends/encryption/deleteMyEncryptedMessage"));
 const getFriendsConnection_1 = __importDefault(require("../../controllers/friends/getFriendsConnection"));
 const userSchema_1 = __importDefault(require("../../models/userSchema"));
+const findUserIdBySocketId_1 = __importDefault(require("./connection/findUserIdBySocketId"));
+const removeConnection_1 = __importDefault(require("./connection/removeConnection"));
 const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = __1.connectedUsers.get(socket.id);
-    console.log("disconnect", user);
-    if (user) {
-        const update = yield userSchema_1.default.updateOne({ email: user.email }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
-        const upDatedUser = yield (0, findUser_1.default)(user._id);
-        console.log("disconnect", user._id);
-        __1.io.emit("users", upDatedUser);
-        yield (0, getFriendsConnection_1.default)(user._id);
-        __1.connectedUsers.delete(socket.id);
-        yield (0, deleteMyEncryptedMessage_1.default)(user._id);
+    const userId = (0, findUserIdBySocketId_1.default)(socket.id);
+    console.log("disconnect user", userId);
+    if (userId) {
+        const activeSocketId = yield (0, removeConnection_1.default)(socket.id);
+        if (activeSocketId === 0) {
+            const update = yield userSchema_1.default.findByIdAndUpdate({ _id: userId }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
+            const upDatedUser = yield (0, findUser_1.default)(userId);
+            console.log("disconnect", userId);
+            __1.io.emit("users", upDatedUser);
+            yield (0, getFriendsConnection_1.default)(userId);
+            yield (0, deleteMyEncryptedMessage_1.default)(userId);
+        }
         // console.log("Active users",connectedUsers)
     }
 });

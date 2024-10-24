@@ -17,10 +17,14 @@ const __1 = require("../..");
 const findUser_1 = __importDefault(require("../../controllers/findUser"));
 const getFriendsConnection_1 = __importDefault(require("../../controllers/friends/getFriendsConnection"));
 const userSchema_1 = __importDefault(require("../../models/userSchema"));
+const addConnection_1 = __importDefault(require("./connection/addConnection"));
 const connectedUser = (user, socket) => __awaiter(void 0, void 0, void 0, function* () {
-    const ip = socket.handshake.address;
-    console.log(`User connected from ${ip}`);
-    __1.connectedUsers.set(socket.id, { email: user === null || user === void 0 ? void 0 : user.email, _id: user === null || user === void 0 ? void 0 : user._id, ip });
+    // const ip = socket.handshake.address;
+    // console.log(`User connected from ${ip}`);
+    console.log("connectedUser", user);
+    if ((user === null || user === void 0 ? void 0 : user._id) && user.uid) {
+        yield (0, addConnection_1.default)(user === null || user === void 0 ? void 0 : user._id, socket.id, user.uid);
+    }
     const update = yield userSchema_1.default.updateOne({ email: user === null || user === void 0 ? void 0 : user.email }, { $set: { isActive: true, socketId: socket.id } });
     const updatedUser = yield (0, findUser_1.default)(user === null || user === void 0 ? void 0 : user._id);
     yield (0, getFriendsConnection_1.default)(user === null || user === void 0 ? void 0 : user._id);

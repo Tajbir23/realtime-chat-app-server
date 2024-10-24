@@ -3,22 +3,29 @@ import findOneUser from "../../controllers/findUser";
 import deleteMyEncryptedMessage from "../../controllers/friends/encryption/deleteMyEncryptedMessage";
 import getFriendsConnectionById from "../../controllers/friends/getFriendsConnection";
 import userModel from "../../models/userSchema";
+import findUserIdBySocketId from "./connection/findUserIdBySocketId";
+import removeConnection from "./connection/removeConnection";
 
 const disconnectUser = async(socket: any) => {
 
-    const user: any = connectedUsers.get(socket.id);
-    console.log("disconnect", user);
-      if (user) {
-        const update = await userModel.updateOne(
-          { email: user.email },
-          { isActive: false, lastActive: Number(Date.now()), socketId: null }
-        );
-        const upDatedUser = await findOneUser(user._id);
-        console.log("disconnect", user._id);
-        io.emit("users", upDatedUser);
-        await getFriendsConnectionById(user._id);
-        connectedUsers.delete(socket.id);
-        await deleteMyEncryptedMessage(user._id)
+    const userId = findUserIdBySocketId(socket.id);
+
+    console.log("disconnect user",userId)
+      if (userId) {
+        const activeSocketId = await removeConnection(socket.id);
+
+        if(activeSocketId === 0){
+          const update = await userModel.findByIdAndUpdate(
+            { _id: userId },
+            { isActive: false, lastActive: Number(Date.now()), socketId: null }
+          );
+          const upDatedUser = await findOneUser(userId);
+          console.log("disconnect", userId);
+          io.emit("users", upDatedUser);
+          await getFriendsConnectionById(userId);
+          
+          await deleteMyEncryptedMessage(userId)
+        }
         // console.log("Active users",connectedUsers)
       }
 }

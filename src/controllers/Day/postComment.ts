@@ -24,10 +24,12 @@ const postComment = async (req: Request, res: Response) => {
 
             const socketId = findSocketIdById(userId)
         if(socketId){
-            io.to(socketId).emit('likeAndCommentNotification', {
-                message: "Someone comment your day",
-                unreadNotification,
-                newNotification
+            socketId.forEach(id => {
+                io.to(socketId).emit('likeAndCommentNotification', {
+                    message: "Someone comment your day",
+                    unreadNotification,
+                    newNotification
+                })
             })
         }
         }

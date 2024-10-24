@@ -26,7 +26,9 @@ const updateTheme = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (userId) {
             const socketId = yield (0, findSocketIdbyId_1.default)(userId);
             if (socketId) {
-                __1.io.to(socketId).emit("themeUpdate", result);
+                socketId.forEach(id => {
+                    __1.io.to(id).emit("themeUpdate", result);
+                });
             }
         }
         res.send(result);

@@ -8,15 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.messageUser = void 0;
 const __1 = require("../..");
+const findSocketIdbyId_1 = __importDefault(require("../../controllers/findSocketIdbyId"));
 const messageUser = (message) => __awaiter(void 0, void 0, void 0, function* () {
     const receiverId = message === null || message === void 0 ? void 0 : message.receiverId;
-    for (let [socketId, userData] of __1.connectedUsers.entries()) {
-        if (userData._id === receiverId) {
-            __1.io.to(socketId).emit("upcomingMessage", message);
-        }
-    }
+    // for (let [socketId, userData] of connectedUsers.entries()) {
+    //   if (userData._id === receiverId) {
+    //     io.to(socketId).emit("upcomingMessage", message);
+    //   }
+    // }
+    const receiverSocketId = yield (0, findSocketIdbyId_1.default)(receiverId);
+    receiverSocketId.forEach(socketId => {
+        __1.io.to(socketId).emit("upcomingMessage", message);
+    });
 });
 exports.messageUser = messageUser;

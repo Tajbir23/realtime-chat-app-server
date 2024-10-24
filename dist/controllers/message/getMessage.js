@@ -28,6 +28,16 @@ const getMessage = (senderUsername, receiverUsername, myId, skip) => __awaiter(v
             ],
             deletedFor: { $ne: myId },
         }).sort({ createdAt: -1 }).skip(skip !== null && skip !== void 0 ? skip : 0).limit(10);
+        const unseenIds = message.filter(msg => msg.senderId !== myId && !msg.seen).map(msg => msg.senderId);
+        if (unseenIds.length > 0) {
+            yield messageSchema_1.default.updateMany({
+                _id: { $in: unseenIds }
+            }, {
+                $set: {
+                    seen: true
+                }
+            });
+        }
         return message;
     }
     catch (error) {

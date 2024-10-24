@@ -11,6 +11,7 @@ interface messageInterface {
     receiverEmail: string;
     receiverPhotoUrl: string;
     message: string;
+    seen: boolean;
     isEncrypted: boolean;
     deletedFor: string;
     deleteEveryOne: boolean;

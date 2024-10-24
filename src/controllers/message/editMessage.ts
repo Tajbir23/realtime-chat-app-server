@@ -13,7 +13,9 @@ const editMessage = async(req: Request, res: Response) => {
         if(result?.receiverId){
             const opponentSocketId = await findSocketIdById(result?.receiverId)
             if(opponentSocketId){
-                io.to(opponentSocketId).emit("updateMessage", result)
+                opponentSocketId.forEach(socketId => {
+                    io.to(socketId).emit("updateMessage", result)
+                })
             }
         }
         res.send(result)

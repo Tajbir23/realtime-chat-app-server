@@ -4,6 +4,9 @@ interface userConnections {
     receiverId: string;
     lastMessage: string;
     lastMessageAt: Number;
+    lastMessageSeen: boolean;
+    lastMessageSeenUserId: string;
+    lastMessageSender: string;
     blockUserId: string;
     isBlock: boolean;
     blockSender: string;

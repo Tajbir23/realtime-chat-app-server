@@ -24,7 +24,9 @@ const editMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         if (result === null || result === void 0 ? void 0 : result.receiverId) {
             const opponentSocketId = yield (0, findSocketIdbyId_1.default)(result === null || result === void 0 ? void 0 : result.receiverId);
             if (opponentSocketId) {
-                __1.io.to(opponentSocketId).emit("updateMessage", result);
+                opponentSocketId.forEach(socketId => {
+                    __1.io.to(socketId).emit("updateMessage", result);
+                });
             }
         }
         res.send(result);

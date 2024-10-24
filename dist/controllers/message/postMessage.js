@@ -17,7 +17,7 @@ const userSchema_1 = __importDefault(require("../../models/userSchema"));
 const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
 const getLastMsgFriend_1 = __importDefault(require("../friends/getLastMsgFriend"));
 const __1 = require("../..");
-const findSocketIdByEmail_1 = __importDefault(require("../findSocketIdByEmail"));
+const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
 const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const senderData = req.user;
     const receiver = req.body.user;
@@ -48,7 +48,9 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             lastMessage: message,
             lastMessageAt: Number(Date.now()),
             deleteFor: '',
-            delete: false
+            delete: false,
+            lastMessageSeen: false,
+            lastMessageSender: sender._id,
         }, {
             new: true
         });
@@ -61,6 +63,8 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 receiverId: receiver._id,
                 lastMessage: message,
                 lastMessageAt: Number(Date.now()),
+                lastMessageSeen: false,
+                lastMessageSender: sender._id,
             });
             const { _id } = yield createConnection.save();
             chatId = _id.toString();
@@ -82,13 +86,17 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 isEncrypted
             });
             const result = yield messageSave.save();
-            const receiverSocketId = yield (0, findSocketIdByEmail_1.default)(receiver.email);
-            const senderSocketId = yield (0, findSocketIdByEmail_1.default)(sender.email);
+            const receiverSocketId = yield (0, findSocketIdbyId_1.default)(receiver._id);
+            const senderSocketId = yield (0, findSocketIdbyId_1.default)(sender._id);
             if (receiverSocketId) {
-                __1.io.to(receiverSocketId).emit("message", result);
+                receiverSocketId.forEach(socketId => {
+                    __1.io.to(socketId).emit("message", result);
+                });
             }
             if (senderSocketId) {
-                __1.io.to(senderSocketId).emit("message", result);
+                senderSocketId.forEach(socketId => {
+                    __1.io.to(socketId).emit("message", result);
+                });
             }
             // io.emit("message", result);
             yield (0, getLastMsgFriend_1.default)(receiver._id);

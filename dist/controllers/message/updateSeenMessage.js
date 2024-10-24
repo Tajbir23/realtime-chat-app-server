@@ -12,29 +12,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const __1 = require("../..");
 const connectionSchema_1 = __importDefault(require("../../models/connectionSchema"));
+const messageSchema_1 = __importDefault(require("../../models/messageSchema"));
 const findSocketIdbyId_1 = __importDefault(require("../findSocketIdbyId"));
-const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const recentMessage = yield connectionSchema_1.default.find({
-        $or: [
-            { senderId: id },
-            { receiverId: id }
-        ]
-    })
-        .sort({ lastMessageAt: -1 })
-        .limit(1)
-        .populate("senderId", "-password")
-        .populate("receiverId", "-password");
-    const receiverSocketId = (0, findSocketIdbyId_1.default)(recentMessage[0].receiverId._id);
-    const senderSocketId = (0, findSocketIdbyId_1.default)(recentMessage[0].senderId._id);
-    // io.to(receiverSocketId as string).emit("recentMessage", recentMessage)
-    receiverSocketId.forEach(socketId => {
-        __1.io.to(socketId).emit("recentMessage", recentMessage);
-    });
-    // io.to(senderSocketId as string).emit("recentMessage", recentMessage)
-    senderSocketId.forEach(socketId => {
-        __1.io.to(socketId).emit("recentMessage", recentMessage);
-    });
+const __1 = require("../..");
+const updateSeenMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.user;
+    const { receiverId, lastMessageId, chatId } = req.body;
+    try {
+        yield connectionSchema_1.default.updateOne({
+            _id: chatId
+        }, {
+            $set: {
+                lastMessageSeen: true,
+                lastMessageSeenUserId: _id
+            }
+        }, {
+            new: true
+        });
+        yield messageSchema_1.default.updateOne({
+            _id: lastMessageId
+        }, {
+            $set: {
+                seen: true
+            }
+        }, {
+            new: true
+        });
+        const socketIds = yield (0, findSocketIdbyId_1.default)(receiverId);
+        socketIds.forEach(socketId => {
+            __1.io.to(socketId).emit('seenMessage', lastMessageId);
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
-exports.default = getLastMsgFriend;
+exports.default = updateSeenMessage;

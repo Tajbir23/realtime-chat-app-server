@@ -62,7 +62,7 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Hello, World!");
 }));
 app.use("/api", routes_1.default);
-exports.connectedUsers = new Map();
+exports.connectedUsers = {};
 (0, socketHandler_1.default)(exports.io);
 // cron job for update my day
 node_cron_1.default.schedule("0 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
