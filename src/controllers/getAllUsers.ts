@@ -3,7 +3,7 @@ import userModel from "../models/userSchema"
 
 const getAllUsers = async(page: string,) => {
     const pageNumber = Number(page || 1)
-    const limit = 10
+    const limit = 20
     const skip = (pageNumber - 1) * limit 
     
     try {
