@@ -1,41 +1,89 @@
-{
-  "name": "server",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
-    "build": "tsc",
-    "watch": "tsc --watch"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/mongoose-unique-validator": "^1.0.9",
-    "@types/node-cron": "^3.0.11",
-    "@types/socket.io": "^3.0.2",
-    "@types/uuid": "^10.0.0",
-    "autocannon": "^8.0.0",
-    "axios": "^1.7.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.3",
-    "mongoose-unique-validator": "^5.0.1",
-    "node-cron": "^3.0.3",
-    "uuid": "^10.0.0"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/mongoose": "^5.11.97",
-    "@types/node": "^22.5.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
-  }
-}
+name: Gmail-RDP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-rdp-tunnel:
+    runs-on: windows-latest
+
+    steps:
+    # Step 1: Check out the repository
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    # Step 2: Install Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    # Step 3: Install dependencies and build project
+    - name: Install and Build
+      run: |
+        npm install
+        npm run build
+
+    # Step 4: Start the Node.js Server and Capture Logs
+    - name: Start Node.js Server
+      run: |
+        npm start | Tee-Object -FilePath node_server.log
+      shell: pwsh
+
+    # Step 5: Show Node.js Server Logs
+    - name: Display Node.js Server Logs
+      run: |
+        Get-Content node_server.log
+      shell: pwsh
+
+    # Step 6: Download and Install Playit
+    - name: Download and Install Playit
+      run: |
+        $playitPath = "$env:USERPROFILE\playit.exe"
+        Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile $playitPath
+        Start-Sleep -Seconds 5
+
+    # Step 7: Enable Remote Desktop features and configure user
+    - name: Enable Remote Desktop
+      run: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
+        $securePassword = ConvertTo-SecureString -AsPlainText "${{ secrets.RDP_PASSWORD }}" -Force
+        Set-LocalUser -Name "runneradmin" -Password $securePassword
+
+    # Step 8: Start Playit and Set Up RDP Tunnel
+    - name: Start Playit and Set Up RDP Tunnel
+      env:
+        PLAYIT_AUTH_KEY: ${{ secrets.PL }}
+      run: |
+        Start-Process -FilePath "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY" -NoNewWindow -Wait
+
+    # Step 9: Keep the GitHub Action Runner Alive
+    - name: Keep the GitHub Action Runner Alive
+      run: |
+        while ($true) {
+          Write-Output "Session is alive - $(Get-Date)"
+          Start-Sleep -Seconds 300
+        }
+
+    # Step 10: Trigger New Workflow Run (Auto Restart)
+    - name: Trigger New Workflow Run
+      if: always()
+      env:
+        REPO_PAT: ${{ secrets.REPO_PAT }}
+      run: |
+        $payload = @"
+        {
+          "ref": "main"
+        }
+        "@
+
+        Invoke-RestMethod `
+          -Method POST `
+          -Uri "https://api.github.com/repos/${{ github.repository }}/actions/workflows/rdp.yml/dispatches" `
+          -Headers @{
+            Authorization = "token $env:REPO_PAT"
+            Accept = "application/vnd.github.v3+json"
+          } `
+          -Body $payload
