@@ -35,14 +35,19 @@ const removeConnection = async (socketId: string) => {
     try {
         const keys = await redis.keys(`user:*`)
         
-        for (const key of keys) {
+        for (let key of keys) {
+
             const userDevices = await redis.hgetall(key)
             for (const deviceId in userDevices) {
-                if (userDevices[deviceId] === socketId) {
+                console.log("removeConnection deviceId", deviceId)
+                const userSocketId = JSON.parse(userDevices[deviceId])
+                
+                if (userSocketId.socketId === socketId) {
                     await redis.hdel(key, deviceId)
                     
                     // If no more devices, remove the entire hash
                     const remainingDevices = await redis.hlen(key)
+                    console.log("removeConnection remaining devices", remainingDevices)
                     if (remainingDevices === 0) {
                         await redis.del(key)
                         return true
