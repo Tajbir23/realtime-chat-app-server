@@ -7,7 +7,10 @@ import { disconnectUser } from "./disconnectUser";
 const setUpSocketHandler = (io: Server) => {
   io.on("connection", (socket) => {
     socket.on("connected", async (user: any) => {
-      connectedUser(user, socket)
+      console.log("setUpSocketHandler connected user", user)
+      if(user?._id){
+        connectedUser(user, socket)
+      }
     });
 
     socket.on("sendUpcomingMessage", (message) => {

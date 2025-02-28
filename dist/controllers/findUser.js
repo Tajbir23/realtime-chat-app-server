@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const findOneUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("findOneUser id", id);
     try {
         const isValidId = yield mongoose_1.default.Types.ObjectId.isValid(id);
+        console.log("findOneUser isValid", isValidId);
         if (!isValidId) {
             throw new Error;
         }
@@ -24,6 +26,7 @@ const findOneUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
         return user;
     }
     catch (error) {
+        console.log("findOneUser error", error.message);
         console.log(error);
     }
 });

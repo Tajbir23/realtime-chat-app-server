@@ -13,7 +13,7 @@ const postMessage = async (req: Request, res: Response) => {
     const message = req.body.message;
     const isEncrypted = req.body.isEncrypted;
 
-    
+    console.log("hey i am firing")
     try {
 
         // Ensure receiver has the necessary properties

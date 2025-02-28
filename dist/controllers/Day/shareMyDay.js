@@ -22,7 +22,7 @@ const shareMyDay = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.send(data);
     }
     catch (error) {
-        console.log(error);
+        console.log(error.message);
         res.send(error);
     }
 });

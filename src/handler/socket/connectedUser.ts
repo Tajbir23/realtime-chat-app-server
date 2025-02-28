@@ -5,20 +5,20 @@ import userModel from "../../models/userSchema";
 import addConnection from "./connection/addConnection";
 
 const connectedUser = async(user: any, socket: any) => {
-    // const ip = socket.handshake.address;
-      // console.log(`User connected from ${ip}`);
+    // user real public ip address
+      const clientIp = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
-      console.log("connectedUser",user)
       
       if(user?._id && user.uid){
-        await addConnection(user?._id, socket.id, user.uid);
+        await addConnection(user?._id, socket.id, user.uid, clientIp);
       }
       
       const update = await userModel.updateOne(
         { email: user?.email },
-        { $set: { isActive: true, socketId: socket.id } }
+        { $set: { isActive: true, socketId: socket.id, ip: clientIp } }
       );
 
+      console.log("connectedUser user", user)
       const updatedUser = await findOneUser(user?._id);
 
       await getFriendsConnectionById(user?._id);

@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const userSchema_1 = __importDefault(require("../models/userSchema"));
 const getAllUsers = (page) => __awaiter(void 0, void 0, void 0, function* () {
     const pageNumber = Number(page || 1);
-    const limit = 10;
+    const limit = 20;
     const skip = (pageNumber - 1) * limit;
     try {
         const users = yield userSchema_1.default.find().limit(limit).skip(skip).select("-password");

@@ -23,7 +23,9 @@ const messageUser = (message) => __awaiter(void 0, void 0, void 0, function* () 
     //   }
     // }
     const receiverSocketId = yield (0, findSocketIdbyId_1.default)(receiverId);
+    console.log("receiverSocketId", receiverSocketId);
     receiverSocketId.forEach(socketId => {
+        console.log("socketId", socketId);
         __1.io.to(socketId).emit("upcomingMessage", message);
     });
 });

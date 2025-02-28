@@ -38,6 +38,7 @@ exports.io = new socket_io_1.Server(server, {
             "https://chat.tajbirideas.com",
             "https://realtime-chat-app-tajbir.web.app",
             "https://g4pnft81-5173.inc1.devtunnels.ms",
+            "https://realtime-chat-app-tajbir.web.app"
         ],
         // origin: "*",
     },
@@ -48,6 +49,7 @@ app.use((0, cors_1.default)({
         "https://chat.tajbirideas.com",
         "https://realtime-chat-app-tajbir.web.app",
         "https://g4pnft81-5173.inc1.devtunnels.ms",
+        "https://realtime-chat-app-tajbir.web.app"
     ],
     // origin: "*",
 }));

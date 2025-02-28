@@ -19,7 +19,7 @@ const getFriendsConnectionById = async (_id: string) => {
       .populate("receiverId", "-password")
       .lean();
 
-    friends.forEach((friend) => {
+    friends.forEach(async (friend) => {
 
       if (friend.senderId._id.toString() === _id) {
         // const receiverEmail = friend.receiverId.email;
@@ -28,9 +28,9 @@ const getFriendsConnectionById = async (_id: string) => {
         delete (friend as any).receiverId;
 
         // const socketId = findSocketIdByEmail(receiverEmail);
-        const socketId = findSocketIdById(receiverId);
+        const socketId = await findSocketIdById(receiverId);
         if (socketId) {
-          socketId.forEach(id => {
+          socketId.forEach((id: string) => {
             io.to(id).emit("updateFriendStatus", friend);
           })
         }
@@ -41,9 +41,9 @@ const getFriendsConnectionById = async (_id: string) => {
         delete (friend as any).senderId;
 
         // const socketId = findSocketIdByEmail(senderEmail);
-        const socketId = findSocketIdById(senderId);
+        const socketId = await findSocketIdById(senderId);
         if (socketId) {
-          socketId.forEach(id => {
+          socketId.forEach((id: string) => {
             io.to(id).emit("updateFriendStatus", friend);
             
           })

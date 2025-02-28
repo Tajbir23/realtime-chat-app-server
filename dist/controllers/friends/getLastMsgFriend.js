@@ -26,8 +26,8 @@ const getLastMsgFriend = (id) => __awaiter(void 0, void 0, void 0, function* () 
         .limit(1)
         .populate("senderId", "-password")
         .populate("receiverId", "-password");
-    const receiverSocketId = (0, findSocketIdbyId_1.default)(recentMessage[0].receiverId._id);
-    const senderSocketId = (0, findSocketIdbyId_1.default)(recentMessage[0].senderId._id);
+    const receiverSocketId = yield (0, findSocketIdbyId_1.default)(recentMessage[0].receiverId._id);
+    const senderSocketId = yield (0, findSocketIdbyId_1.default)(recentMessage[0].senderId._id);
     // io.to(receiverSocketId as string).emit("recentMessage", recentMessage)
     receiverSocketId.forEach(socketId => {
         __1.io.to(socketId).emit("recentMessage", recentMessage);

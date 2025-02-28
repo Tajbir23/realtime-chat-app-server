@@ -30,14 +30,12 @@ const postComment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             const newNotification = yield (yield (yield createNotification.populate('senderId', '-password')).populate('receiverId', '-password')).populate('postId');
             const unreadNotification = yield notificationSchema_1.default.countDocuments({ receiverId: userId, isRead: false });
-            const socketId = (0, findSocketIdbyId_1.default)(userId);
+            const socketId = yield (0, findSocketIdbyId_1.default)(userId);
             if (socketId) {
-                socketId.forEach(id => {
-                    __1.io.to(socketId).emit('likeAndCommentNotification', {
-                        message: "Someone comment your day",
-                        unreadNotification,
-                        newNotification
-                    });
+                yield __1.io.to(socketId).emit('likeAndCommentNotification', {
+                    message: "Someone comment your day",
+                    unreadNotification,
+                    newNotification
                 });
             }
         }

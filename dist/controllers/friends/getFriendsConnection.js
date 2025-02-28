@@ -28,15 +28,15 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
             .populate("senderId", "-password")
             .populate("receiverId", "-password")
             .lean();
-        friends.forEach((friend) => {
+        friends.forEach((friend) => __awaiter(void 0, void 0, void 0, function* () {
             if (friend.senderId._id.toString() === _id) {
                 // const receiverEmail = friend.receiverId.email;
                 const receiverId = friend.receiverId._id.toString();
                 delete friend.receiverId;
                 // const socketId = findSocketIdByEmail(receiverEmail);
-                const socketId = (0, findSocketIdbyId_1.default)(receiverId);
+                const socketId = yield (0, findSocketIdbyId_1.default)(receiverId);
                 if (socketId) {
-                    socketId.forEach(id => {
+                    socketId.forEach((id) => {
                         __1.io.to(id).emit("updateFriendStatus", friend);
                     });
                 }
@@ -46,14 +46,14 @@ const getFriendsConnectionById = (_id) => __awaiter(void 0, void 0, void 0, func
                 const senderId = friend.senderId._id.toString();
                 delete friend.senderId;
                 // const socketId = findSocketIdByEmail(senderEmail);
-                const socketId = (0, findSocketIdbyId_1.default)(senderId);
+                const socketId = yield (0, findSocketIdbyId_1.default)(senderId);
                 if (socketId) {
-                    socketId.forEach(id => {
+                    socketId.forEach((id) => {
                         __1.io.to(id).emit("updateFriendStatus", friend);
                     });
                 }
             }
-        });
+        }));
     }
     catch (error) {
         console.error("Error in getFriendsConnectionById:", error);

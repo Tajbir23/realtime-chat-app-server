@@ -8,8 +8,8 @@ const shareMyDay = async(req: Request, res: Response) => {
         const data = await myDayModel.findById(id).populate('userId', '-password')
         if(!data) return res.status(404).json({message: 'My Day not found'})
         res.send(data)
-    } catch (error) {
-        console.log(error)
+    } catch (error:any) {
+        console.log(error.message)
         res.send(error)
     }
 }

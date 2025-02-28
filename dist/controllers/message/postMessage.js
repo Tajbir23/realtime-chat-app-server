@@ -23,6 +23,7 @@ const postMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const receiver = req.body.user;
     const message = req.body.message;
     const isEncrypted = req.body.isEncrypted;
+    console.log("hey i am firing");
     try {
         // Ensure receiver has the necessary properties
         if (!receiver || !receiver.username || !receiver.name || !receiver.email || !receiver.photoUrl) {

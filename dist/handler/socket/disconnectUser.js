@@ -21,11 +21,12 @@ const userSchema_1 = __importDefault(require("../../models/userSchema"));
 const findUserIdBySocketId_1 = __importDefault(require("./connection/findUserIdBySocketId"));
 const removeConnection_1 = __importDefault(require("./connection/removeConnection"));
 const disconnectUser = (socket) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = (0, findUserIdBySocketId_1.default)(socket.id);
+    console.log("disconnectUser socket id", socket.id);
+    const userId = yield (0, findUserIdBySocketId_1.default)(socket.id);
     console.log("disconnect user", userId);
     if (userId) {
         const activeSocketId = yield (0, removeConnection_1.default)(socket.id);
-        if (activeSocketId === 0) {
+        if (!activeSocketId) {
             const update = yield userSchema_1.default.findByIdAndUpdate({ _id: userId }, { isActive: false, lastActive: Number(Date.now()), socketId: null });
             const upDatedUser = yield (0, findUser_1.default)(userId);
             console.log("disconnect", userId);

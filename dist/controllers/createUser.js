@@ -33,7 +33,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(201).send({ token, name, username, email, photoUrl, _id: user._id, uid });
     }
     catch (error) {
-        console.log(error);
+        console.log(error.message);
         return res.status(500).send({ message: error.message });
     }
 });

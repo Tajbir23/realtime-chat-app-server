@@ -1,26 +1,66 @@
 "use strict";
+// import { connectedUsers } from "../../..";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const __1 = require("../../..");
-const removeConnection = (socketId) => {
-    // Iterate over each userId in connectedUsers
-    for (const userId in __1.connectedUsers) {
-        const userDevices = __1.connectedUsers[userId]; // Object containing deviceId: socketId pairs
-        // Iterate over the deviceIds for the current user
-        for (const deviceId in userDevices) {
-            // Check if the current socketId matches
-            if (userDevices[deviceId] === socketId) {
-                // Remove the device (i.e., remove the deviceId from connectedUsers)
-                delete __1.connectedUsers[userId][deviceId];
-                // If the user no longer has any connected devices, remove the user entry
-                if (Object.keys(__1.connectedUsers[userId]).length === 0) {
-                    delete __1.connectedUsers[userId];
-                    return 0;
+const redis_1 = __importDefault(require("../../../config/redis"));
+// const removeConnection = (socketId: string) => {
+//     // Iterate over each userId in connectedUsers
+//     for (const userId in connectedUsers) {
+//         const userDevices = connectedUsers[userId]; // Object containing deviceId: socketId pairs
+//         // Iterate over the deviceIds for the current user
+//         for (const deviceId in userDevices) {
+//             // Check if the current socketId matches
+//             if (userDevices[deviceId] === socketId) {
+//                 // Remove the device (i.e., remove the deviceId from connectedUsers)
+//                 delete connectedUsers[userId][deviceId];
+//                 // If the user no longer has any connected devices, remove the user entry
+//                 if (Object.keys(connectedUsers[userId]).length === 0) {
+//                     delete connectedUsers[userId];
+//                     return 0
+//                 }
+//                 console.log(`Removed connection for socketId: ${socketId}`);
+//                 return;
+//             }
+//         }
+//     }
+//     console.log(`No connection found for socketId: ${socketId}`);
+// };
+// export default removeConnection;
+const removeConnection = (socketId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("removeConnection", socketId);
+    try {
+        const keys = yield redis_1.default.keys(`user:*`);
+        for (const key of keys) {
+            const userDevices = yield redis_1.default.hgetall(key);
+            for (const deviceId in userDevices) {
+                if (userDevices[deviceId] === socketId) {
+                    yield redis_1.default.hdel(key, deviceId);
+                    // If no more devices, remove the entire hash
+                    const remainingDevices = yield redis_1.default.hlen(key);
+                    if (remainingDevices === 0) {
+                        yield redis_1.default.del(key);
+                        return true;
+                    }
+                    console.log(`Removed connection for socketId: ${socketId}`);
+                    return true;
                 }
-                console.log(`Removed connection for socketId: ${socketId}`);
-                return;
             }
         }
     }
-    console.log(`No connection found for socketId: ${socketId}`);
-};
+    catch (error) {
+        console.log("removeConnection error", error.message);
+        return false;
+    }
+});
 exports.default = removeConnection;

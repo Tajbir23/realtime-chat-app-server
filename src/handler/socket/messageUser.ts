@@ -11,7 +11,9 @@ const messageUser = async(message: any) => {
       //   }
       // }
       const receiverSocketId = await findSocketIdById(receiverId)
+      console.log("receiverSocketId", receiverSocketId)
       receiverSocketId.forEach(socketId => {
+        console.log("socketId", socketId)
         io.to(socketId).emit("upcomingMessage", message);
       })
 }

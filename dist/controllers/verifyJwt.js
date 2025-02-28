@@ -16,6 +16,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const verifyJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+    console.log("verifyJwt");
     if (!token) {
         return res.status(401).send({ error: 'Unauthorized' });
     }
@@ -28,6 +29,7 @@ const verifyJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         });
     }
     catch (error) {
+        console.log(error.message);
         res.status(401).send({ error: 'Unauthorized' });
     }
 });

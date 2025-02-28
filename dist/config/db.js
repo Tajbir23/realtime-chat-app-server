@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const connection = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // await mongoose.connect(process.env.mongodb_uri || 'mongodb://localhost:27017')
-        yield mongoose_1.default.connect('mongodb+srv://realtimeChat:realtimeChat@cluster0.sdyx3bs.mongodb.net/realtimeChat?retryWrites=true&w=majority&appName=Cluster0');
+        yield mongoose_1.default.connect(process.env.mongodb_uri || 'mongodb://localhost:27017');
+        // await mongoose.connect('mongodb+srv://realtimeChat:realtimeChat@cluster0.sdyx3bs.mongodb.net/realtimeChat?retryWrites=true&w=majority&appName=Cluster0')
         console.log('Connected to MongoDB');
     }
     catch (err) {
         console.log('mongodb error', err);
+        console.log("mongodb error", err.message);
     }
 });
 exports.default = connection;

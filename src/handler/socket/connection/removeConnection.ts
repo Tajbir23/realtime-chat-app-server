@@ -1,29 +1,62 @@
-import { connectedUsers } from "../../..";
+// import { connectedUsers } from "../../..";
 
-const removeConnection = (socketId: string) => {
-    // Iterate over each userId in connectedUsers
-    for (const userId in connectedUsers) {
-        const userDevices = connectedUsers[userId]; // Object containing deviceId: socketId pairs
+import redis from "../../../config/redis";
 
-        // Iterate over the deviceIds for the current user
-        for (const deviceId in userDevices) {
-            // Check if the current socketId matches
-            if (userDevices[deviceId] === socketId) {
-                // Remove the device (i.e., remove the deviceId from connectedUsers)
-                delete connectedUsers[userId][deviceId];
+// const removeConnection = (socketId: string) => {
+//     // Iterate over each userId in connectedUsers
+//     for (const userId in connectedUsers) {
+//         const userDevices = connectedUsers[userId]; // Object containing deviceId: socketId pairs
 
-                // If the user no longer has any connected devices, remove the user entry
-                if (Object.keys(connectedUsers[userId]).length === 0) {
-                    delete connectedUsers[userId];
-                    return 0
+//         // Iterate over the deviceIds for the current user
+//         for (const deviceId in userDevices) {
+//             // Check if the current socketId matches
+//             if (userDevices[deviceId] === socketId) {
+//                 // Remove the device (i.e., remove the deviceId from connectedUsers)
+//                 delete connectedUsers[userId][deviceId];
+
+//                 // If the user no longer has any connected devices, remove the user entry
+//                 if (Object.keys(connectedUsers[userId]).length === 0) {
+//                     delete connectedUsers[userId];
+//                     return 0
+//                 }
+
+//                 console.log(`Removed connection for socketId: ${socketId}`);
+//                 return;
+//             }
+//         }
+//     }
+//     console.log(`No connection found for socketId: ${socketId}`);
+// };
+
+// export default removeConnection;
+
+const removeConnection = async (socketId: string) => {
+    console.log("removeConnection", socketId)
+    try {
+        const keys = await redis.keys(`user:*`)
+        
+        for (const key of keys) {
+            const userDevices = await redis.hgetall(key)
+            for (const deviceId in userDevices) {
+                if (userDevices[deviceId] === socketId) {
+                    await redis.hdel(key, deviceId)
+                    
+                    // If no more devices, remove the entire hash
+                    const remainingDevices = await redis.hlen(key)
+                    if (remainingDevices === 0) {
+                        await redis.del(key)
+                        return true
+                    }
+                    
+                    console.log(`Removed connection for socketId: ${socketId}`)
+                    return true
                 }
-
-                console.log(`Removed connection for socketId: ${socketId}`);
-                return;
             }
         }
+    } catch (error:any) {
+        console.log("removeConnection error", error.message)
+        return false
     }
-    console.log(`No connection found for socketId: ${socketId}`);
-};
+}
 
 export default removeConnection;

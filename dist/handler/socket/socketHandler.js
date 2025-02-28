@@ -16,7 +16,10 @@ const disconnectUser_1 = require("./disconnectUser");
 const setUpSocketHandler = (io) => {
     io.on("connection", (socket) => {
         socket.on("connected", (user) => __awaiter(void 0, void 0, void 0, function* () {
-            (0, connectedUser_1.connectedUser)(user, socket);
+            console.log("setUpSocketHandler connected user", user);
+            if (user === null || user === void 0 ? void 0 : user._id) {
+                (0, connectedUser_1.connectedUser)(user, socket);
+            }
         }));
         socket.on("sendUpcomingMessage", (message) => {
             (0, messageUser_1.messageUser)(message);
