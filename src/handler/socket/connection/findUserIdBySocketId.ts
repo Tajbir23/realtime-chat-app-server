@@ -24,22 +24,16 @@ import redis from "../../../config/redis"
 
 // export default findUserIdBySocketId;
 
-const findUserIdBySocketId = async (socketId: string) => {
-    console.log("findUserBySocketId",socketId)
+const findUserIdBySocketId = async (socketId: string): Promise<string | null> => {
+    console.log("findUserBySocketId", socketId)
     try {
-        const keys = await redis.keys(`user:*`)
-        for (const key of keys) {
-            const devices = await redis.hgetall(key)
-            for (const deviceId in devices) {
-                const device = JSON.parse(devices[deviceId])
-                if (device.socketId === socketId) {
-                    
-                    return key.split(":")[1]
-                }
-            }
-        }
-    } catch (error:any) {
+        // Use direct lookup instead of scanning all keys
+        const userId = await redis.get(`socket:${socketId}`)
+        console.log("findUserBySocketId user", userId)
+        return userId || null
+    } catch (error: any) {
         console.log("findUserIdBySocketId error", error.message)
+        return null
     }
 }
 

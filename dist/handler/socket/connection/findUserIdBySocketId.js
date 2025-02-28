@@ -34,19 +34,14 @@ const redis_1 = __importDefault(require("../../../config/redis"));
 const findUserIdBySocketId = (socketId) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("findUserBySocketId", socketId);
     try {
-        const keys = yield redis_1.default.keys(`user:*`);
-        for (const key of keys) {
-            const devices = yield redis_1.default.hgetall(key);
-            for (const deviceId in devices) {
-                const device = JSON.parse(devices[deviceId]);
-                if (device.socketId === socketId) {
-                    return key.split(":")[1];
-                }
-            }
-        }
+        // Use direct lookup instead of scanning all keys
+        const userId = yield redis_1.default.get(`socket:${socketId}`);
+        console.log("findUserBySocketId user", userId);
+        return userId || null;
     }
     catch (error) {
         console.log("findUserIdBySocketId error", error.message);
+        return null;
     }
 });
 exports.default = findUserIdBySocketId;
