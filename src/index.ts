@@ -61,7 +61,7 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api", router);
 
-export const connectedUsers : ConnectedUserType = {};
+// export const connectedUsers : ConnectedUserType = {};
 
 setUpSocketHandler(io);
 

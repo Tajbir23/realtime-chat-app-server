@@ -1,4 +1,4 @@
-import { connectedUsers, io } from "../..";
+import { io } from "../..";
 import findOneUser from "../../controllers/findUser";
 import getFriendsConnectionById from "../../controllers/friends/getFriendsConnection";
 import userModel from "../../models/userSchema";

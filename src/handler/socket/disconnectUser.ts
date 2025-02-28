@@ -1,4 +1,4 @@
-import { connectedUsers, io } from "../..";
+import { io } from "../..";
 import findOneUser from "../../controllers/findUser";
 import deleteMyEncryptedMessage from "../../controllers/friends/encryption/deleteMyEncryptedMessage";
 import getFriendsConnectionById from "../../controllers/friends/getFriendsConnection";
