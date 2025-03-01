@@ -15,6 +15,7 @@ const disconnectUser = async(socket: any) => {
       if (userId) {
         const removeActiveSocketId = await removeConnection(socket.id);
 
+        console.log("disconnectUser removeActive", removeActiveSocketId)
         if(removeActiveSocketId){
           const update = await userModel.findByIdAndUpdate(
             { _id: userId },
