@@ -20,6 +20,7 @@ const detectMultipleConnection = async (userId: string): Promise<boolean> => {
         // Use Redis hlen to get the number of devices for the user
         const deviceCount = await redis.hlen(`user:${userId}`);
         
+        console.log("detectMultipleConnection deviceCount", deviceCount)
         if (deviceCount > 1) {
             console.log(`User ${userId} has multiple connected devices: ${deviceCount}`);
             return true;

@@ -27,6 +27,7 @@ const detectMultipleConnection = (userId) => __awaiter(void 0, void 0, void 0, f
     try {
         // Use Redis hlen to get the number of devices for the user
         const deviceCount = yield redis_1.default.hlen(`user:${userId}`);
+        console.log("detectMultipleConnection deviceCount", deviceCount);
         if (deviceCount > 1) {
             console.log(`User ${userId} has multiple connected devices: ${deviceCount}`);
             return true;

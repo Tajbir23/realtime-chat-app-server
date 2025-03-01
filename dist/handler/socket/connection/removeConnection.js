@@ -41,13 +41,16 @@ const removeConnection = (socketId) => __awaiter(void 0, void 0, void 0, functio
     console.log("removeConnection", socketId);
     try {
         const keys = yield redis_1.default.keys(`user:*`);
-        for (const key of keys) {
+        for (let key of keys) {
             const userDevices = yield redis_1.default.hgetall(key);
             for (const deviceId in userDevices) {
-                if (userDevices[deviceId] === socketId) {
+                console.log("removeConnection deviceId", deviceId);
+                const userSocketId = JSON.parse(userDevices[deviceId]);
+                if (userSocketId.socketId === socketId) {
                     yield redis_1.default.hdel(key, deviceId);
                     // If no more devices, remove the entire hash
                     const remainingDevices = yield redis_1.default.hlen(key);
+                    console.log("removeConnection remaining devices", remainingDevices);
                     if (remainingDevices === 0) {
                         yield redis_1.default.del(key);
                         return true;
