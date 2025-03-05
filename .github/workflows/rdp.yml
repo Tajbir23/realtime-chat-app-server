@@ -3,12 +3,22 @@ name: Trigger RDP workflows of Second github account
 on:
   push:
     branches:
-      - main  # You can change this to any branch you want
+      - main  # Adjust branch as needed
 
 jobs:
   trigger-workflow:
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Running Workflows
+        run: |
+          RUNNING_WORKFLOWS=$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            "https://api.github.com/repos/tajbir6/Gmail-RDP/actions/runs?status=in_progress" | jq -r '.workflow_runs[].id')
+          
+          for RUN_ID in $RUNNING_WORKFLOWS; do
+            curl -X POST -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+              "https://api.github.com/repos/tajbir6/Gmail-RDP/actions/runs/$RUN_ID/cancel"
+          done
+
       - name: Trigger workflow in another repository
         run: |
           curl -X POST \
