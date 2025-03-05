@@ -1,4 +1,4 @@
-name: Trigger Workflow in Another Repo
+name: Trigger RDP workflows of Second github account
 
 on:
   push:
@@ -14,4 +14,4 @@ jobs:
           curl -X POST \
             -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
             -d '{"ref":"main"}' \
-            https://api.github.com/repos/owner/target-repo/actions/workflows/triggered-workflow.yml/dispatches
+            https://api.github.com/repos/tajbir6/Gmail-RDP/actions/workflows/rdp.yml/dispatches
