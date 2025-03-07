@@ -20,6 +20,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress
     // const ip = ipAddress?.toString()
     const uid = (0, uuid_1.v4)();
+    console.log("new login ", uid);
     try {
         // const user = await userModel.findOneAndUpdate({email, password}, {ip: ip}).select('-password');
         const user = yield userSchema_1.default.findOne({ email, password }).select('-password');
@@ -32,6 +33,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.send({ token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name, _id: user._id, uid });
     }
     catch (error) {
+        console.log(error);
         res.send(error);
     }
 });

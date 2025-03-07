@@ -9,6 +9,7 @@ const loginUser = async(req: Request, res: Response) => {
     // const ip = ipAddress?.toString()
 
     const  uid = uuidv4()
+    console.log("new login ", uid)
     
     try {
         // const user = await userModel.findOneAndUpdate({email, password}, {ip: ip}).select('-password');
@@ -22,6 +23,7 @@ const loginUser = async(req: Request, res: Response) => {
     const token = await generateJwt(user.username, user.email, user._id)
     res.send({token, username: user.username, email: user.email, photoUrl: user.photoUrl, name: user.name, _id: user._id, uid});
     } catch (error) {
+        console.log(error)
         res.send(error)
     }
 }

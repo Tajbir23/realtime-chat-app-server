@@ -23,6 +23,7 @@ import redis from "../../../config/redis"
 
 
 const addConnection = async (userId: string, socketId: string, deviceId: string, clientIp: string) => {
+    
     console.log("addConnection socket id", socketId)
     try {
         await redis.hset(`user:${userId}`, deviceId, JSON.stringify({ socketId, clientIp }));
