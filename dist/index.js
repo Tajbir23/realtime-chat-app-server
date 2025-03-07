@@ -34,6 +34,7 @@ const server = (0, node_http_1.createServer)(app);
 exports.io = new socket_io_1.Server(server, {
     cors: {
         origin: [
+            "http://192.168.1.10:5173",
             "http://localhost:5173",
             "https://chat.tajbirideas.com",
             "https://realtime-chat-app-tajbir.web.app",
@@ -45,6 +46,7 @@ exports.io = new socket_io_1.Server(server, {
 });
 app.use((0, cors_1.default)({
     origin: [
+        "http://192.168.1.10:5173",
         "http://localhost:5173",
         "https://chat.tajbirideas.com",
         "https://realtime-chat-app-tajbir.web.app",
