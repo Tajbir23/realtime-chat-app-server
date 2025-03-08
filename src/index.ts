@@ -22,29 +22,29 @@ const server = createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: [
-      "http://192.168.1.10:5173",
-      "http://localhost:5173",
-      "https://chat.tajbirideas.com",
-      "https://realtime-chat-app-tajbir.web.app",
-      "https://g4pnft81-5173.inc1.devtunnels.ms",
-      "https://realtime-chat-app-tajbir.web.app"
-    ],
-    // origin: "*",
+    // origin: [
+    //   "http://192.168.1.10:5173",
+    //   "http://localhost:5173",
+    //   "https://chat.tajbirideas.com",
+    //   "https://realtime-chat-app-tajbir.web.app",
+    //   "https://g4pnft81-5173.inc1.devtunnels.ms",
+    //   "https://realtime-chat-app-tajbir.web.app"
+    // ],
+    origin: "*",
   },
 });
 
 app.use(
   cors({
-    origin: [
-      "http://192.168.1.10:5173",
-      "http://localhost:5173",
-      "https://chat.tajbirideas.com",
-      "https://realtime-chat-app-tajbir.web.app",
-      "https://g4pnft81-5173.inc1.devtunnels.ms",
-      "https://realtime-chat-app-tajbir.web.app"
-    ],
-    // origin: "*",
+    // origin: [
+    //   "http://192.168.1.10:5173",
+    //   "http://localhost:5173",
+    //   "https://chat.tajbirideas.com",
+    //   "https://realtime-chat-app-tajbir.web.app",
+    //   "https://g4pnft81-5173.inc1.devtunnels.ms",
+    //   "https://realtime-chat-app-tajbir.web.app"
+    // ],
+    origin: "*",
   })
 );
 
