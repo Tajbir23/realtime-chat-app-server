@@ -41,7 +41,7 @@ exports.io = new socket_io_1.Server(server, {
             "https://realtime-chat-app-tajbir.web.app",
             "https://g4pnft81-5173.inc1.devtunnels.ms",
             "https://realtime-chat-app-tajbir.web.app",
-            "http://transfer-active.gl.at.ply.gg:42988"
+            "http://just-hotmail.gl.at.ply.gg:42993"
         ],
         // origin: "*",
     },
@@ -55,7 +55,7 @@ app.use((0, cors_1.default)({
         "https://realtime-chat-app-tajbir.web.app",
         "https://g4pnft81-5173.inc1.devtunnels.ms",
         "https://realtime-chat-app-tajbir.web.app",
-        "http://transfer-active.gl.at.ply.gg:42988"
+        "http://just-hotmail.gl.at.ply.gg:42993"
     ],
     // origin: "*",
 }));
