@@ -36,10 +36,12 @@ exports.io = new socket_io_1.Server(server, {
         origin: [
             "http://192.168.1.10:5173",
             "http://localhost:5173",
+            "http://localhost:4173",
             "https://chat.tajbirideas.com",
             "https://realtime-chat-app-tajbir.web.app",
             "https://g4pnft81-5173.inc1.devtunnels.ms",
-            "https://realtime-chat-app-tajbir.web.app"
+            "https://realtime-chat-app-tajbir.web.app",
+            "http://transfer-active.gl.at.ply.gg:42988"
         ],
         // origin: "*",
     },
@@ -48,10 +50,12 @@ app.use((0, cors_1.default)({
     origin: [
         "http://192.168.1.10:5173",
         "http://localhost:5173",
+        "http://localhost:4173",
         "https://chat.tajbirideas.com",
         "https://realtime-chat-app-tajbir.web.app",
         "https://g4pnft81-5173.inc1.devtunnels.ms",
-        "https://realtime-chat-app-tajbir.web.app"
+        "https://realtime-chat-app-tajbir.web.app",
+        "http://transfer-active.gl.at.ply.gg:42988"
     ],
     // origin: "*",
 }));
