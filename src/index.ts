@@ -27,7 +27,6 @@ export const io = new Server(server, {
       "http://localhost:5173",
       "http://localhost:4173",
       "https://chat.tajbirideas.com",
-      "https://realtime-chat-app-tajbir.web.app",
       "https://g4pnft81-5173.inc1.devtunnels.ms",
       "https://realtime-chat-app-tajbir.web.app",
       "http://just-hotmail.gl.at.ply.gg:42993"
@@ -43,7 +42,6 @@ app.use(
       "http://localhost:5173",
       "http://localhost:4173",
       "https://chat.tajbirideas.com",
-      "https://realtime-chat-app-tajbir.web.app",
       "https://g4pnft81-5173.inc1.devtunnels.ms",
       "https://realtime-chat-app-tajbir.web.app",
       "http://just-hotmail.gl.at.ply.gg:42993"
